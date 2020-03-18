@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Slab&display=swap');
+
+* {
+  font-family: 'Roboto Slab', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto Slab', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.contact-form {
+  border: 2px solid;
+  padding: 20px;
+}
+
+.form-message {
+  height: 50px;
+}
+
+.navbar-link {
+  color: white;
+  margin: 10px;
+  padding: 5px;
+}
+
+.navbar-link:hover {
+  color: white;
+  text-decoration: none;
+  border-bottom: 2px solid white;
+}
+
+.navbar-link-active {
+  border-bottom: 2px solid white;
+}
+
+.footer-link {
+  border: 2px solid black;
+  justify-content: space-evenly;
+  color: black;
+  margin: 5px 10px 10px 0px;
+  margin-left: 0px;
+}
+
+.footer-link:hover {
+  color: white;
+  background-color: black;
+}
+
+.form-submitted {
+  background-color: green;
+  content: 'sent';
+}
+
+.footer-nav {
+  background-color: #343a40;
+}
+
+.title-container {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.navbar-container {
+  background-color: #343a40;
+}
+
+.page-title {
+  text-decoration: underline;
+}
+
+.contact-form-submitted-toast {
+  margin-top: 10px;
+}
