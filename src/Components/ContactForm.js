@@ -1,23 +1,34 @@
 import React from 'react';
 import '../css/index.css';
-import Button from 'react-bootstrap/Button';
 import NavBar from './NavBar';
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
+import { Form, Button, Col, Row, Container} from 'react-bootstrap';
 import Footer from './Footer';
 import ContactConfirmed from './ContactConfirmed';
 
 
 class ContactForm extends React.Component {
-    nameInput = React.createRef();
-    state = {
+    constructor(props) {
+        super(props);
+        this.state = {
             isSubmitted: false,
-    }
+            fullName: "",
+            email: "",
+            message: "",
+    };
+    this.handleInputChange = this.handleInputChange.bind(this);
+}
+
+handleInputChange(event) {
+    const target = event.target;
+    const name = target.name;
+    const value = target.value;
+    this.setState({
+      [name]: value
+    });
+  }
     handleSubmit = event => {
         event.preventDefault();
-        console.log(this.nameInput.current.value);
+        console.log(this.nameInput);
         this.setState({isSubmitted: true});
        /* nameInput = this.nameInput.current.value; */
         event.currentTarget.reset();
@@ -37,32 +48,32 @@ class ContactForm extends React.Component {
                     <Form.Group as={Row}>
                     <Form.Label column sm={2}>Name →</Form.Label>
                     <Col sm={4}>
-                    <Form.Control required type="text" placeholder="e.g. Alex Smith" ref={this.nameInput} />
+                    <Form.Control name="fullName" required type="text" placeholder="e.g. Alex Smith" onChange={this.handleInputChange}/>
                     </Col>
                     </Form.Group>
 
                     <Form.Group as={Row}>
                     <Form.Label column sm={2}>Email address →</Form.Label>
                     <Col sm={4}>
-                    <Form.Control required type="email" placeholder="e.g. alex.smith@email.com" />
+                    <Form.Control name="email" required type="email" placeholder="e.g. alex.smith@email.com" onChange={this.handleInputChange}/>
                     </Col>
                     </Form.Group>
 
                     <Form.Group as={Row}>
                     <Form.Label column sm={2}>Your message →</Form.Label>
                     <Col sm={4}>
-                    <Form.Control as="textarea" rows="5" required placeholder="Hello there 👋" />
+                    <Form.Control name="message" as="textarea" rows="5" required placeholder="Hello there 👋" onChange={this.handleInputChange} />
                     </Col>
                     </Form.Group>
                     <Col sm={{span: 12}}>
-                    <Button variant="dark" type="submit" className="before-submit">Send</Button>
+                    <Button variant="dark" type="submit" className="contact-form-submit">Send →</Button>
                     </Col>
-                    <Row>
-                    <Col>
-                        {this.state.isSubmitted && <ContactConfirmed nameInput={this.nameInput.current.value} />}
-                    </Col>
-                    </Row>
                 </Form>
+                {this.state.isSubmitted && <Row>
+                    <Col>
+                    <ContactConfirmed contactFormName={this.state.fullName} contactFormEmail={this.state.email} contactFormMessage={this.state.message} />
+                    </Col>
+                    </Row>}
         </Container>
         <Footer />
         </div>

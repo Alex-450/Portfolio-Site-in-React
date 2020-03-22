@@ -78,5 +78,31 @@ body {
 }
 
 .contact-form-submitted-toast {
-  margin-top: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 2px solid black !important;
+  border-radius: 0px !important;
+  color: black !important;
+}
+
+.contact-form-submitted-toast-header {
+  background-color: #4AAB2C !important;
+  color: white !important;
+}
+
+
+.contact-form-submit {
+  background-color: white !important;
+  color: black !important;
+  border: 2px solid black !important;
+  border-radius: 0px !important;
+}
+
+.contact-form-submit:hover {
+  background-color: black !important;
+  color: white !important;
+}
+
+.close {
+  color: white !important;
 }
