@@ -1,12 +1,12 @@
 import React from 'react';
 import { Nav, Navbar, Container} from 'react-bootstrap';
-import { NavLink} from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import '../css/index.css';
 
 const NavBar = () => (
     <div className="navbar-container">
         <Container>
-            <Navbar bg="dark" variant="dark" sticky="top" expand="lg">
+            <Navbar className="navbar" variant="dark" sticky="top" expand="lg">
                  <Navbar.Brand href="/" className="navbar-brand">Alex Stearn</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse>

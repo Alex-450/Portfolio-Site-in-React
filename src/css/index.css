@@ -26,10 +26,17 @@ body {
   height: 50px;
 }
 
+.navbar {
+  background-color: black;
+}
 .navbar-link {
   color: white;
   margin: 10px;
   padding: 5px;
+}
+
+.navbar-container {
+  background-color: black;
 }
 
 .navbar-link:hover {
@@ -40,6 +47,22 @@ body {
 
 .navbar-link-active {
   border-bottom: 2px solid white;
+}
+
+.footer-container {
+  justify-items: center;
+  background-color: #dee2e6;
+  margin-top: 10px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  font-size: 14px;
+}
+
+.footer-explainer {
+  margin-left: 15px;
+  color: black;
+  font-weight: 550;
+  text-align: center;
 }
 
 .footer-link {
@@ -69,10 +92,6 @@ body {
   margin-bottom: 15px;
 }
 
-.navbar-container {
-  background-color: #343a40;
-}
-
 .page-title {
   text-decoration: underline;
 }
@@ -91,14 +110,14 @@ body {
 }
 
 
-.contact-form-submit {
+.generic-button {
   background-color: white !important;
   color: black !important;
   border: 2px solid black !important;
   border-radius: 0px !important;
 }
 
-.contact-form-submit:hover {
+.generic-button:hover {
   background-color: black !important;
   color: white !important;
 }

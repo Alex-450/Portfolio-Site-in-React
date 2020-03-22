@@ -66,7 +66,7 @@ handleInputChange(event) {
                     </Col>
                     </Form.Group>
                     <Col sm={{span: 12}}>
-                    <Button variant="dark" type="submit" className="contact-form-submit">Send →</Button>
+                    <Button variant="dark" type="submit" className="generic-button">Send →</Button>
                     </Col>
                 </Form>
                 {this.state.isSubmitted && <Row>
