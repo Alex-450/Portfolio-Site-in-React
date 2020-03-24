@@ -26,6 +26,7 @@ class Blog extends React.Component {
         <div>
             <NavBar />
             <Container className="title-container">
+            <h2 className="page-title">My Personal Blog</h2>
                 <Row>
                     <Col>
                         <Card>

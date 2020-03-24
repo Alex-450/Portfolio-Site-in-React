@@ -7,11 +7,11 @@ const Footer = () => (
     <div className="footer-container">
         <Container>
             <Row>
-                <Col xs={3} md={3} className="footer-explainer">
+                <Col xs={12} md={4} className="footer-explainer">
                 <p>External Links ↓</p>
                 </Col>
             </Row>
-                <Col xs={3} md={3}>
+                <Col xs={12} md={4}>
                     <Nav fixed="bottom" className="flex-column">
                         <Nav.Item>
                             <Nav.Link className="footer-link" href="https://www.facebook.com/alex.stearn.5/" target="_blank" rel="noopener noreferrer">Facebook →</Nav.Link>
@@ -28,11 +28,11 @@ const Footer = () => (
                     </Nav>
                 </Col>
                 <Row>
-                    <Col xs={3} md={{span: 3, offset: 5}} className="footer-explainer">
+                    <Col xs={12} md={{span: 4, offset: 4}} className="footer-explainer">
                     <p>Contact ↓</p>
                     </Col>
                 </Row>
-                <Col xs={3} md={{span: 3, offset: 5}}>
+                <Col xs={12} md={{span: 4, offset: 4}}>
                     <Nav fixed="bottom" className="flex-column">
                             <Nav.Item>
                                 <Nav.Link className="footer-link" href="/contact">Get in touch →</Nav.Link>
@@ -40,11 +40,11 @@ const Footer = () => (
                     </Nav>
                 </Col>
                 <Row>
-                <Col xs={3} md={{span: 3, offset: 10}} className="footer-explainer">
+                <Col xs={12} md={{span: 4, offset: 8}} className="footer-explainer">
                 <p>Sitemap ↓</p>
                 </Col>
                 </Row>
-                <Col xs={3} md={{span: 3, offset: 10}}>
+                <Col xs={12} md={{span: 4, offset: 8}}>
                 <Nav fixed="bottom" className="flex-column">
                         <Nav.Item>
                             <Nav.Link className="footer-link" href="/">Home →</Nav.Link>
