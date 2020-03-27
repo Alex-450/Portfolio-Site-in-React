@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Container, Toast} from 'react-bootstrap';
+import { Container, Toast} from 'react-bootstrap';
 
 class ContactConfirmed extends React.Component {
     constructor(props) {

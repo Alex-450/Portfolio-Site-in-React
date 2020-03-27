@@ -28,12 +28,6 @@ const Blog1 = () => (
 
         <p>In Black Panther, Coogler has created an incredibly complex superhero movie that empathises with its villain without giving him complete victory, and asks complex questions about race and foreign policy, without sacrificing everything that makes Marvel films incredibly watchable, and incredibly good fun.
 </p>
-
-
-
-
-
-
     </div>
     );
     

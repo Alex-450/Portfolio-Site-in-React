@@ -1,7 +1,6 @@
 import React from 'react';
 import '../css/index.css';
 import { Container, Nav, Row, Col } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
 
 const Footer = () => (
     <div className="footer-container">
