@@ -1,27 +1,27 @@
 {
   "files": {
-    "main.css": "/portfolio-site-in-react/static/css/main.9ea8622a.chunk.css",
-    "main.js": "/portfolio-site-in-react/static/js/main.e5b0f4ca.chunk.js",
-    "main.js.map": "/portfolio-site-in-react/static/js/main.e5b0f4ca.chunk.js.map",
-    "runtime-main.js": "/portfolio-site-in-react/static/js/runtime-main.d6c5e405.js",
-    "runtime-main.js.map": "/portfolio-site-in-react/static/js/runtime-main.d6c5e405.js.map",
-    "static/css/2.84b3ebfc.chunk.css": "/portfolio-site-in-react/static/css/2.84b3ebfc.chunk.css",
-    "static/js/2.3ab3bfbc.chunk.js": "/portfolio-site-in-react/static/js/2.3ab3bfbc.chunk.js",
-    "static/js/2.3ab3bfbc.chunk.js.map": "/portfolio-site-in-react/static/js/2.3ab3bfbc.chunk.js.map",
-    "index.html": "/portfolio-site-in-react/index.html",
-    "precache-manifest.f414d5d9e08a90103fdaffe9222e0d99.js": "/portfolio-site-in-react/precache-manifest.f414d5d9e08a90103fdaffe9222e0d99.js",
-    "service-worker.js": "/portfolio-site-in-react/service-worker.js",
-    "static/css/2.84b3ebfc.chunk.css.map": "/portfolio-site-in-react/static/css/2.84b3ebfc.chunk.css.map",
-    "static/css/main.9ea8622a.chunk.css.map": "/portfolio-site-in-react/static/css/main.9ea8622a.chunk.css.map",
-    "static/js/2.3ab3bfbc.chunk.js.LICENSE.txt": "/portfolio-site-in-react/static/js/2.3ab3bfbc.chunk.js.LICENSE.txt",
-    "static/media/blackPantherImage.jpg": "/portfolio-site-in-react/static/media/blackPantherImage.a72cec2d.jpg",
-    "static/media/grandBudapest.jpg": "/portfolio-site-in-react/static/media/grandBudapest.01aca6f8.jpg"
+    "main.css": "/Portfolio-Site-in-React/static/css/main.9ea8622a.chunk.css",
+    "main.js": "/Portfolio-Site-in-React/static/js/main.a06f369d.chunk.js",
+    "main.js.map": "/Portfolio-Site-in-React/static/js/main.a06f369d.chunk.js.map",
+    "runtime-main.js": "/Portfolio-Site-in-React/static/js/runtime-main.6077b4c7.js",
+    "runtime-main.js.map": "/Portfolio-Site-in-React/static/js/runtime-main.6077b4c7.js.map",
+    "static/css/2.84b3ebfc.chunk.css": "/Portfolio-Site-in-React/static/css/2.84b3ebfc.chunk.css",
+    "static/js/2.3ab3bfbc.chunk.js": "/Portfolio-Site-in-React/static/js/2.3ab3bfbc.chunk.js",
+    "static/js/2.3ab3bfbc.chunk.js.map": "/Portfolio-Site-in-React/static/js/2.3ab3bfbc.chunk.js.map",
+    "index.html": "/Portfolio-Site-in-React/index.html",
+    "precache-manifest.f9602c278baad4f85a764e8dca8c88d7.js": "/Portfolio-Site-in-React/precache-manifest.f9602c278baad4f85a764e8dca8c88d7.js",
+    "service-worker.js": "/Portfolio-Site-in-React/service-worker.js",
+    "static/css/2.84b3ebfc.chunk.css.map": "/Portfolio-Site-in-React/static/css/2.84b3ebfc.chunk.css.map",
+    "static/css/main.9ea8622a.chunk.css.map": "/Portfolio-Site-in-React/static/css/main.9ea8622a.chunk.css.map",
+    "static/js/2.3ab3bfbc.chunk.js.LICENSE.txt": "/Portfolio-Site-in-React/static/js/2.3ab3bfbc.chunk.js.LICENSE.txt",
+    "static/media/blackPantherImage.jpg": "/Portfolio-Site-in-React/static/media/blackPantherImage.a72cec2d.jpg",
+    "static/media/grandBudapest.jpg": "/Portfolio-Site-in-React/static/media/grandBudapest.01aca6f8.jpg"
   },
   "entrypoints": [
-    "static/js/runtime-main.d6c5e405.js",
+    "static/js/runtime-main.6077b4c7.js",
     "static/css/2.84b3ebfc.chunk.css",
     "static/js/2.3ab3bfbc.chunk.js",
     "static/css/main.9ea8622a.chunk.css",
-    "static/js/main.e5b0f4ca.chunk.js"
+    "static/js/main.a06f369d.chunk.js"
   ]
 }
