@@ -7,7 +7,7 @@ import About from './About';
 import Blog from './Blog';
 
 const Router = () => (
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
     <Switch>
         <Route exact path="/" component={App} />
         <Route exact path="/contact" component={ContactForm} />
