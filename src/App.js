@@ -46,7 +46,7 @@ class App extends React.Component {
             <a href="/about" id="homepage-nav" className="stretched-link">Read more about me →</a>
           </Col>
           <Col xs={{span: 6, offset: 3}} md={{span: 2, offset: 2}} className="site-header-content-bottom">
-            <a href="/blog" id="homepage-nav" className="stretched-link">Read some stuff that I wrote →</a> 
+            <a href="/blog" id="homepage-nav" className="stretched-link">Read some stuff that I wrote →</a>
           </Col>
           <Col xs={{span: 6, offset: 3}} md={{span: 2, offset: 2}} className="site-header-content-bottom">
             <a href="/contact" id="homepage-nav" className="stretched-link">Get in touch! →</a>
@@ -56,13 +56,6 @@ class App extends React.Component {
       <Container>
         <hr></hr>
       </Container>
-          {/* <Container>
-          <Row>
-            <Col xs={{span: 6, offset: 3}} md={{span: 4, offset: 0}} className="site-header-content">
-              <p>My profiles on some other sites ↓</p>
-            </Col>
-          </Row>
-        </Container> */}
       <Footer />
     </div>
   );
