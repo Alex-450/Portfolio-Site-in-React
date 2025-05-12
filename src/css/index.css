@@ -29,8 +29,10 @@ body {
 .navbar {
   background-color: black;
 }
+
 .navbar-link {
   color: white;
+  text-decoration: none;
   margin: 10px;
   padding: 5px;
 }
@@ -64,14 +66,14 @@ body {
   text-align: center;
 }
 
-.footer-link {
+.nav-link.footer-link {
   border: 2px solid black;
   justify-content: space-evenly;
   color: black;
   margin: 5px 0px 10px 0px;
 }
 
-.footer-link:hover {
+.nav-link.footer-link:hover {
   color: white;
   background-color: black;
 }

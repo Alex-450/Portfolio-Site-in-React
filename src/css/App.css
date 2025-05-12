@@ -18,6 +18,7 @@ justify-content: center;
 
 .site-header-content-bottom {
   border: 2px solid black;
+  color: black;
   padding: 10px;
   margin-top: 20px;
   margin-bottom: 20px;
@@ -37,4 +38,3 @@ justify-content: center;
   color: white;
   text-decoration: none;
 }
-

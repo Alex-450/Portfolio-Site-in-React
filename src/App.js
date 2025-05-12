@@ -2,7 +2,7 @@ import React from 'react';
 import NavBar from './Components/NavBar';
 import Footer from './Components/Footer'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Col, Row } from 'react-bootstrap';
+import { Container, Col, Row, Nav } from 'react-bootstrap';
 import './css/App.css'
 
 class App extends React.Component {
@@ -42,15 +42,17 @@ class App extends React.Component {
       </Container>
       <Container>
         <Row>
-          <Col xs={{span: 6, offset: 3}} md={{span: 2, offset: 1}} className="site-header-content-bottom">
-            <a href="/about" id="homepage-nav" className="stretched-link">Read more about me →</a>
-          </Col>
-          <Col xs={{span: 6, offset: 3}} md={{span: 2, offset: 2}} className="site-header-content-bottom">
-            <a href="/blog" id="homepage-nav" className="stretched-link">Read some stuff that I wrote →</a>
-          </Col>
-          <Col xs={{span: 6, offset: 3}} md={{span: 2, offset: 2}} className="site-header-content-bottom">
-            <a href="/contact" id="homepage-nav" className="stretched-link">Get in touch! →</a>
-          </Col>
+          <Nav className="d-flex justify-content-evenly">
+              <Nav.Item>
+                  <Nav.Link className="site-header-content-bottom" href="/about">Read more about me →</Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                  <Nav.Link className="site-header-content-bottom" href="/blog">Read some stuff that I wrote →</Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link className="site-header-content-bottom" href="/contact">Get in touch →</Nav.Link>
+              </Nav.Item>
+          </Nav>
         </Row>
       </Container>
       <Container>

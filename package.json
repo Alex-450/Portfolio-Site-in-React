@@ -4,16 +4,22 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/plugin-syntax-flow": "^7.27.1",
+    "@babel/plugin-transform-react-jsx": "^7.27.1",
+    "@popperjs/core": "^2.11.8",
+    "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.1.2",
+    "@types/react": "^19.0.0",
     "bootstrap": "^5.0.0",
     "gh-pages": "^5.0.0",
     "react": "^16.14.0",
     "react-bootstrap": "^1.6.1",
     "react-dom": "^16.14.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "typescript": "^5.8.3"
   },
   "scripts": {
     "start": "react-scripts start",
