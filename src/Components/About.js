@@ -34,8 +34,18 @@ class About extends React.Component {
                </tr>
            </thead>
            <tbody>
+                <tr>
+                  <td>2023 - Present</td>
+                  <td><a href="https://fuga.com" target="_blank" rel="noopener noreferrer">FUGA</a></td>
+                  <td>Software Developer</td>
+              </tr>
+              <tr>
+                  <td>2021 - 2023</td>
+                  <td><a href="https://fuga.com" target="_blank" rel="noopener noreferrer">FUGA</a></td>
+                  <td>Junior Software Developer</td>
+              </tr>
                <tr>
-                   <td>2019 - Present</td>
+                   <td>2019 - 2021</td>
                    <td><a href="https://rekki.com" target="_blank" rel="noopener noreferrer">REKKI</a></td>
                    <td>QA Tester</td>
                </tr>
@@ -63,9 +73,9 @@ class About extends React.Component {
                 </thead>
                 <tbody>
                     <tr>
-                        <td>2019 - Present</td>
-                        <td><a href="https://openclassrooms.com/" target="_blank" rel="noopener noreferrer">OpenClassrooms</a></td>
-                        <td>Full Stack Developer Qualification</td>
+                        <td>2021</td>
+                        <td><a href="https://https://www.lewagon.com//" target="_blank" rel="noopener noreferrer">Le Wagon</a></td>
+                        <td>Fullstack Web Development</td>
                     </tr>
                     <tr>
                         <td>2015 - 2018</td>
