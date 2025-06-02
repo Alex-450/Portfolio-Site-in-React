@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/Portfolio-Site-in-React/static/css/main.1ad4ca45.css",
-    "main.js": "/Portfolio-Site-in-React/static/js/main.0bd8f8b5.js",
-    "static/media/grandBudapest.jpg": "/Portfolio-Site-in-React/static/media/grandBudapest.ca2ef9a78b2b8e6192d4.jpg",
-    "static/media/blackPantherImage.jpg": "/Portfolio-Site-in-React/static/media/blackPantherImage.262534f3f0c91904548b.jpg",
-    "index.html": "/Portfolio-Site-in-React/index.html",
-    "main.1ad4ca45.css.map": "/Portfolio-Site-in-React/static/css/main.1ad4ca45.css.map",
-    "main.0bd8f8b5.js.map": "/Portfolio-Site-in-React/static/js/main.0bd8f8b5.js.map"
+    "main.css": "/static/css/main.1ad4ca45.css",
+    "main.js": "/static/js/main.376f62da.js",
+    "static/media/grandBudapest.jpg": "/static/media/grandBudapest.ca2ef9a78b2b8e6192d4.jpg",
+    "static/media/blackPantherImage.jpg": "/static/media/blackPantherImage.262534f3f0c91904548b.jpg",
+    "index.html": "/index.html",
+    "main.1ad4ca45.css.map": "/static/css/main.1ad4ca45.css.map",
+    "main.376f62da.js.map": "/static/js/main.376f62da.js.map"
   },
   "entrypoints": [
     "static/css/main.1ad4ca45.css",
-    "static/js/main.0bd8f8b5.js"
+    "static/js/main.376f62da.js"
   ]
 }
