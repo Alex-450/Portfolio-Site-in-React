@@ -1,9 +1,7 @@
-import React from 'react';
-
 const Blog2 = () => (
     <div>
         <p>‘There are still faint glimmers of civilization left in this barbaric slaughterhouse that was once known as humanity.’ – M. Gustave</p>
-        
+
         <p>The fictional state of Zubrowka is the setting for Wes Anderson’s 2014 comedy The Grand Budapest Hotel which takes place mostly in the 1930s, just prior to and during the occupation by the sinister ZZ (Zig Zags) and their death-squads. M. Gustave is the concierge of a well-respected hotel in the spa town of Nebelsbad, in the foothills of the Zubrowkian alps. The film centres on the story of M. Gustave and his newly recruited lobby boy, Zero. The two become embroiled in a conflict with a wealthy, sinister family, whose recently deceased matriarch has bequeathed M. Gustave a priceless painting.</p>
 
         <p>A comedy might seem problematic as a space for commentary on discrimination and the plight of refugees, but by setting the story in a fictional central European country in the lead up to the Second World War, Anderson has been able to make political points without pointing the finger too blatantly. As M. Gustave rudely points out during the interview, his new employee has zero experience, zero education and zero family, he has arrived with nothing, both physically and figuratively. Zero is a refugee and torture survivor from (again fictional) Aq Salim al-Jabat, and is portrayed in the most positive manner throughout the film, his courage, pluckiness and loyalty are on constant display. Zero is stopped by armed patrols whilst travelling by train twice during the film, and asked to leave the carriage, leading M. Gustave to exclaim “You can’t arrest him simply because he’s a bloody immigrant. He hasn’t done anything wrong.” and engage the guards physically to defend Zero. The ‘faint glimmers of civilisation’ are found in those people who answer back to authority when discrimination is so blatantly at play.</p>
@@ -36,11 +34,11 @@ What on God’s earth possessed you to leave the homeland where you very obvious
         <h6><strong>References</strong></h6>
 
         <p>Anderson, Wes and Guinness, Hugo, The Grand Budapest Hotel Screenplay (2014) [accessed 1 March 2017]</p>
-    
+
         <p>Anderson, Wes, Wes Anderson Shares a Refugee Story from The Grand Budapest Hotel [Youtube Video] United Nations High Commissioner for Refugees (UNHCR), 11 June 2014 <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=u_4ZqtDSP4c">www.youtube.com/watch?v=u_4ZqtDSP4c</a> [accessed 1 March 2017]</p>
-    
+
         <p>Eisen, Norman L., ‘The Grand Budapest Hotel is  a Thoughtful Comedy about Tragedy’, The Atlantic, 20 Februrary 2015 <a target="_blank" rel="noopener noreferrer" href="https://www.theatlantic.com/entertainment/archive/2015/02/how-grand-budapest-hotel-pays-tribute-to-the-holocaust/385264/">https://www.theatlantic.com/entertainment/archive/2015/02/how-grand-budapest-hotel-pays-tribute-to-the-holocaust/385264/</a> [accessed 1 March 2017]</p>
     </div>
     );
-    
+
 export default Blog2;

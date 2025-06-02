@@ -1,19 +1,17 @@
-import React from 'react';
-
 const Blog1 = () => (
     <div>
         <p>Can a film made by Marvel (and therefore Disney) really be a radical moment in the history of film and popular culture? Ryan Coogler’s incredibly successful blockbuster Black Panther has raked in over $600m in five weeks at the time of writing  and led some commentators to view the film as revolutionary and radical, due to its majority black cast, the themes of Afrofuturism and its treatment of female characters. This is just to name a few of the elements of this unlikely superhero flick being used to claim it as cultural triumph. It was put forward in Time magazine that: ‘In the midst of a regressive cultural and political moment fuelled in part by the white-nativist movement, the very existence of Black Panther feels like resistance.’ But the film has also been criticised for being too safe, even ‘dangerous and insidious’:</p>
 
         <p>‘It lures its audience in with positive representations of black people and black culture… with excellent camerawork and action, gets the audience on side with T’Challa’s (Obama) leadership, and then feeds it the same neoliberal, neo-colonial politics, except with a black face.’</p>
-    
+
         <p>So is Black Panther really radical? Or just more of the same? The ‘same’ being western capitalist neoliberal propaganda from a major American studio?</p>
 
         <p>Certainly, the ideas behind Black Panther are radical. Our hero, T’Challa (the Black Panther) is the newly crowned king of the fictional African state of Wakanda, a nation that has been untouched by the ravages of colonialism and slavery. Its huge supply of the incredibly precious metal vibranium has helped Wakanda to become the most advanced nation on earth and the people’s technological prowess has enabled them to hide themselves from the rest of the world behind a facade of poverty. Thus an African utopia is created, a segregated isolationist state free from the toxic racial disputes of the rest of the world.</p>
-    
+
         <p>Wakanda does however have contact with the outside world through its spies, placed in various locations around the globe. It is through Lupita Nyong’o’s spy character, Nakia, that we are introduced, quite early on, to a central question posed throughout the film: If Wakanda really existed, how should it interact with the rest of the world? Nakia advocates a more open approach than has previously existed, pleading the case with T’Challa for more aid to other countries in Africa and the start of a refugee programme in Wakanda. T’Challa refuses, he can’t risk the safety of his nation. It is this question that creates the conflict between T’Challa and our villain, Erik ‘Killmonger’ Stevens.</p>
-    
+
         <p>Unlike T’Challa, Erik has not grown up in the relative bliss of Wakanda, but in Coogler’s own fraught hometown, Oakland, California. He is T’Challa’s cousin. Erik’s father, a Wakandan prince, was sent to Oakland as a spy and was ‘radicalised’ (the film’s own term) by the plight of African Americans that he witnessed there. He was killed by T’Challa’s father after attempting to smuggle vibranium out of Wakanda to fund resistance movements in America. Having grown up in the same setting, Erik is similarly angry about Wakanda’s refusal to help African Diaspora in America and wishes to use the country’s wealth to start a worldwide revolution against oppression of black people. To do so, Erik intends to travel to Wakanda, overthrow T’Challa (through a legal challenge), and take control of the nation’s resources.</p>
-        
+
         <p>In the end, T’Challa succeeds in stopping him and the film ends with Wakanda opening up about it’s wealth at the UN and opening outreach centres around the world, to help those in poverty. That victory is won by this moderate middle way between isolationism and worldwide revolution, has struck some commentators as promoting western ideals and the merits of globalisation and neoliberalism. This argument was also put forward in the National Review:</p>
 
         <p>‘… you have a story whose moral arc actually bends away from the radicalism implied by the title - a story that asks us to pull for an ancient hereditary monarchy and against a revolutionary, to admire a society that’s put up walls and self-segregated for generations, and to choose a vision of black power that rejects violent racial redress in favour of that old Booker T. Washingtonian standby of educational uplift.’</p>
@@ -30,5 +28,5 @@ const Blog1 = () => (
 </p>
     </div>
     );
-    
+
 export default Blog1;

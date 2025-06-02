@@ -1,4 +1,3 @@
-import React from 'react';
 import '../css/index.css';
 import { Container, Nav, Row, Col } from 'react-bootstrap';
 
