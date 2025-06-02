@@ -6,7 +6,6 @@ This site was made with React and react-bootstrap to showcase my academic and pr
 
 Features:
 
--  Contact form with validation and success message.
 -  Personal Blog.
 
 ## Instructions

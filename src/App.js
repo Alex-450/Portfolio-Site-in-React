@@ -49,9 +49,6 @@ class App extends React.Component {
               <Nav.Item>
                   <Nav.Link className="site-header-content-bottom" href="/blog">Read some stuff that I wrote →</Nav.Link>
               </Nav.Item>
-              <Nav.Item>
-                <Nav.Link className="site-header-content-bottom" href="/contact">Get in touch →</Nav.Link>
-              </Nav.Item>
           </Nav>
         </Row>
       </Container>

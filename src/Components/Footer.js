@@ -39,18 +39,15 @@ const Footer = () => (
                 </Row>
                 <Col xs={12} md={{span: 4, offset: 8}}>
                 <Nav fixed="bottom" className="flex-column">
-                        <Nav.Item>
-                            <Nav.Link className="footer-link" href="/">Home →</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link className="footer-link" href="/about">About →</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link className="footer-link" href="/contact">Contact →</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link className="footer-link" href="/blog">Blog →</Nav.Link>
-                        </Nav.Item>
+                  <Nav.Item>
+                      <Nav.Link className="footer-link" href="/">Home →</Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item>
+                      <Nav.Link className="footer-link" href="/about">About →</Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item>
+                      <Nav.Link className="footer-link" href="/blog">Blog →</Nav.Link>
+                  </Nav.Item>
                 </Nav>
                 </Col>
         </Container>
