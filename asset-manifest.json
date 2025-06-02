@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/Portfolio-Site-in-React/static/css/main.4c398113.css",
+    "main.js": "/Portfolio-Site-in-React/static/js/main.47ec6fca.js",
+    "static/media/grandBudapest.jpg": "/Portfolio-Site-in-React/static/media/grandBudapest.ca2ef9a78b2b8e6192d4.jpg",
+    "static/media/blackPantherImage.jpg": "/Portfolio-Site-in-React/static/media/blackPantherImage.262534f3f0c91904548b.jpg",
+    "index.html": "/Portfolio-Site-in-React/index.html",
+    "main.4c398113.css.map": "/Portfolio-Site-in-React/static/css/main.4c398113.css.map",
+    "main.47ec6fca.js.map": "/Portfolio-Site-in-React/static/js/main.47ec6fca.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4c398113.css",
+    "static/js/main.47ec6fca.js"
+  ]
+}
