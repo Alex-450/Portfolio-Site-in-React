@@ -38,3 +38,20 @@ justify-content: center;
   color: white;
   text-decoration: none;
 }
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.slide-in {
+  opacity: 0;  /* Start hidden */
+  animation: slideInLeft 0.5s ease-out forwards;
+}
