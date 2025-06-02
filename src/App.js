@@ -4,6 +4,7 @@ import Footer from './Components/Footer'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Col, Row, Nav } from 'react-bootstrap';
 import './css/App.css'
+import { NavLink } from 'react-router-dom';
 
 class App extends React.Component {
   render() {
@@ -44,10 +45,10 @@ class App extends React.Component {
         <Row>
           <Nav className="d-flex justify-content-evenly">
               <Nav.Item>
-                  <Nav.Link className="site-header-content-bottom" href="/about">Read more about me →</Nav.Link>
+                  <NavLink className="site-header-content-bottom nav-link" to="/about">Read more about me →</NavLink>
               </Nav.Item>
               <Nav.Item>
-                  <Nav.Link className="site-header-content-bottom" href="/blog">Read some stuff that I wrote →</Nav.Link>
+                  <NavLink className="site-header-content-bottom nav-link" to="/blog">Read some stuff that I wrote →</NavLink>
               </Nav.Item>
           </Nav>
         </Row>

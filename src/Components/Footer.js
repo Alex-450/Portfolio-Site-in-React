@@ -1,5 +1,6 @@
 import '../css/index.css';
 import { Container, Nav, Row, Col } from 'react-bootstrap';
+import {  NavLink } from 'react-router-dom';
 
 const Footer = () => (
     <div className="footer-container">
@@ -20,18 +21,6 @@ const Footer = () => (
                     </Nav>
                 </Col>
                 <Row>
-                    <Col xs={12} md={{span: 4, offset: 4}} className="footer-explainer">
-                    <p>Contact ↓</p>
-                    </Col>
-                </Row>
-                <Col xs={12} md={{span: 4, offset: 4}}>
-                    <Nav fixed="bottom" className="flex-column">
-                            <Nav.Item>
-                                <Nav.Link className="footer-link" href="/contact">Get in touch →</Nav.Link>
-                            </Nav.Item>
-                    </Nav>
-                </Col>
-                <Row>
                 <Col xs={12} md={{span: 4, offset: 8}} className="footer-explainer">
                 <p>Sitemap ↓</p>
                 </Col>
@@ -39,13 +28,13 @@ const Footer = () => (
                 <Col xs={12} md={{span: 4, offset: 8}}>
                 <Nav fixed="bottom" className="flex-column">
                   <Nav.Item>
-                      <Nav.Link className="footer-link" href="/">Home →</Nav.Link>
+                      <NavLink className="footer-link nav-link" to="/">Home →</NavLink>
                   </Nav.Item>
                   <Nav.Item>
-                      <Nav.Link className="footer-link" href="/about">About →</Nav.Link>
+                      <NavLink className="footer-link nav-link" to="/about">About →</NavLink>
                   </Nav.Item>
                   <Nav.Item>
-                      <Nav.Link className="footer-link" href="/blog">Blog →</Nav.Link>
+                      <NavLink className="footer-link nav-link" to="/blog">Blog →</NavLink>
                   </Nav.Item>
                 </Nav>
                 </Col>
