@@ -6,8 +6,7 @@ import { Container, Col, Row, Nav } from 'react-bootstrap';
 import './css/App.css'
 import { NavLink } from 'react-router-dom';
 
-class App extends React.Component {
-  render() {
+const App = () => {
   return (
     <div>
       <NavBar />
@@ -59,7 +58,6 @@ class App extends React.Component {
       <Footer />
     </div>
   );
-}
 }
 
 export default App;

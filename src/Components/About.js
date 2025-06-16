@@ -1,10 +1,8 @@
-import React from 'react';
 import NavBar from './NavBar';
 import Footer from './Footer';
 import { Container, Tabs, Tab, Table, Row, Col} from 'react-bootstrap';
 
-class About extends React.Component {
-    render() {
+const About = () => {
     return(
         <div>
             <NavBar />
@@ -95,7 +93,6 @@ class About extends React.Component {
        </div>
 
     )
-}
 }
 
 export default About;
