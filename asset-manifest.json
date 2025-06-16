@@ -1,15 +1,13 @@
 {
   "files": {
     "main.css": "/static/css/main.20aba6dd.css",
-    "main.js": "/static/js/main.9dbb9d6a.js",
-    "static/media/grandBudapest.jpg": "/static/media/grandBudapest.ca2ef9a78b2b8e6192d4.jpg",
-    "static/media/blackPantherImage.jpg": "/static/media/blackPantherImage.262534f3f0c91904548b.jpg",
+    "main.js": "/static/js/main.ce627737.js",
     "index.html": "/index.html",
     "main.20aba6dd.css.map": "/static/css/main.20aba6dd.css.map",
-    "main.9dbb9d6a.js.map": "/static/js/main.9dbb9d6a.js.map"
+    "main.ce627737.js.map": "/static/js/main.ce627737.js.map"
   },
   "entrypoints": [
     "static/css/main.20aba6dd.css",
-    "static/js/main.9dbb9d6a.js"
+    "static/js/main.ce627737.js"
   ]
 }
