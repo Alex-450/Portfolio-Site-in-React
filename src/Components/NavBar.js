@@ -6,7 +6,7 @@ const NavBar = () => (
     <div className="navbar-container">
         <Container>
             <Navbar className="navbar" variant="dark" sticky="top" expand="lg">
-                 <NavLink to="/" className="navbar-brand">a450</NavLink>
+                 <NavLink to="/" className="navbar-brand">a-450</NavLink>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse>
                     <Nav className="navbar">
