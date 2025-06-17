@@ -16,7 +16,7 @@ const Blog = () => {
               <Card.Title className="blog-title-text">{blog.title}</Card.Title>
               <Card.Img variant="top" src={`/images/${blog.imageSrc}`} />
               <Card.Text className="blog-body-text">
-                <Button className="generic-button" href={blog.link}>Read →</Button>
+                <Button as="a" className="generic-button" href={blog.link}>Read →</Button>
               </Card.Text>
               </Card.Body>
                 <Card.Footer>{blog.dateAdded}</Card.Footer>
