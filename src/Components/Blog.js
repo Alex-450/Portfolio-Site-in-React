@@ -2,6 +2,7 @@ import NavBar from './NavBar';
 import Footer from './Footer';
 import blogPostArchive from '../blogPostArchive.json';
 import { Col, Card, Button, Container } from 'react-bootstrap';
+import { Link } from 'react-router-dom'
 
 const Blog = () => {
   return(
@@ -16,7 +17,7 @@ const Blog = () => {
               <Card.Title className="blog-title-text">{blog.title}</Card.Title>
               <Card.Img variant="top" src={`/images/${blog.imageSrc}`} />
               <Card.Text className="blog-body-text">
-                <Button as="a" className="generic-button" href={blog.link}>Read →</Button>
+                <Button as={Link} className="generic-button" to={blog.link}>Read →</Button>
               </Card.Text>
               </Card.Body>
                 <Card.Footer>{blog.dateAdded}</Card.Footer>
