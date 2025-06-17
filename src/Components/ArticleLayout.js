@@ -1,8 +1,13 @@
 import NavBar from './NavBar';
 import Footer from './Footer';
 import { Container, Row, Col } from 'react-bootstrap';
+import { useEffect } from "react";
 
 const ArticleLayout = ({ children }) => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div>
       <NavBar />
