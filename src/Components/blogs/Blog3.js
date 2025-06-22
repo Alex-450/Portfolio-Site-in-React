@@ -20,7 +20,7 @@ const Blog3 = () => {
 
           <p>The film does not delve particularly deeply into the specific experience of the migrant worker. It focuses on this primarily through people’s racism. Ali is a vessel for the poisonous reaction of the society he inhabits. He says relatively little throughout the film in his broken German (hence the grammatically incorrect German title) and although he is portrayed as kind, calm and understanding, he is not the focus of the film. Fassbinder could be criticised for telling the story of a foreign worker through his German counterparts, but the film highlights people’s prejudice and the damage it does. Fassbinder is no stranger to using films to make a political point, on posters for a 1979 film he is quoted saying ‘I don’t throw bombs, I make films.’ [1] If anything, the film is more relevant today than it was in 1974.</p>
 
-          <br></br>
+          <hr></hr>
 
           <h6><strong>Filmography</strong></h6>
 

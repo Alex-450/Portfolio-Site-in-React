@@ -37,6 +37,8 @@ const Blog2 = () => {
 
           <p>The Grand Budapest Hotel does not tell us anything particularly new about the plight of refugees, nor does it focus on this experience for its content. However, by making these issues form part of a more peripheral theme within the film, the subtleties of discrimination, both political and personal, come through in a natural and thought-provoking way.</p>
 
+          <hr></hr>
+
           <h6><strong>References</strong></h6>
 
           <p>Anderson, Wes and Guinness, Hugo, The Grand Budapest Hotel Screenplay (2014) [accessed 1 March 2017]</p>
