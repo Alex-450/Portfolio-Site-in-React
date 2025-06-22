@@ -9,9 +9,9 @@ const Blog = () => {
     <div>
       <NavBar />
       <Container className="title-container">
-        {blogPostArchive.map(blog => (
+        {blogPostArchive.map((blog, index) => (
            <Col xs={12} md={{span: 8, offset: 2}}>
-            <Card className="blog-card" as={Link} to={blog.link}>
+            <Card className="blog-card slide-in" style={{ animationDelay: `0.${index + 1}s` }} as={Link} to={blog.link}>
               <Card.Body className="card-button">
                 <Card.Title className="blog-title-text">{blog.title} →</Card.Title>
               </Card.Body>
