@@ -1,10 +1,11 @@
 import ArticleLayout from '../ArticleLayout';
+import YouTubeEmbed from '../YouTubeEmbed';
 
-const Blog2 = () => {
+const GrandBudapestHotel = () => {
     return (
       <div>
         <ArticleLayout>
-          <h1>Refugees and the Grand Budapest Hotel</h1>
+          <h1>Refugees and <i>The Grand Budapest Hotel (2014) </i></h1>
 
           <br></br>
 
@@ -39,6 +40,7 @@ const Blog2 = () => {
 
           <p>The Grand Budapest Hotel does not tell us anything particularly new about the plight of refugees, nor does it focus on this experience for its content. However, by making these issues form part of a more peripheral theme within the film, the subtleties of discrimination, both political and personal, come through in a natural and thought-provoking way.</p>
 
+          <YouTubeEmbed videoId='1Fg5iWmQjwk'></YouTubeEmbed>
           <hr></hr>
 
           <h6><strong>References</strong></h6>
@@ -48,9 +50,9 @@ const Blog2 = () => {
           <p>Anderson, Wes, Wes Anderson Shares a Refugee Story from The Grand Budapest Hotel [Youtube Video] United Nations High Commissioner for Refugees (UNHCR), 11 June 2014 <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=u_4ZqtDSP4c">www.youtube.com/watch?v=u_4ZqtDSP4c</a> [accessed 1 March 2017]</p>
 
           <p>Eisen, Norman L., ‘The Grand Budapest Hotel is  a Thoughtful Comedy about Tragedy’, The Atlantic, 20 Februrary 2015 <a target="_blank" rel="noopener noreferrer" href="https://www.theatlantic.com/entertainment/archive/2015/02/how-grand-budapest-hotel-pays-tribute-to-the-holocaust/385264/">https://www.theatlantic.com/entertainment/archive/2015/02/how-grand-budapest-hotel-pays-tribute-to-the-holocaust/385264/</a> [accessed 1 March 2017]</p>
-            </ArticleLayout>
+          </ArticleLayout>
       </div>
       );
     }
 
-export default Blog2;
+export default GrandBudapestHotel;

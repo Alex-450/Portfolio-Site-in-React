@@ -1,10 +1,13 @@
 import ArticleLayout from '../ArticleLayout';
+import YouTubeEmbed from '../YouTubeEmbed';
 
-const Blog4 = () => {
+const Fitzcarraldo = () => {
     return (
       <div>
         <ArticleLayout>
-          <h1>Fitzcarraldo - the cost of art</h1>
+          <h1><i>Fitzcarraldo (1982)</i></h1>
+
+          <h2>The cost of art</h2>
 
           <br></br>
 
@@ -23,9 +26,11 @@ const Blog4 = () => {
           <p>It is impossible to see one without seeing the other, to see Klaus Kinski, sweat-drenched, mud-spattered, crazed, engaged in the Sisyphean task of pushing a boat up a mountain, without seeing Herzog on the other side of the camera, doing exactly the same thing.</p>
 
           <hr></hr>
+
+          <YouTubeEmbed videoId='xWeb7i8IjYs'></YouTubeEmbed>
         </ArticleLayout>
       </div>
       );
     }
 
-export default Blog4;
+export default Fitzcarraldo;

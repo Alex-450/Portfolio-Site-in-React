@@ -1,10 +1,13 @@
 import ArticleLayout from '../ArticleLayout';
+import YouTubeEmbed from '../YouTubeEmbed';
 
-const Blog1 = () => {
+const BlackPanther = () => {
     return (
       <div>
         <ArticleLayout>
-          <h1>Is Black Panther Radical or Not?</h1>
+          <h1><i>Black Panther (2018)</i></h1>
+
+          <h2>Radical or not?</h2>
 
           <br></br>
 
@@ -35,9 +38,11 @@ const Blog1 = () => {
           <p>In Black Panther, Coogler has created an incredibly complex superhero movie that empathises with its villain without giving him complete victory, and asks complex questions about race and foreign policy, without sacrificing everything that makes Marvel films incredibly watchable, and incredibly good fun.</p>
 
           <hr></hr>
+
+          <YouTubeEmbed videoId='xjDjIWPwcPU'></YouTubeEmbed>
         </ArticleLayout>
       </div>
     );
   }
 
-export default Blog1;
+export default BlackPanther;

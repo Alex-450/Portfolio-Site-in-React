@@ -1,10 +1,11 @@
 import ArticleLayout from '../ArticleLayout';
+import YouTubeEmbed from '../YouTubeEmbed';
 
-const Blog3 = () => {
+const AliAngstEssenSeele = () => {
     return (
       <div>
         <ArticleLayout>
-          <h1>Ali: Angst essen Seele auf (1974)</h1>
+          <h1><i>Ali: Angst essen Seele auf (1974)</i></h1>
 
           <h2>‘Happiness isn’t always fun’</h2>
 
@@ -33,9 +34,11 @@ const Blog3 = () => {
           <p>Rentschler, Eric, ‘“There Are Many Ways to Fight a Battle”: Young Fassbinder and the Myths of 1968’, (pp.423-440) in A Companion to Rainer Werner Fassbinder, ed. by Brigitte Peuker (Oxford: Blackwell Publishing Ltd., 2012), pp.423-440</p>
 
           <p>[1] Eric Rentschler, ‘“There Are Many Ways to Fight a Battle”: Young Fassbinder and the Myths of 1968’, (pp.423-440) in A Companion to Rainer Werner Fassbinder, ed. by Brigitte Peuker (Oxford: Blackwell Publishing Ltd., 2012), pp.423-440 (p.424).</p>
+
+          <YouTubeEmbed videoId='AAhodrNP_zY'></YouTubeEmbed>
         </ArticleLayout>
       </div>
       );
     }
 
-export default Blog3;
+export default AliAngstEssenSeele;
