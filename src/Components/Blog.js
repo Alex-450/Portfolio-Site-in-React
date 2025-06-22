@@ -13,14 +13,12 @@ const Blog = () => {
         {blogPostArchive.map(blog => (
            <Col xs={12} md={{span: 8, offset: 2}}>
             <Card className="blog-card">
-            <Card.Body>
-              <Card.Title className="blog-title-text">{blog.title}</Card.Title>
-              <Card.Img variant="top" src={`/images/${blog.imageSrc}`} />
-              <Card.Text className="blog-body-text">
-                <Button as={Link} className="generic-button" to={blog.link}>Read →</Button>
-              </Card.Text>
-              </Card.Body>
-                <Card.Footer>{blog.dateAdded}</Card.Footer>
+              <Button as={Link} to={blog.link} className="generic-button">
+                <Card.Body>
+                  <Card.Title className="blog-title-text">{blog.title} →</Card.Title>
+                </Card.Body>
+              <Card.Footer>{blog.dateAdded}</Card.Footer>
+              </Button>
             </Card>
             <br />
            </Col>
