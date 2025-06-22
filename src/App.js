@@ -1,10 +1,8 @@
-import React from 'react';
 import NavBar from './Components/NavBar';
 import Footer from './Components/Footer'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Col, Row, Nav } from 'react-bootstrap';
+import { Container, Col, Row } from 'react-bootstrap';
 import './css/App.css'
-import { NavLink } from 'react-router-dom';
 
 const App = () => {
   return (
