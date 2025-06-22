@@ -4,7 +4,9 @@ const Blog2 = () => {
     return (
       <div>
         <ArticleLayout>
-          <h1>REFUGEES AND THE GRAND BUDAPEST HOTEL</h1>
+          <h1>Refugees and the Grand Budapest Hotel</h1>
+
+          <br></br>
 
           <p>‘There are still faint glimmers of civilization left in this barbaric slaughterhouse that was once known as humanity.’ – M. Gustave</p>
 

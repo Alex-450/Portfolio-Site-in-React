@@ -4,7 +4,7 @@ const Blog1 = () => {
     return (
       <div>
         <ArticleLayout>
-          <h1>IS BLACK PANTHER RADICAL OR NOT?</h1>
+          <h1>Is Black Panther Radical or Not?</h1>
 
           <br></br>
 

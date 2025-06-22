@@ -9,7 +9,6 @@ const Blog = () => {
     <div>
       <NavBar />
       <Container className="title-container">
-        <h2 className="page-title-blog">Blog</h2>
         {blogPostArchive.map(blog => (
            <Col xs={12} md={{span: 8, offset: 2}}>
             <Card className="blog-card" as={Link} to={blog.link}>
