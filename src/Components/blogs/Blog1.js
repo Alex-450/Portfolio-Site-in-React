@@ -33,6 +33,8 @@ const Blog1 = () => {
           <p>Jordan’s character has experienced violence not just from his upbringing in Oakland, CA, but from his fellow Wakandans, with his father’s murder at the hand of King T’Chaka . In all senses we are asked to feel his pain. In some ways Michael B. Jordan, through Erik, channels the anger and pain that viewers felt whilst watching him in Coogler’s debut Fruitvale Station, where he played Oscar Grant, a man unjustly killed by police on New Year’s Eve, also in Oakland.</p>
 
           <p>In Black Panther, Coogler has created an incredibly complex superhero movie that empathises with its villain without giving him complete victory, and asks complex questions about race and foreign policy, without sacrificing everything that makes Marvel films incredibly watchable, and incredibly good fun.</p>
+
+          <hr></hr>
         </ArticleLayout>
       </div>
     );
