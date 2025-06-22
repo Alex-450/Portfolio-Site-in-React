@@ -38,21 +38,6 @@ const App = () => {
         </Row>
       </Container>
       <Container>
-          <hr></hr>
-      </Container>
-      <Container>
-        <Row>
-          <Nav className="d-flex justify-content-evenly">
-              <Nav.Item>
-                  <NavLink className="site-header-content-bottom nav-link" to="/about">Read more about me →</NavLink>
-              </Nav.Item>
-              <Nav.Item>
-                  <NavLink className="site-header-content-bottom nav-link" to="/blog">Read some stuff that I wrote →</NavLink>
-              </Nav.Item>
-          </Nav>
-        </Row>
-      </Container>
-      <Container>
         <hr></hr>
       </Container>
       <Footer />

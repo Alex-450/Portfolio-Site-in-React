@@ -31,9 +31,6 @@ const Footer = () => (
                       <NavLink className="footer-link nav-link" to="/">Home →</NavLink>
                   </Nav.Item>
                   <Nav.Item>
-                      <NavLink className="footer-link nav-link" to="/about">About →</NavLink>
-                  </Nav.Item>
-                  <Nav.Item>
                       <NavLink className="footer-link nav-link" to="/blog">Blog →</NavLink>
                   </Nav.Item>
                 </Nav>

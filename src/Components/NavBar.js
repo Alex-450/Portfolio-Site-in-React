@@ -11,7 +11,6 @@ const NavBar = () => (
         <Navbar.Collapse>
           <Nav className="navbar">
             <NavLink className="navbar-link" activeClassName="navbar-link-active" to="/" exact={true}>Home</NavLink>
-            <NavLink className="navbar-link" activeClassName="navbar-link-active" to="/about">About</NavLink>
             <NavLink className="navbar-link" activeClassName="navbar-link-active" to="/blog">Blog</NavLink>
           </Nav>
         </Navbar.Collapse>
