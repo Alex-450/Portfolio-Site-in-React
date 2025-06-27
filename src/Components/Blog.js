@@ -10,19 +10,25 @@ const Blog = () => {
       <NavBar />
       <Container className="title-container">
         <h1>Blog</h1>
-          {blogPostArchive.map((blog, index) => (
-          <Link to={blog.link} className="blog-link">
-            <Row className="blog-row slide-in" style={{ animationDelay: `0.${index + 1}s` }}>
-              <Col md={1}>
-                <div>{blog.dateAdded}</div>
-              </Col>
-              <Col>
-                <div>{blog.filmName} | {blog.title} →</div>
-              </Col>
-              <br></br>
-            </Row>
-          </Link>
-          ))}
+        <div className="d-none d-sm-block">
+          <Row className="blog-header">
+            <Col md={2}>Date</Col>
+            <Col>Title</Col>
+          </Row>
+        </div>
+        {blogPostArchive.map((blog, index) => (
+        <Link to={blog.link} className="blog-link">
+          <Row className="blog-row slide-in" style={{ animationDelay: `0.${index + 1}s` }}>
+            <Col md={2}>
+              <div>{blog.dateAdded}</div>
+            </Col>
+            <Col>
+              <div>{blog.filmName} | {blog.title} →</div>
+            </Col>
+            <br></br>
+          </Row>
+        </Link>
+        ))}
       </Container>
       <Footer />
     </div>

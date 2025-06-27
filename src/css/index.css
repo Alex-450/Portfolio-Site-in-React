@@ -107,6 +107,12 @@ body {
   text-decoration: none;
 }
 
+.blog-header {
+  padding-bottom: 10px;
+  padding-top: 10px;
+  border-bottom: 1px solid black;
+}
+
 .blog-row {
   color: black;
   padding-bottom: 10px;
