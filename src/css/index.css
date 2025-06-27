@@ -122,29 +122,24 @@ body {
   color: white !important;
 }
 
-.card-button {
-  background-color: white !important;
-  color: black !important;
-  border-radius: 0px !important;
-}
-
-.card-button:hover {
-  background-color: black !important;
-  color: white !important;
-}
-
 .close {
   color: white !important;
 }
 
-.blog-card {
-  border: 2px solid black !important;
-  border-radius: 0px !important;
-  text-align: center !important;
+.blog-link {
+  text-decoration: none;
 }
 
-.blog-footer {
-  pointer-events: none;
+.blog-row {
+  color: black;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  border-bottom: 1px solid black;
+}
+
+.blog-row:hover {
+  color: white;
+  background-color: black;
 }
 
 .page-title-blog {

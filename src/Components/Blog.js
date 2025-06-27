@@ -1,7 +1,7 @@
 import NavBar from './NavBar';
 import Footer from './Footer';
 import blogPostArchive from '../blogPostArchive.json';
-import { Col, Card, Container } from 'react-bootstrap';
+import { Container, Col, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom'
 
 const Blog = () => {
@@ -9,17 +9,20 @@ const Blog = () => {
     <div>
       <NavBar />
       <Container className="title-container">
-        {blogPostArchive.map((blog, index) => (
-           <Col xs={12} md={{span: 8, offset: 2}}>
-            <Card className="blog-card slide-in" style={{ animationDelay: `0.${index + 1}s` }} as={Link} to={blog.link}>
-              <Card.Body className="card-button">
-                <Card.Title className="blog-title-text">{blog.title} →</Card.Title>
-              </Card.Body>
-              <Card.Footer className="blog-footer">{blog.dateAdded}</Card.Footer>
-            </Card>
-            <br />
-           </Col>
-      ))}
+        <h1>Blog</h1>
+          {blogPostArchive.map((blog, index) => (
+          <Link to={blog.link} className="blog-link">
+            <Row className="blog-row slide-in" style={{ animationDelay: `0.${index + 1}s` }}>
+              <Col md={1}>
+                <div>{blog.dateAdded}</div>
+              </Col>
+              <Col>
+                <div>{blog.filmName} | {blog.title} →</div>
+              </Col>
+              <br></br>
+            </Row>
+          </Link>
+          ))}
       </Container>
       <Footer />
     </div>
