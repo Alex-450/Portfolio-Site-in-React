@@ -22,10 +22,6 @@ body {
   padding: 20px;
 }
 
-.form-message {
-  height: 50px;
-}
-
 .navbar {
   background-color: black;
 }
@@ -78,11 +74,6 @@ body {
   background-color: black;
 }
 
-.form-submitted {
-  background-color: green;
-  content: 'sent';
-}
-
 .footer-nav {
   background-color: #343a40;
 }
@@ -95,20 +86,6 @@ body {
 .page-title {
   text-decoration: underline;
 }
-
-.contact-form-submitted-toast {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  border: 2px solid black !important;
-  border-radius: 0px !important;
-  color: black !important;
-}
-
-.contact-form-submitted-toast-header {
-  background-color: #4AAB2C !important;
-  color: white !important;
-}
-
 
 .generic-button {
   background-color: white !important;
