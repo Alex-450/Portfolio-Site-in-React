@@ -22,7 +22,6 @@
 }
 
 .footer-container {
-  justify-items: center;
   background-color: #dee2e6;
   margin-top: 10px;
   padding-top: 20px;
@@ -36,15 +35,26 @@
   text-align: center;
 }
 
-.footer-link {
+button.footer-link {
+  border: 2px solid black;
+  color: black;
+  padding: 5px 10px;
+  font: inherit;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
   background-color: #dee2e6;
-  margin-bottom: 5px;
+}
+
+.footer-link {
   border: 2px black solid;
-  padding: 5px 10px 5px 10px;
+  margin-bottom: 10px;
+  background-color: #dee2e6;
   text-decoration: none;
   color: black;
-  width: 250px;
-  justify-content: "space-between";
+  padding: 5px 10px 5px 10px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .footer-link:hover {

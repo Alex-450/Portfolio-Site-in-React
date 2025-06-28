@@ -48,7 +48,7 @@ const TwentyEightYearsLater = () => {
 
         <h6><strong>Bibliography</strong></h6>
 
-        <p>[1] <a target="_blank" rel="noreferrer" href="https://www.theguardian.com/world/2020/dec/22/worlds-media-ask-how-it-went-so-wrong-for-plague-island-britain-covid">https://www.theguardian.com/world/2020/dec/22/worlds-media-ask-how-it-went-so-wrong-for-plague-island-britain-covid</a>  [Accessed: 26 June 2025]</p>
+        <p>[1] <a target="_blank" rel="noreferrer" href="https://www.theguardian.com/world/2020/dec/22/worlds-media-ask-how-it-went-so-wrong-for-plague-island-britain-covid">https://www.theguardian.com/world/2020/dec/22/worlds-media-ask-how-it-went-so-wrong-for-plague-island-britain-covid</a> [Accessed: 26 June 2025]</p>
       </ArticleLayout>
     </div>
     );
