@@ -7,9 +7,9 @@ import { Link } from 'react-router-dom'
 
 const Blog = () => {
   return(
-    <div>
+    <div className="d-flex flex-column min-vh-100">
       <NavBar />
-      <Container className="title-container">
+      <Container className="title-container flex-grow-1">
         <h1>Blog</h1>
         <div className="d-none d-sm-block">
           <Row className="blog-header">
