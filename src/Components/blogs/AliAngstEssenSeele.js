@@ -9,7 +9,7 @@ const AliAngstEssenSeele = () => {
   }
   return (
     <div>
-      <ArticleLayout>
+      <ArticleLayout metadata={metadata}>
         <h1><i>Ali: Angst essen Seele auf (1974)</i></h1>
 
         <h2>‘Happiness isn’t always fun’</h2>
