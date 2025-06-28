@@ -1,0 +1,37 @@
+body.dark-mode {
+  .blog-container {
+    background-color: var(--dark-background);
+    color: var(--dark-text-color);
+  }
+
+  .blog-row {
+    color: white;
+    border-bottom: 1px solid var(--dark-text-color);
+  }
+
+  .blog-row:hover {
+    color: var(--dark-background);
+    background-color: var(--dark-text-color); }
+
+  .blog-header {
+    border-bottom: 1px solid var(--dark-text-color);     }
+
+  .footer-container {
+    background-color: #272727;
+  }
+
+  .footer-explainer {
+    color: var(--dark-text-color);
+  }
+
+  .footer-link {
+    border: 2px solid var(--dark-text-color);
+    color: var(--dark-text-color);
+    background-color: var(--dark-background);
+  }
+
+  .footer-link:hover {
+    color: var(--dark-background);
+    background-color: var(--dark-text-color);
+  }
+}

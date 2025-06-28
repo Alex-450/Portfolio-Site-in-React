@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto+Slab&display=swap');
 
+:root {
+  --dark-background: #171717;
+  --dark-text-color: #ffffff;
+}
+
 * {
   font-family: 'Roboto Slab', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -31,14 +36,18 @@
   text-align: center;
 }
 
-.nav-link.footer-link {
-  border: 2px solid black;
-  justify-content: space-evenly;
+.footer-link {
+  background-color: #dee2e6;
+  margin-bottom: 5px;
+  border: 2px black solid;
+  padding: 5px 10px 5px 10px;
+  text-decoration: none;
   color: black;
-  margin: 5px 0px 10px 0px;
+  width: 250px;
+  justify-content: "space-between";
 }
 
-.nav-link.footer-link:hover {
+.footer-link:hover {
   color: white;
   background-color: black;
 }
@@ -52,16 +61,8 @@
   margin-bottom: 15px;
 }
 
-.generic-button {
-  background-color: white !important;
-  color: black !important;
-  border: 2px solid black !important;
-  border-radius: 0px !important;
-}
-
-.generic-button:hover {
-  background-color: black !important;
-  color: white !important;
+.blog-container {
+  background-color: #ebeeef;
 }
 
 .blog-link {
@@ -101,6 +102,7 @@
     opacity: 1;
   }
 }
+
 
 .slide-in {
   opacity: 0;

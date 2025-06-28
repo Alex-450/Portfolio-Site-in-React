@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 
 const Blog = () => {
   return(
-    <div className="d-flex flex-column min-vh-100">
+    <div className="d-flex flex-column min-vh-100 blog-container">
       <NavBar />
       <Container className="title-container flex-grow-1">
         <h1>Blog</h1>

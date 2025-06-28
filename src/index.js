@@ -1,4 +1,5 @@
 import './css/index.css';
+import './css/dark-mode.css'
 import * as serviceWorker from './serviceWorker';
 import Router from './Components/Router';
 

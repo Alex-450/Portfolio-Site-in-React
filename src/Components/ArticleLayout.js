@@ -9,7 +9,7 @@ const ArticleLayout = ({ metadata, children }) => {
   }, []);
 
   return (
-    <div>
+    <div className="blog-container">
       <NavBar />
       <Container className="my-5">
         <Row className="justify-content-center">
