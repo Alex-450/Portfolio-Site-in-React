@@ -17,11 +17,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.contact-form {
-  border: 2px solid;
-  padding: 20px;
-}
-
 .navbar {
   background-color: black;
 }
@@ -99,10 +94,6 @@ body {
   color: white !important;
 }
 
-.close {
-  color: white !important;
-}
-
 .blog-link {
   text-decoration: none;
 }
@@ -136,4 +127,22 @@ body {
 
 .blog-title-text {
   font-weight: 600 !important;
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.slide-in {
+  opacity: 0;
+  /* Start hidden */
+  animation: slideInLeft 0.5s ease-out forwards;
 }
