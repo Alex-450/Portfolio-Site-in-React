@@ -18,7 +18,7 @@ const Blog = () => {
           </Row>
         </div>
         {blogPostArchive.map((blog, index) => (
-        <Link to={blog.link} className="blog-link">
+        <Link to={blog.link} className="blog-link" key={blog.title}>
           <Row className="blog-row slide-in" style={{ animationDelay: `0.${index + 1}s` }}>
             <Col md={2}>
               <div>{blog.dateAdded}</div>
