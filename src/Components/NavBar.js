@@ -1,4 +1,4 @@
-import { Nav, Navbar, Container} from 'react-bootstrap';
+import { Navbar, Container} from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import '../css/index.css';
 
@@ -7,13 +7,6 @@ const NavBar = () => (
     <Container>
       <Navbar className="navbar" variant="dark" sticky="top" expand="lg">
         <NavLink to="/" className="navbar-brand">a-450</NavLink>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse>
-          <Nav className="navbar">
-            <NavLink className="navbar-link" activeClassName="navbar-link-active" to="/" exact={true}>Home</NavLink>
-            <NavLink className="navbar-link" activeClassName="navbar-link-active" to="/blog">Blog</NavLink>
-          </Nav>
-        </Navbar.Collapse>
       </Navbar>
     </Container>
   </div>

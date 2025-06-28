@@ -1,5 +1,6 @@
 import NavBar from './NavBar';
 import Footer from './Footer';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import blogPostArchive from '../blogPostArchive.json';
 import { Container, Col, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom'
