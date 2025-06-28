@@ -8,38 +8,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  margin: 0;
-  font-family: 'Roboto Slab', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 .navbar {
   background-color: black;
 }
 
-.navbar-link {
-  color: white;
-  text-decoration: none;
-  margin: 10px;
-  padding: 5px;
-}
-
 .navbar-container {
   background-color: black;
-}
-
-.navbar-link:hover {
-  color: white;
-  text-decoration: none;
-  border-bottom: 2px solid white;
-}
-
-.navbar-link-active {
-  border-bottom: 2px solid white;
 }
 
 .footer-container {
@@ -78,10 +52,6 @@ body {
   margin-bottom: 15px;
 }
 
-.page-title {
-  text-decoration: underline;
-}
-
 .generic-button {
   background-color: white !important;
   color: black !important;
@@ -116,17 +86,8 @@ body {
   background-color: black;
 }
 
-.page-title-blog {
-  text-decoration: underline;
-  text-align: center;
-}
-
 .blog-body-text {
   margin: 15px;
-}
-
-.blog-title-text {
-  font-weight: 600 !important;
 }
 
 @keyframes slideInLeft {
