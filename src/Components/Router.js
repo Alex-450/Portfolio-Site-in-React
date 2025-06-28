@@ -5,6 +5,7 @@ import BlackPanther from './blogs/BlackPanther';
 import GrandBudapestHotel from './blogs/GrandBudapestHotel';
 import AliAngstEssenSeele from './blogs/AliAngstEssenSeele';
 import Fitzcarraldo from './blogs/Fitzcarraldo';
+import TwentyEightYearsLater from './blogs/TwentyEightYearsLater';
 
 const Router = () => (
   <HashRouter basename={process.env.PUBLIC_URL}>
@@ -14,6 +15,7 @@ const Router = () => (
       <Route exact path="/grand-budapest-hotel-refugees" component={GrandBudapestHotel} />
       <Route exact path="/ali-angst-essen-seele-auf" component={AliAngstEssenSeele} />
       <Route exact path="/fitzcarraldo-cost-of-art" component={Fitzcarraldo} />
+      <Route exact path="/28-years-later" component={TwentyEightYearsLater}></Route>
   </Switch>
   </HashRouter>
 )

@@ -3,8 +3,11 @@ import YouTubeEmbed from '../YouTubeEmbed';
 
 const BlackPanther = () => {
   const metadata = {
+    filmTitle: 'Black Panther',
+    year: '2018',
     title: 'Black Panther - Radical or not?',
     author: 'Alex Stearn',
+    director: 'Ryan Coogler',
     keywords: 'Black Panther, Ryan Coogler, Radical, film analysis',
     description: 'Can a film made by Marvel (and therefore Disney) really be a radical moment in the history of film and popular culture?...',
   }
@@ -12,12 +15,6 @@ const BlackPanther = () => {
   return (
     <div>
       <ArticleLayout metadata={metadata}>
-        <h1><i>Black Panther (2018)</i></h1>
-
-        <h2>Radical or not?</h2>
-
-        <br></br>
-
         <p>Can a film made by Marvel (and therefore Disney) really be a radical moment in the history of film and popular culture? Ryan Coogler’s incredibly successful blockbuster Black Panther has raked in over $600m in five weeks at the time of writing  and led some commentators to view the film as revolutionary and radical, due to its majority black cast, the themes of Afrofuturism and its treatment of female characters. This is just to name a few of the elements of this unlikely superhero flick being used to claim it as cultural triumph. It was put forward in Time magazine that: ‘In the midst of a regressive cultural and political moment fuelled in part by the white-nativist movement, the very existence of Black Panther feels like resistance.’ But the film has also been criticised for being too safe, even ‘dangerous and insidious’:</p>
 
         <p>‘It lures its audience in with positive representations of black people and black culture… with excellent camerawork and action, gets the audience on side with T’Challa’s (Obama) leadership, and then feeds it the same neoliberal, neo-colonial politics, except with a black face.’</p>

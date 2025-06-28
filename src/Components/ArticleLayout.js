@@ -21,6 +21,9 @@ const ArticleLayout = ({ metadata, children }) => {
               <meta name='keywords' content={metadata.keywords} />
               <meta name='title' content={metadata.title} property="og:title" />
               <meta property="og:type" content="website" />
+              <h1>{metadata.title}</h1>
+              <p>{metadata.filmTitle} - {metadata.director} ({metadata.year})</p>
+              <br></br>
               {children}
             </article>
           </Col>

@@ -3,8 +3,11 @@ import YouTubeEmbed from '../YouTubeEmbed';
 
 const Fitzcarraldo = () => {
   const metadata = {
-    title: 'Fitzcarraldo - The cost of art',
+    filmTitle: 'Fitzcarraldo',
+    title: 'The cost of art',
+    year: '1982',
     author: 'Alex Stearn',
+    director: 'Werner Herzog',
     keywords: 'Fitzcarraldo, Werner Herzog, Film analysis',
     description: 'At what point does the cost of art outweigh any benefit it could possibly have?...',
   }
@@ -12,12 +15,6 @@ const Fitzcarraldo = () => {
   return (
     <div>
       <ArticleLayout metadata={metadata}>
-        <h1><i>Fitzcarraldo (1982)</i></h1>
-
-        <h2>The cost of art</h2>
-
-        <br></br>
-
         <p>At what point does the cost of art outweigh any benefit it could possibly have? Werner Herzog seems to be asking this question both through the narrative of Fitzcarraldo and the evidently wildly ambitious manner in which it was filmed.</p>
 
         <p>It is almost impossible to separate the protagonist from the director, both seem hell-bent on delivering their art, Fitzcarraldo through opera and Herzog through film, that all other considerations fade into insignificance.</p>

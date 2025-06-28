@@ -3,6 +3,8 @@ import YouTubeEmbed from '../YouTubeEmbed';
 
 const GrandBudapestHotel = () => {
   const metadata = {
+    filmTitle: 'The Grand Budapest Hotel',
+    year: '2014',
     title: 'Refugees and The Grand Budapest Hotel',
     author: 'Alex Stearn',
     keywords: 'The Grand Budapest Hotel, Wes Anderson, Refugees, film anaylsis',
@@ -12,10 +14,6 @@ const GrandBudapestHotel = () => {
   return (
     <div>
       <ArticleLayout metadata={metadata}>
-        <h1>Refugees and <i>The Grand Budapest Hotel (2014) </i></h1>
-
-        <br></br>
-
         <p>‘There are still faint glimmers of civilization left in this barbaric slaughterhouse that was once known as humanity.’ – M. Gustave</p>
 
         <p>The fictional state of Zubrowka is the setting for Wes Anderson’s 2014 comedy The Grand Budapest Hotel which takes place mostly in the 1930s, just prior to and during the occupation by the sinister ZZ (Zig Zags) and their death-squads. M. Gustave is the concierge of a well-respected hotel in the spa town of Nebelsbad, in the foothills of the Zubrowkian alps. The film centres on the story of M. Gustave and his newly recruited lobby boy, Zero. The two become embroiled in a conflict with a wealthy, sinister family, whose recently deceased matriarch has bequeathed M. Gustave a priceless painting.</p>
@@ -47,6 +45,7 @@ What on God’s earth possessed you to leave the homeland where you very obvious
 
         <p>The Grand Budapest Hotel does not tell us anything particularly new about the plight of refugees, nor does it focus on this experience for its content. However, by making these issues form part of a more peripheral theme within the film, the subtleties of discrimination, both political and personal, come through in a natural and thought-provoking way.</p>
 
+        <hr></hr>
         <YouTubeEmbed videoId='1Fg5iWmQjwk'></YouTubeEmbed>
         <hr></hr>
 
