@@ -16,7 +16,7 @@ const TwentyEightYearsLater = () => {
       <ArticleLayout metadata={metadata}>
         <p>(SPOILERS AHEAD)</p>
 
-        <p>Nearly thirty years after the events of 28 days later, a lot has changed. Danny Boyle’s first film in the 28 franchise came out before the UK was battered by the divisive forces of Brexit and then Covid, the latter giving us scenes eerily reminiscent from the first film, with the streets of London deserted save for a few empty buses.</p>
+        <p>Twenty three years after the events of <i>28 Days Later</i> (2002), a lot has changed. Danny Boyle’s first zombie film in the came out before the UK was battered by the divisive forces of Brexit and then Covid, the latter giving us scenes eerily reminiscent from the first film, with the streets of London deserted save for a few empty buses.</p>
 
         <p>In 28 Years Later, the virus has been contained to the UK, mainland Europe has set up a quarantine zone around the coast and patrols it regularly to ensure there are no breaches. The UK is now isolated from the rest of the world, the survivors that are left will have to fend for themselves and can have no expectation of rescue. We follow the movements of a young boy - Spike - who lives in a tight-knit community on the island of Lindisfarne (or Holy Island) where the inhabitants are protected from the rage virus consuming the mainland by a tidal causeway.
         </p>
@@ -48,7 +48,7 @@ const TwentyEightYearsLater = () => {
 
         <h6><strong>Bibliography</strong></h6>
 
-        <p>[1] https://www.theguardian.com/world/2020/dec/22/worlds-media-ask-how-it-went-so-wrong-for-plague-island-britain-covid  [Accessed: 26 June 2025]</p>
+        <p>[1] <a target="_blank" rel="noreferrer" href="https://www.theguardian.com/world/2020/dec/22/worlds-media-ask-how-it-went-so-wrong-for-plague-island-britain-covid">https://www.theguardian.com/world/2020/dec/22/worlds-media-ask-how-it-went-so-wrong-for-plague-island-britain-covid</a>  [Accessed: 26 June 2025]</p>
       </ArticleLayout>
     </div>
     );
