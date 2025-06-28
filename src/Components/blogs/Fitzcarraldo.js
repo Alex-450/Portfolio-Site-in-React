@@ -5,7 +5,8 @@ const Fitzcarraldo = () => {
   const metadata = {
     title: 'Fitzcarraldo - The cost of art',
     author: 'Alex Stearn',
-    keywords: 'Fitzcarraldo, Werner Herzog, Film analysis'
+    keywords: 'Fitzcarraldo, Werner Herzog, Film analysis',
+    description: 'At what point does the cost of art outweigh any benefit it could possibly have?...',
   }
 
   return (

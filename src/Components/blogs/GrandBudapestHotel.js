@@ -5,7 +5,8 @@ const GrandBudapestHotel = () => {
   const metadata = {
     title: 'Refugees and The Grand Budapest Hotel',
     author: 'Alex Stearn',
-    keywords: 'The Grand Budapest Hotel, Wes Anderson, Refugees, film anaylsis'
+    keywords: 'The Grand Budapest Hotel, Wes Anderson, Refugees, film anaylsis',
+    description: '‘There are still faint glimmers of civilization left in this barbaric slaughterhouse that was once known as humanity.’ – M. Gustave,',
   }
 
   return (

@@ -5,7 +5,8 @@ const BlackPanther = () => {
   const metadata = {
     title: 'Black Panther - Radical or not?',
     author: 'Alex Stearn',
-    keywords: 'Black Panther, Ryan Coogler, Radical, film analysis'
+    keywords: 'Black Panther, Ryan Coogler, Radical, film analysis',
+    description: 'Can a film made by Marvel (and therefore Disney) really be a radical moment in the history of film and popular culture?...',
   }
 
   return (

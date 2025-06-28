@@ -5,7 +5,8 @@ const AliAngstEssenSeele = () => {
   const metadata = {
     title: "Ali: Angst essen Seele auf - 'Happiness isn't always fun'",
     author: 'Alex Stearn',
-    keywords: 'Ali: Fear eats the soul, Ali: Angst essen Seele auf, Rainer Werner Fassbinder, film analysis'
+    keywords: 'Ali: Fear eats the soul, Ali: Angst essen Seele auf, Rainer Werner Fassbinder, film analysis',
+    description: 'Rainer Werner Fassbinder’s Ali: Fear Eats the Soul tells the story of Emmi (Brigitte Mira)...',
   }
   return (
     <div>
