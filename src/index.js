@@ -1,7 +1,6 @@
 import './css/index.css';
 import * as serviceWorker from './serviceWorker';
 import Router from './Components/Router';
-// import { render } from 'react-dom';
 
 import { createRoot } from 'react-dom/client';
 const container = document.querySelector("#root")
