@@ -1,11 +1,14 @@
 import ArticleLayout from '../ArticleLayout';
 import YouTubeEmbed from '../YouTubeEmbed';
+import blogPostArchive from '../../blogPostArchive.json'
 
 const GrandBudapestHotel = () => {
+  const blog = blogPostArchive.find(blog => blog.filmTitle.toLowerCase() === "the grand budapest hotel");
   const metadata = {
-    filmTitle: 'The Grand Budapest Hotel',
-    year: '2014',
-    title: 'Refugees and The Grand Budapest Hotel',
+    filmTitle: blog.filmTitle,
+    year: blog.year,
+    title: blog.title,
+    director: blog.director,
     author: 'Alex Stearn',
     keywords: 'The Grand Budapest Hotel, Wes Anderson, Refugees, film anaylsis',
     description: '‘There are still faint glimmers of civilization left in this barbaric slaughterhouse that was once known as humanity.’ – M. Gustave,',

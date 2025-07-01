@@ -1,15 +1,17 @@
 import ArticleLayout from '../ArticleLayout';
 import YouTubeEmbed from '../YouTubeEmbed';
+import blogPostArchive from '../../blogPostArchive.json'
 
 const TwentyEightYearsLater = () => {
+  const blog = blogPostArchive.find(blog => blog.filmTitle.toLowerCase() === "28 years later");
   const metadata = {
-    filmTitle: '28 Years Later',
-    title: "Love Letter / Obituary",
-    year: '2025',
-    director: 'Danny Boyle',
+    filmTitle: blog.filmTitle,
+    title: blog.title,
+    year: blog.year,
+    director: blog.director,
     author: 'Alex Stearn',
     keywords: '28 years later, Danny Boyle, Alex Garland film analysis',
-    description: '',
+    description: 'Twenty three years after the events of 28 Days Later (2002), a lot has changed...',
   }
   return (
     <div>

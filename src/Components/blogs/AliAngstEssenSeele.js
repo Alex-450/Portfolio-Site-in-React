@@ -1,12 +1,14 @@
 import ArticleLayout from '../ArticleLayout';
 import YouTubeEmbed from '../YouTubeEmbed';
+import blogPostArchive from '../../blogPostArchive.json'
 
 const AliAngstEssenSeele = () => {
+  const blog = blogPostArchive.find(blog => blog.filmTitle.toLowerCase() === "ali: angst essen seele auf");
   const metadata = {
-    filmTitle: 'Ali: Angst essen Seele auf',
-    title: "'Happiness isn't always fun'",
-    year: '1974',
-    director: 'Rainer Werner Fassbinder',
+    filmTitle: blog.filmTitle,
+    title: blog.title,
+    year: blog.year,
+    director: blog.director,
     author: 'Alex Stearn',
     keywords: 'Ali: Fear eats the soul, Ali: Angst essen Seele auf, Rainer Werner Fassbinder, film analysis',
     description: 'Rainer Werner Fassbinder’s Ali: Fear Eats the Soul tells the story of Emmi (Brigitte Mira)...',

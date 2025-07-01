@@ -1,13 +1,15 @@
 import ArticleLayout from '../ArticleLayout';
 import YouTubeEmbed from '../YouTubeEmbed';
+import blogPostArchive from '../../blogPostArchive.json';
 
 const BlackPanther = () => {
+  const blog = blogPostArchive.find(blog => blog.filmTitle.toLowerCase() === "fitzcarraldo");
   const metadata = {
-    filmTitle: 'Black Panther',
-    year: '2018',
-    title: 'Black Panther - Radical or not?',
+    filmTitle: blog.filmTitle,
+    year: blog.year,
+    title: blog.title,
     author: 'Alex Stearn',
-    director: 'Ryan Coogler',
+    director: blog.director,
     keywords: 'Black Panther, Ryan Coogler, Radical, film analysis',
     description: 'Can a film made by Marvel (and therefore Disney) really be a radical moment in the history of film and popular culture?...',
   }

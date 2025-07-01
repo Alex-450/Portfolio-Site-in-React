@@ -1,13 +1,15 @@
 import ArticleLayout from '../ArticleLayout';
 import YouTubeEmbed from '../YouTubeEmbed';
+import blogPostArchive from '../../blogPostArchive.json'
 
 const Fitzcarraldo = () => {
+  const blog = blogPostArchive.find(blog => blog.filmTitle.toLowerCase() === "fitzcarraldo");
   const metadata = {
-    filmTitle: 'Fitzcarraldo',
-    title: 'The cost of art',
-    year: '1982',
+    filmTitle: blog.filmTitle,
+    title: blog.title,
+    year: blog.year,
     author: 'Alex Stearn',
-    director: 'Werner Herzog',
+    director: blog.director,
     keywords: 'Fitzcarraldo, Werner Herzog, Film analysis',
     description: 'At what point does the cost of art outweigh any benefit it could possibly have?...',
   }

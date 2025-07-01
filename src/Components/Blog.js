@@ -24,7 +24,7 @@ const Blog = () => {
               <div>{blog.dateAdded}</div>
             </Col>
             <Col>
-              <div>{blog.filmName} | {blog.title} →</div>
+              <div>{blog.filmTitle} | {blog.title} →</div>
             </Col>
             <br></br>
           </Row>
