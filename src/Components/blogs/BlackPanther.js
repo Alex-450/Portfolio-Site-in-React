@@ -3,7 +3,7 @@ import YouTubeEmbed from '../YouTubeEmbed';
 import blogPostArchive from '../../blogPostArchive.json';
 
 const BlackPanther = () => {
-  const blog = blogPostArchive.find(blog => blog.filmTitle.toLowerCase() === "fitzcarraldo");
+  const blog = blogPostArchive.find(blog => blog.filmTitle.toLowerCase() === "black panther");
   const metadata = {
     filmTitle: blog.filmTitle,
     year: blog.year,
