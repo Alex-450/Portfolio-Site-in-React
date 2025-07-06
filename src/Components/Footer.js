@@ -1,6 +1,5 @@
 import '../css/index.css';
 import { Container, Row, Col } from 'react-bootstrap';
-import {  Link } from 'react-router-dom';
 import DarkModeToggle from './DarkModeToggle';
 
 const Footer = () => (
@@ -40,7 +39,7 @@ const Footer = () => (
 
       <Row>
         <Col xs={12} md={{span: 4, offset: 8}}>
-          <Link className="footer-link" to="/">Blog →</Link>
+          <a className="footer-link" href="/">Blog →</a>
         </Col>
       </Row>
       </Container>
