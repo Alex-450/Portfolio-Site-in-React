@@ -32,7 +32,7 @@
     "start": "npx serve@latest ./build",
     "predeploy": "yarn run build",
     "deploy": "gh-pages -d build --cname a-450.com",
-    "build": "next build && next export"
+    "build": "next build"
   },
   "eslintConfig": {
     "extends": "react-app"
