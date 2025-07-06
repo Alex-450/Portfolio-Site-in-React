@@ -1,26 +1,32 @@
-// DarkModeToggle.jsx
-import { useEffect, useState } from "react";
+'use client'
+
+import { useTheme } from 'next-themes'
+import { useEffect, useState } from 'react'
 
 const DarkModeToggle = () => {
-  const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem("theme") === "dark";
-  });
+  const { theme, setTheme, resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
 
+  // Make sure component is mounted before accessing `theme` to avoid hydration mismatch
   useEffect(() => {
-    if (darkMode) {
-      document.body.classList.add("dark-mode");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.body.classList.remove("dark-mode");
-      localStorage.setItem("theme", "light");
-    }
-  }, [darkMode]);
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    // Avoid rendering until mounted
+    return null
+  }
+
+  const darkMode = resolvedTheme === 'dark'
 
   return (
-      <button className='footer-link' onClick={() => setDarkMode(!darkMode)}>
-        {darkMode ? "Light mode →" : "Dark mode →"}
-      </button>
-  );
-};
+    <button
+      className="footer-link"
+      onClick={() => setTheme(darkMode ? 'light' : 'dark')}
+    >
+      {darkMode ? 'Light mode →' : 'Dark mode →'}
+    </button>
+  )
+}
 
 export default DarkModeToggle;

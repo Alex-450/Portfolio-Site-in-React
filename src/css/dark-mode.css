@@ -1,4 +1,4 @@
-body.dark-mode {
+.dark {
   .blog-container {
     background-color: var(--dark-background);
     color: var(--dark-text-color);

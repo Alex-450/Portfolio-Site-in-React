@@ -1,5 +1,4 @@
 import { Navbar, Container, Col} from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
 import '../css/index.css';
 
 const NavBar = () => (
@@ -7,7 +6,7 @@ const NavBar = () => (
     <Container>
       <Navbar className="navbar" variant="dark" sticky="top" expand="lg">
         <Col md={10}>
-          <NavLink to="/" className="navbar-brand">a-450</NavLink>
+          <a href="/" className="navbar-brand">a-450</a>
         </Col>
         <Col>
         </Col>
