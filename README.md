@@ -1,6 +1,6 @@
 ## Portfolio Site
 
-This site was made with React and react-bootstrap to showcase my academic and professional history, and offer methods to contact me.
+This blog was initially made with React and react-bootstrap. It has since been converted to use next.js.
 
 ## Description
 
@@ -12,6 +12,6 @@ Features:
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-In order to run the project, clone the repository and run `npm start` from the project directory. This will open the app in development mode.
+Converrted to next.js by following [Migrating from create-react-app](https://nextjs.org/docs/app/guides/migrating/from-create-react-app).
 
-You can also run the project from the project directory using `yarn start`.
+In order to run the project, clone the repository and run `yarn run dev` from the project directory. This will open the app in development mode.
