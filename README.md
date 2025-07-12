@@ -6,9 +6,9 @@ Features:
 
 ## Info
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) and uses [react-bootstrap](https://github.com/react-bootstrap/react-bootstrap).
+- This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) and uses [react-bootstrap](https://github.com/react-bootstrap/react-bootstrap).
 
-Converted to next.js by following [Migrating from create-react-app](https://nextjs.org/docs/app/guides/migrating/from-create-react-app).
+- Migrated to [Next.js](https://nextjs.org/) by following [Migrating from create-react-app](https://nextjs.org/docs/app/guides/migrating/from-create-react-app).
 
 ## Instructions
 
