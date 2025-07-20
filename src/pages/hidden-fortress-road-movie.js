@@ -11,12 +11,11 @@ const Page = () => {
     author: 'Alex Stearn',
     keywords: 'The Hidden Fortress, Akira Kurosawa, film anaylsis',
     description: '',
+    spoilers: true
   }
 
   return (
     <ArticleLayout metadata={metadata}>
-      <p>(SPOILERS AHEAD)</p>
-
       <p>
         <i>“…the happiness of these days - I would never have known living in the castle. I saw people as they really are. I saw their beauty… and their ugliness… with my own eyes … I can now die without regret”</i> - Princess Yuki
       </p>

@@ -12,11 +12,10 @@ const Page = () => {
     author: 'Alex Stearn',
     keywords: '28 years later, Danny Boyle, Alex Garland film analysis',
     description: 'Twenty three years after the events of 28 Days Later (2002), a lot has changed...',
+    spoilers: true,
   }
   return (
     <ArticleLayout metadata={metadata}>
-      <p>(SPOILERS AHEAD)</p>
-
       <p>
         Twenty three years after the events of 28 Days Later, a lot has changed. Danny Boyle’s first film in the post-apocalyptic horror franchise came out before the UK was battered by the divisive forces of Brexit and Covid, the latter giving us scenes eerily reminiscent from the first film, with the streets of London deserted save for a few empty buses.
       </p>

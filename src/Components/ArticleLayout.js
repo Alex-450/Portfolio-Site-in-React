@@ -1,5 +1,6 @@
 import { Container, Row, Col } from 'react-bootstrap';
 import { useEffect } from "react";
+import SpoilerPill from './SpoilerPill';
 
 const ArticleLayout = ({ metadata, children }) => {
   useEffect(() => {
@@ -19,6 +20,9 @@ const ArticleLayout = ({ metadata, children }) => {
             <meta property="og:type" content="website" />
             <h1>{metadata.title}</h1>
             <p>{metadata.filmTitle} - {metadata.director} ({metadata.year})</p>
+            {metadata.spoilers && metadata.spoilers == true &&
+              <p><SpoilerPill /></p>
+            }
             <br></br>
             {children}
           </article>
