@@ -60,7 +60,7 @@ What on God’s earth possessed you to leave the homeland where you very obvious
       <div style={{wordWrap: 'break-word'}}>
         <p>Eisen, Norman L., ‘The Grand Budapest Hotel is  a Thoughtful Comedy about Tragedy’, The Atlantic, 20 Februrary 2015 <a target="_blank" rel="noopener noreferrer" href="https://www.theatlantic.com/entertainment/archive/2015/02/how-grand-budapest-hotel-pays-tribute-to-the-holocaust/385264/">https://www.theatlantic.com/entertainment/archive/2015/02/how-grand-budapest-hotel-pays-tribute-to-the-holocaust/385264/</a> [accessed 1 March 2017]</p>
       </div>
-      </ArticleLayout>
+    </ArticleLayout>
     );
   }
 
