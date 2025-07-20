@@ -58,6 +58,8 @@ const Page = () => {
       </p>
 
       <hr />
+
+      <p>Note: <i>The Hidden Fortress</i> can be viewed for free via the Internet Archive: <a target="_blank" rel="noreferrer" href="https://archive.org/details/the-hidden-fortress">https://archive.org/details/the-hidden-fortress</a></p>
     </ArticleLayout>
     );
   }
