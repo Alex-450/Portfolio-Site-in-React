@@ -12,4 +12,4 @@ Features:
 
 ## Instructions
 
-In order to run the project, clone the repository and run `yarn run dev` from the project directory. This will open the app in development mode.
+In order to run the project, clone the repository and run `npm run dev` from the project directory. This will open the app in development mode.

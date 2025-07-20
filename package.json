@@ -30,7 +30,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "start": "npx serve@latest ./build",
-    "predeploy": "yarn run build",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d out --nojekyll --cname a-450.com",
     "build": "next build"
   },
