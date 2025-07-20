@@ -1,5 +1,4 @@
 import ArticleLayout from '../../src/Components/ArticleLayout';
-import YouTubeEmbed from '../../src/Components/YouTubeEmbed';
 import blogPostArchive from '../blogPostArchive.json'
 
 const Page = () => {
