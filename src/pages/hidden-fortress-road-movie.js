@@ -21,7 +21,7 @@ const Page = () => {
       </p>
 
       <p>
-        Set against the backdrop of a civil war in medieval Japan, the protagonists of Akira Kurosawa’s The Hidden Fortress are never far away from death. We are introduced to the two hapless, greedy, scheming peasants Tahei and Matashichi as they attempt to escape Akizuki territory that has just been occupied by the neighbouring Yamana clan. They had left the peace of their home in Hayakawa with the hopes of making a fortune in the war, but had arrived too late and been forced to dig graves by the occupying army. In the opening sequence they witness a fleeing soldier being chased down and killed. Shortly afterwards Tahei sees another soldier shot whilst attempting to cross the newly closed and heavily guarded border between Akizuki and Hayakawa.
+        Set against the backdrop of a civil war in medieval Japan, the protagonists of Akira Kurosawa’s <i>The Hidden Fortress</i> are never far away from death. We are introduced to the two hapless, greedy, scheming peasants Tahei and Matashichi as they attempt to escape Akizuki territory that has just been occupied by the neighbouring Yamana clan. They had left the peace of their home in Hayakawa with the hopes of making a fortune in the war, but had arrived too late and been forced to dig graves by the occupying army. In the opening sequence they witness a fleeing soldier being chased down and killed. Shortly afterwards Tahei sees another soldier shot whilst attempting to cross the newly closed and heavily guarded border between Akizuki and Hayakawa.
       </p>
 
       <p>
@@ -53,7 +53,7 @@ const Page = () => {
       </p>
 
       <p>
-        <i>The Hidden Fortress</i> is an incredibly accessible film despite its age and setting, filled with laugh out loud moments and beautiful cinematography. It serves ultimately as a reminder to view life as an adventure, to accept the beautiful and the ugly, and to approach others with curiosity rather than judgement.
+        <i>The Hidden Fortress</i> is an incredibly accessible film considering its age and setting, filled with laugh out loud moments and beautiful cinematography. It serves ultimately as a reminder to view life as an adventure, to accept the beautiful and the ugly, and to approach others with curiosity rather than judgement.
       </p>
 
       <hr />
