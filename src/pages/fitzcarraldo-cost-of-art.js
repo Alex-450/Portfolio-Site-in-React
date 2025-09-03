@@ -16,7 +16,7 @@ const Page = () => {
 
   return (
     <ArticleLayout metadata={metadata}>
-      <p>At what point does the cost of art outweigh any benefit it could possibly have? Werner Herzog seems to be asking this question both through the narrative of Fitzcarraldo and the evidently wildly ambitious manner in which it was filmed.</p>
+      <p>At what point does the cost of art outweigh any benefit it could possibly have? Werner Herzog seems to be asking this question both through the narrative of <i>Fitzcarraldo</i> and the evidently wildly ambitious manner in which it was filmed.</p>
 
       <p>It is almost impossible to separate the protagonist from the director, both seem hell-bent on delivering their art, <i>Fitzcarraldo</i> through opera and Herzog through film, that all other considerations fade into insignificance.</p>
 
