@@ -1,6 +1,7 @@
 import ArticleLayout from '../../src/Components/ArticleLayout';
 
 const Page = () => {
+    const blog = blogPostArchive.find(blog => blog.filmTitle.toLowerCase() === "marseille");
     const metadata = {
         year: blog.year,
         title: blog.title,
