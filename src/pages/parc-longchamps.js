@@ -4,10 +4,11 @@ import blogPostArchive from '../blogPostArchive.json'
 const Page = () => {
     const blog = blogPostArchive.find(blog => blog.filmTitle.toLowerCase() === "marseille");
     const metadata = {
+        filmTitle: blog.filmTitle,
         year: blog.year,
         title: blog.title,
         author: 'Alex Stearn',
-        keywords: 'Parc Longchamp Marseille',
+        keywords: 'Parc Longchamps Marseille',
         description: '',
       }
 
