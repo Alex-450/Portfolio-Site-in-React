@@ -1,4 +1,5 @@
 import ArticleLayout from '../../src/Components/ArticleLayout';
+import blogPostArchive from '../blogPostArchive.json'
 
 const Page = () => {
     const blog = blogPostArchive.find(blog => blog.filmTitle.toLowerCase() === "marseille");
