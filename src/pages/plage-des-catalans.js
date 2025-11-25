@@ -15,13 +15,15 @@ const Page = () => {
 
     return (
       <ArticleLayout metadata={metadata}>
-        <p>Barely perceptible against the bright blue sky</p>
-        <p>An old scar, a slither of white, calmly dangles over the sea</p>
-
-        <p>If I look away it takes a moment to find it again</p>
-        <p>As if shying away from my gaze</p>
-
-        <p>But still it sits, waiting for night as the waves crash against the fading of the day</p>
+        <p>Barely perceptible against the bright blue sky<br></br>
+        An old scar,<br></br>
+        a slither of white,<br></br>
+        calmly dangles over the sea<br></br>
+        If I look away it takes a moment to find it again<br></br>
+        As if shying away from my gaze<br></br>
+        But still it sits,<br></br>
+        waiting for night,<br></br>
+        as the waves crash against the fading of the day</p>
       </ArticleLayout>
     )
 }
