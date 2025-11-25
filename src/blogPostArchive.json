@@ -1,7 +1,15 @@
 [
   {
+    "title": "Plage des Catalans",
+    "topic": "Marseille",
+    "year": "2024",
+    "director": "Alex Stearn",
+    "link": "/plage-des-catalans",
+    "dateAdded": "25/11/2025"
+  },
+  {
     "title": "Parc Longchamps",
-    "filmTitle": "Marseille",
+    "topic": "Marseille",
     "year": "2024",
     "director": "Alex Stearn",
     "link": "/parc-longchamps",
@@ -9,7 +17,7 @@
   },
   {
     "title": "Navigating Trauma with Humour",
-    "filmTitle": "Sorry, Baby",
+    "topic": "Sorry, Baby",
     "year": "2025",
     "director": "Eva Victor",
     "link": "/sorry-baby",
@@ -17,7 +25,7 @@
   },
   {
     "title": "A Samurai Road Movie",
-    "filmTitle": "The Hidden Fortress",
+    "topic": "The Hidden Fortress",
     "year": "1958",
     "director": "Akira Kurosawa",
     "link": "/hidden-fortress-road-movie",
@@ -25,7 +33,7 @@
   },
   {
     "title": "Love Letter / Obituary",
-    "filmTitle": "28 Years Later",
+    "topic": "28 Years Later",
     "year": "2025",
     "director": "Danny Boyle",
     "link": "/28-years-later",
@@ -33,37 +41,33 @@
   },
   {
     "title": "The Cost of Art",
-    "filmTitle": "Fitzcarraldo",
+    "topic": "Fitzcarraldo",
     "year": "1982",
     "director": "Werner Herzog",
-    "blogBody": "Here is the text for my second blog",
     "link": "/fitzcarraldo-cost-of-art",
     "dateAdded": "22/06/2025"
   },
   {
     "title": "Radical or not?",
-    "filmTitle": "Black Panther",
+    "topic": "Black Panther",
     "year": "2018",
     "director": "Ryan Coogler",
-    "blogBody": "Can a film made by Marvel (and therefore Disney) really be a radical moment in the history of film and popular culture? Ryan Coogler’s incredibly successful blockbuster Black Panther has raked in over $600m in five weeks at the time of writing  and led some commentators to view the film as revolutionary and radical, due to its majority black cast, the themes of Afrofuturism and its treatment of female characters. This is just to name a few of the elements of this unlikely superhero flick being used to claim it as cultural triumph. It was put forward in Time magazine that:\n‘In the midst of a regressive cultural and political moment fuelled in part by the white-nativist movement, the very existence of Black Panther feels like resistance.’But the film has also been criticised for being too safe, even ‘dangerous and insidious’:",
     "link": "/black-panther-radical",
     "dateAdded": "10/03/2020"
   },
   {
     "title": "Refugees and the Grand Budapest Hotel",
-    "filmTitle": "The Grand Budapest Hotel",
+    "topic": "The Grand Budapest Hotel",
     "year": "2014",
     "director": "Wes Anderson",
-    "blogBody": "Here is the text for my second blog",
     "link": "/grand-budapest-hotel-refugees",
     "dateAdded": "09/02/2020"
   },
   {
     "title": "'Happiness isn't always fun'",
-    "filmTitle": "Ali: Angst Essen Seele Auf",
+    "topic": "Ali: Angst Essen Seele Auf",
     "year": "1974",
     "director": "Rainer Werner Fassbinder",
-    "blogBody": "Here is the text for my second blog",
     "link": "/ali-angst-essen-seele-auf",
     "dateAdded": "17/05/2017"
   }

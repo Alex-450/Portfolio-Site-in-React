@@ -3,9 +3,9 @@ import YouTubeEmbed from '../../src/Components/YouTubeEmbed';
 import blogPostArchive from '../blogPostArchive.json'
 
 const Page = () => {
-  const blog = blogPostArchive.find(blog => blog.filmTitle.toLowerCase() === "the grand budapest hotel");
+  const blog = blogPostArchive.find(blog => blog.topic.toLowerCase() === "the grand budapest hotel");
   const metadata = {
-    filmTitle: blog.filmTitle,
+    topic: blog.topic,
     year: blog.year,
     title: blog.title,
     director: blog.director,

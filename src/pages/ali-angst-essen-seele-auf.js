@@ -3,9 +3,9 @@ import YouTubeEmbed from '../../src/Components/YouTubeEmbed';
 import blogPostArchive from '../blogPostArchive.json'
 
 const Page = () => {
-  const blog = blogPostArchive.find(blog => blog.filmTitle.toLowerCase() === "ali: angst essen seele auf");
+  const blog = blogPostArchive.find(blog => blog.topic.toLowerCase() === "ali: angst essen seele auf");
   const metadata = {
-    filmTitle: blog.filmTitle,
+    topic: blog.topic,
     title: blog.title,
     year: blog.year,
     director: blog.director,

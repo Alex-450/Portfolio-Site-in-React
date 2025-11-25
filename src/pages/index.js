@@ -18,7 +18,7 @@ const Page = () => {
             <div>{blog.dateAdded}</div>
           </Col>
           <Col>
-            <div>{blog.filmTitle} | {blog.title} →</div>
+            <div>{blog.topic} | {blog.title} →</div>
           </Col>
           <br></br>
         </Row>

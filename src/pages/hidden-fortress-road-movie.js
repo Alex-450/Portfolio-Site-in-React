@@ -2,9 +2,9 @@ import ArticleLayout from '../../src/Components/ArticleLayout';
 import blogPostArchive from '../blogPostArchive.json'
 
 const Page = () => {
-  const blog = blogPostArchive.find(blog => blog.filmTitle.toLowerCase() === "the hidden fortress");
+  const blog = blogPostArchive.find(blog => blog.topic.toLowerCase() === "the hidden fortress");
   const metadata = {
-    filmTitle: blog.filmTitle,
+    topic: blog.topic,
     year: blog.year,
     title: blog.title,
     director: blog.director,

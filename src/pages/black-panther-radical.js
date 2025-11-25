@@ -3,9 +3,9 @@ import YouTubeEmbed from '../../src/Components/YouTubeEmbed';
 import blogPostArchive from '../blogPostArchive.json';
 
 const Page = () => {
-  const blog = blogPostArchive.find(blog => blog.filmTitle.toLowerCase() === "black panther");
+  const blog = blogPostArchive.find(blog => blog.topic.toLowerCase() === "black panther");
   const metadata = {
-    filmTitle: blog.filmTitle,
+    topic: blog.topic,
     year: blog.year,
     title: blog.title,
     author: 'Alex Stearn',
