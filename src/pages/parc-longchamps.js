@@ -2,7 +2,7 @@ import ArticleLayout from '../../src/Components/ArticleLayout';
 import blogPostArchive from '../blogPostArchive.json'
 
 const Page = () => {
-    const blog = blogPostArchive.find(blog => blog.topic.toLowerCase() === "marseille");
+    const blog = blogPostArchive.find(blog => blog.title.toLowerCase() === "parc longchamps");
     const metadata = {
         topic: blog.topic,
         year: blog.year,
