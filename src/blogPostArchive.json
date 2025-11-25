@@ -1,21 +1,5 @@
 [
   {
-    "title": "Plage des Catalans",
-    "topic": "Marseille",
-    "year": "2024",
-    "director": "Alex Stearn",
-    "link": "/plage-des-catalans",
-    "dateAdded": "29/09/2024"
-  },
-  {
-    "title": "Parc Longchamps",
-    "topic": "Marseille",
-    "year": "2024",
-    "director": "Alex Stearn",
-    "link": "/parc-longchamps",
-    "dateAdded": "08/10/2024"
-  },
-  {
     "title": "Navigating Trauma with Humour",
     "topic": "Sorry, Baby",
     "year": "2025",
@@ -46,6 +30,22 @@
     "director": "Werner Herzog",
     "link": "/fitzcarraldo-cost-of-art",
     "dateAdded": "22/06/2025"
+  },
+    {
+    "title": "Plage des Catalans",
+    "topic": "Marseille",
+    "year": "2024",
+    "director": "Alex Stearn",
+    "link": "/plage-des-catalans",
+    "dateAdded": "29/09/2024"
+  },
+  {
+    "title": "Parc Longchamps",
+    "topic": "Marseille",
+    "year": "2024",
+    "director": "Alex Stearn",
+    "link": "/parc-longchamps",
+    "dateAdded": "08/10/2024"
   },
   {
     "title": "Radical or not?",
