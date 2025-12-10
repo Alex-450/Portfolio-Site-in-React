@@ -1,10 +1,11 @@
-import ArticleLayout from '../../src/Components/ArticleLayout';
-import YouTubeEmbed from '../../src/Components/YouTubeEmbed';
-import blogPostArchive from '../blogPostArchive.json';
+import ArticleLayout from '../Components/ArticleLayout';
+import YouTubeEmbed from '../Components/YouTubeEmbed';
+import { ArticleMetadata } from '../types';
+import { findBlogPost } from '../utils/blog';
 
 const Page = () => {
-  const blog = blogPostArchive.find(blog => blog.topic.toLowerCase() === "black panther");
-  const metadata = {
+  const blog = findBlogPost(b => b.topic.toLowerCase() === "black panther");
+  const metadata: ArticleMetadata = {
     topic: blog.topic,
     year: blog.year,
     title: blog.title,

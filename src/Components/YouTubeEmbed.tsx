@@ -1,4 +1,6 @@
-const YouTubeEmbed = ({ videoId }) => {
+import { YouTubeEmbedProps } from '../types';
+
+const YouTubeEmbed = ({ videoId }: YouTubeEmbedProps) => {
   return (
     <div style={{
       position: "relative",

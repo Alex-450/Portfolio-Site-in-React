@@ -1,9 +1,10 @@
-import ArticleLayout from '../../src/Components/ArticleLayout';
-import blogPostArchive from '../blogPostArchive.json'
+import ArticleLayout from '../Components/ArticleLayout';
+import { ArticleMetadata } from '../types';
+import { findBlogPost } from '../utils/blog';
 
 const Page = () => {
-  const blog = blogPostArchive.find(blog => blog.topic.toLowerCase() === "the hidden fortress");
-  const metadata = {
+  const blog = findBlogPost(b => b.topic.toLowerCase() === "the hidden fortress");
+  const metadata: ArticleMetadata = {
     topic: blog.topic,
     year: blog.year,
     title: blog.title,

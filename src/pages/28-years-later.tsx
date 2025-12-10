@@ -1,10 +1,11 @@
 import ArticleLayout from '../Components/ArticleLayout';
 import YouTubeEmbed from '../Components/YouTubeEmbed';
-import blogPostArchive from '../blogPostArchive.json'
+import { ArticleMetadata } from '../types';
+import { findBlogPost } from '../utils/blog';
 
 const Page = () => {
-  const blog = blogPostArchive.find(blog => blog.topic.toLowerCase() === "28 years later");
-  const metadata = {
+  const blog = findBlogPost(b => b.topic.toLowerCase() === "28 years later");
+  const metadata: ArticleMetadata = {
     topic: blog.topic,
     title: blog.title,
     year: blog.year,
