@@ -1,7 +1,9 @@
 import blogPostArchive from '../blogPostArchive.json';
 import { Container, Col, Row } from 'react-bootstrap';
+import { BlogPost } from '../types';
 
 const Page = () => {
+  const posts: BlogPost[] = blogPostArchive;
   return(
     <Container className="title-container flex-grow-1">
       <h1>Blog</h1>
@@ -11,7 +13,7 @@ const Page = () => {
           <Col>Title</Col>
         </Row>
       </div>
-      {blogPostArchive.map((blog, index) => (
+      {posts.map((blog, index) => (
       <a href={blog.link} className="blog-link" key={blog.title}>
         <Row className="blog-row slide-in" style={{ animationDelay: `0.${index + 1}s` }}>
           <Col md={2}>

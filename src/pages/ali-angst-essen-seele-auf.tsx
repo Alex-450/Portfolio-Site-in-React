@@ -1,17 +1,17 @@
-import ArticleLayout from '../../src/Components/ArticleLayout';
-import YouTubeEmbed from '../../src/Components/YouTubeEmbed';
-import blogPostArchive from '../blogPostArchive.json'
+import ArticleLayout from '../Components/ArticleLayout';
+import YouTubeEmbed from '../Components/YouTubeEmbed';
+import { findBlogPost, ArticleMetadata } from '../types';
 
 const Page = () => {
-  const blog = blogPostArchive.find(blog => blog.topic.toLowerCase() === "ali: angst essen seele auf");
-  const metadata = {
+  const blog = findBlogPost(b => b.topic.toLowerCase() === "ali: angst essen seele auf");
+  const metadata: ArticleMetadata = {
     topic: blog.topic,
     title: blog.title,
     year: blog.year,
     director: blog.director,
     author: 'Alex Stearn',
     keywords: 'Ali: Fear eats the soul, Ali: Angst essen Seele auf, Rainer Werner Fassbinder, film analysis',
-    description: 'Rainer Werner Fassbinder’s Ali: Fear Eats the Soul tells the story of Emmi (Brigitte Mira)...',
+    description: "Rainer Werner Fassbinder's Ali: Fear Eats the Soul tells the story of Emmi (Brigitte Mira)...",
   }
   return (
     <ArticleLayout metadata={metadata}>

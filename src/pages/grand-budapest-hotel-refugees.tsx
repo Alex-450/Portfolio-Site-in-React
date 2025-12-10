@@ -1,17 +1,17 @@
-import ArticleLayout from '../../src/Components/ArticleLayout';
-import YouTubeEmbed from '../../src/Components/YouTubeEmbed';
-import blogPostArchive from '../blogPostArchive.json'
+import ArticleLayout from '../Components/ArticleLayout';
+import YouTubeEmbed from '../Components/YouTubeEmbed';
+import { findBlogPost, ArticleMetadata } from '../types';
 
 const Page = () => {
-  const blog = blogPostArchive.find(blog => blog.topic.toLowerCase() === "the grand budapest hotel");
-  const metadata = {
+  const blog = findBlogPost(b => b.topic.toLowerCase() === "the grand budapest hotel");
+  const metadata: ArticleMetadata = {
     topic: blog.topic,
     year: blog.year,
     title: blog.title,
     director: blog.director,
     author: 'Alex Stearn',
     keywords: 'The Grand Budapest Hotel, Wes Anderson, Refugees, film anaylsis',
-    description: '‘There are still faint glimmers of civilization left in this barbaric slaughterhouse that was once known as humanity.’ – M. Gustave,',
+    description: "'There are still faint glimmers of civilization left in this barbaric slaughterhouse that was once known as humanity.' – M. Gustave",
   }
 
   return (

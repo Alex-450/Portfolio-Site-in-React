@@ -1,8 +1,9 @@
 import { Container, Row, Col } from 'react-bootstrap';
 import { useEffect } from "react";
 import SpoilerPill from './SpoilerPill';
+import { ArticleLayoutProps } from '../types';
 
-const ArticleLayout = ({ metadata, children }) => {
+const ArticleLayout = ({ metadata, children }: ArticleLayoutProps) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -20,7 +21,7 @@ const ArticleLayout = ({ metadata, children }) => {
             <meta property="og:type" content="website" />
             <h1>{metadata.title}</h1>
             <p>{metadata.topic} - {metadata.director} ({metadata.year})</p>
-            {metadata.spoilers && metadata.spoilers == true &&
+            {metadata.spoilers &&
               <p><SpoilerPill /></p>
             }
             <br></br>
