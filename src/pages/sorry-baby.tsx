@@ -1,6 +1,7 @@
 import ArticleLayout from '../Components/ArticleLayout';
 import YouTubeEmbed from '../Components/YouTubeEmbed';
-import { findBlogPost, ArticleMetadata } from '../types';
+import { ArticleMetadata } from '../types';
+import { findBlogPost } from '../utils/blog';
 
 const Page = () => {
   const blog = findBlogPost(b => b.topic.toLowerCase() === "sorry, baby");
