@@ -14,22 +14,15 @@ const Page = () => {
   return(
     <Container className="title-container flex-grow-1">
       <h1>Blog</h1>
-      <div className="d-none d-sm-block">
-        <Row className="blog-header">
-          <Col md={2}>Date</Col>
-          <Col>Title</Col>
-        </Row>
-      </div>
+      <Row className="blog-header">
+        <Col md={2}>Date</Col>
+        <Col>Title</Col>
+      </Row>
       {posts.map((blog, index) => (
       <a href={blog.link} className="blog-link" key={blog.title}>
         <Row className="blog-row slide-in" style={{ animationDelay: `0.${index + 1}s` }}>
-          <Col md={2}>
-            <div>{blog.dateAdded}</div>
-          </Col>
-          <Col>
-            <div>{getSubtitle(blog)} | {blog.title} →</div>
-          </Col>
-          <br></br>
+          <Col md={2}>{blog.dateAdded}</Col>
+          <Col>{getSubtitle(blog)} | {blog.title} →</Col>
         </Row>
       </a>
       ))}
