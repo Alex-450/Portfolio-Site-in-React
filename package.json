@@ -16,7 +16,6 @@
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^5.2.0",
     "typescript": "^5.8.3"
   },
   "devDependencies": {
@@ -29,7 +28,7 @@
   },
   "scripts": {
     "dev": "next dev --turbopack",
-    "start": "npx serve@latest ./build",
+    "start": "npx serve@latest ./out",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d out --nojekyll --cname a-450.com",
     "build": "next build"
