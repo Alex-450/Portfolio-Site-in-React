@@ -1,24 +1,50 @@
 import { ReactNode } from 'react';
 
-export interface BlogPost {
+// Blog post types for the archive/index
+interface BaseBlogPost {
   title: string;
-  topic: string;
-  year: string;
-  director: string;
   link: string;
   dateAdded: string;
 }
 
-export interface ArticleMetadata {
+export interface FilmBlogPost extends BaseBlogPost {
+  type: 'film';
   topic: string;
   year: string;
-  title: string;
   director: string;
-  author: string;
+}
+
+export interface CreativeWritingBlogPost extends BaseBlogPost {
+  type: 'creative-writing';
+  location: string;
+  year: string;
+}
+
+export type BlogPost = FilmBlogPost | CreativeWritingBlogPost;
+
+// Article metadata types for the layout
+interface BaseMetadata {
+  title: string;
   keywords: string;
-  description: string;
+  author?: string;
+  description?: string;
+}
+
+export interface FilmMetadata extends BaseMetadata {
+  type: 'film';
+  topic: string;
+  year: string;
+  director: string;
   spoilers?: boolean;
 }
+
+export interface CreativeWritingMetadata extends BaseMetadata {
+  type: 'creative-writing';
+  location: string;
+  year: string;
+}
+
+export type ArticleMetadata = FilmMetadata | CreativeWritingMetadata;
 
 export interface ArticleLayoutProps {
   metadata: ArticleMetadata;

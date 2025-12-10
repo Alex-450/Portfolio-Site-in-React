@@ -1,17 +1,12 @@
 import ArticleLayout from '../Components/ArticleLayout';
-import { ArticleMetadata } from '../types';
-import { findBlogPost } from '../utils/blog';
+import { FilmMetadata } from '../types';
+import { findFilmPost } from '../utils/blog';
 
 const Page = () => {
-  const blog = findBlogPost(b => b.topic.toLowerCase() === "the hidden fortress");
-  const metadata: ArticleMetadata = {
-    topic: blog.topic,
-    year: blog.year,
-    title: blog.title,
-    director: blog.director,
-    author: 'Alex Stearn',
+  const blog = findFilmPost(b => b.topic.toLowerCase() === "the hidden fortress");
+  const metadata: FilmMetadata = {
+    ...blog,
     keywords: 'The Hidden Fortress, Akira Kurosawa, film anaylsis',
-    description: '',
     spoilers: true
   }
 

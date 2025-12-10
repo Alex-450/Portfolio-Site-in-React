@@ -1,16 +1,12 @@
 import ArticleLayout from '../Components/ArticleLayout';
 import YouTubeEmbed from '../Components/YouTubeEmbed';
-import { ArticleMetadata } from '../types';
-import { findBlogPost } from '../utils/blog';
+import { FilmMetadata } from '../types';
+import { findFilmPost } from '../utils/blog';
 
 const Page = () => {
-  const blog = findBlogPost(b => b.topic.toLowerCase() === "black panther");
-  const metadata: ArticleMetadata = {
-    topic: blog.topic,
-    year: blog.year,
-    title: blog.title,
-    author: 'Alex Stearn',
-    director: blog.director,
+  const blog = findFilmPost(b => b.topic.toLowerCase() === "black panther");
+  const metadata: FilmMetadata = {
+    ...blog,
     keywords: 'Black Panther, Ryan Coogler, Radical, film analysis',
     description: 'Can a film made by Marvel (and therefore Disney) really be a radical moment in the history of film and popular culture?...',
   }

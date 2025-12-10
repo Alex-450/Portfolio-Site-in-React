@@ -1,16 +1,12 @@
 import ArticleLayout from '../Components/ArticleLayout';
 import YouTubeEmbed from '../Components/YouTubeEmbed';
-import { ArticleMetadata } from '../types';
-import { findBlogPost } from '../utils/blog';
+import { FilmMetadata } from '../types';
+import { findFilmPost } from '../utils/blog';
 
 const Page = () => {
-  const blog = findBlogPost(b => b.topic.toLowerCase() === "28 years later");
-  const metadata: ArticleMetadata = {
-    topic: blog.topic,
-    title: blog.title,
-    year: blog.year,
-    director: blog.director,
-    author: 'Alex Stearn',
+  const blog = findFilmPost(b => b.topic.toLowerCase() === "28 years later");
+  const metadata: FilmMetadata = {
+    ...blog,
     keywords: '28 years later, Danny Boyle, Alex Garland film analysis',
     description: 'Twenty three years after the events of 28 Days Later (2002), a lot has changed...',
     spoilers: true,

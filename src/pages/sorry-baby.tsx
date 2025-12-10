@@ -1,18 +1,13 @@
 import ArticleLayout from '../Components/ArticleLayout';
 import YouTubeEmbed from '../Components/YouTubeEmbed';
-import { ArticleMetadata } from '../types';
-import { findBlogPost } from '../utils/blog';
+import { FilmMetadata } from '../types';
+import { findFilmPost } from '../utils/blog';
 
 const Page = () => {
-  const blog = findBlogPost(b => b.topic.toLowerCase() === "sorry, baby");
-  const metadata: ArticleMetadata = {
-    topic: blog.topic,
-    year: blog.year,
-    title: blog.title,
-    director: blog.director,
-    author: 'Alex Stearn',
+  const blog = findFilmPost(b => b.topic.toLowerCase() === "sorry, baby");
+  const metadata: FilmMetadata = {
+    ...blog,
     keywords: 'Sorry Baby, Eva Victor, film anaylsis',
-    description: '',
     spoilers: true
   }
 

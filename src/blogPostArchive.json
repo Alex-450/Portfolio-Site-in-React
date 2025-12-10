@@ -1,5 +1,6 @@
 [
   {
+    "type": "film",
     "title": "Navigating Trauma with Humour",
     "topic": "Sorry, Baby",
     "year": "2025",
@@ -8,6 +9,7 @@
     "dateAdded": "01/09/2025"
   },
   {
+    "type": "film",
     "title": "A Samurai Road Movie",
     "topic": "The Hidden Fortress",
     "year": "1958",
@@ -16,6 +18,7 @@
     "dateAdded": "20/07/2025"
   },
   {
+    "type": "film",
     "title": "Love Letter / Obituary",
     "topic": "28 Years Later",
     "year": "2025",
@@ -24,6 +27,7 @@
     "dateAdded": "28/06/2025"
   },
   {
+    "type": "film",
     "title": "The Cost of Art",
     "topic": "Fitzcarraldo",
     "year": "1982",
@@ -31,23 +35,24 @@
     "link": "/fitzcarraldo-cost-of-art",
     "dateAdded": "22/06/2025"
   },
-    {
+  {
+    "type": "creative-writing",
     "title": "Plage des Catalans",
-    "topic": "Marseille",
+    "location": "Marseille",
     "year": "2024",
-    "director": "Alex Stearn",
     "link": "/plage-des-catalans",
     "dateAdded": "29/09/2024"
   },
   {
+    "type": "creative-writing",
     "title": "Parc Longchamps",
-    "topic": "Marseille",
+    "location": "Marseille",
     "year": "2024",
-    "director": "Alex Stearn",
     "link": "/parc-longchamps",
     "dateAdded": "08/10/2024"
   },
   {
+    "type": "film",
     "title": "Radical or not?",
     "topic": "Black Panther",
     "year": "2018",
@@ -56,6 +61,7 @@
     "dateAdded": "10/03/2020"
   },
   {
+    "type": "film",
     "title": "Refugees and the Grand Budapest Hotel",
     "topic": "The Grand Budapest Hotel",
     "year": "2014",
@@ -64,6 +70,7 @@
     "dateAdded": "09/02/2020"
   },
   {
+    "type": "film",
     "title": "'Happiness isn't always fun'",
     "topic": "Ali: Angst Essen Seele Auf",
     "year": "1974",

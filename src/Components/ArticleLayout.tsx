@@ -3,7 +3,18 @@ import { useEffect } from "react";
 import SpoilerPill from './SpoilerPill';
 import { ArticleLayoutProps } from '../types';
 
+const defaultMetadata = {
+  author: 'Alex Stearn',
+  description: '',
+};
+
 const ArticleLayout = ({ metadata, children }: ArticleLayoutProps) => {
+  const meta = { ...defaultMetadata, ...metadata };
+
+  const pageTitle = meta.type === 'film'
+    ? `${meta.topic}: ${meta.title}`
+    : meta.title;
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -13,17 +24,21 @@ const ArticleLayout = ({ metadata, children }: ArticleLayoutProps) => {
       <Row className="justify-content-center">
         <Col xs={12} md={10} lg={8}>
           <article>
-            <title>{`${metadata.topic}: ${metadata.title}`}</title>
-            <meta name='description' content={metadata.description} property='og:description' />
-            <meta name='author' content={metadata.author} />
-            <meta name='keywords' content={metadata.keywords} />
-            <meta name='title' content={`${metadata.topic}: ${metadata.title}`} property="og:title" />
+            <title>{pageTitle}</title>
+            <meta name='description' content={meta.description} property='og:description' />
+            <meta name='author' content={meta.author} />
+            <meta name='keywords' content={meta.keywords} />
+            <meta name='title' content={pageTitle} property="og:title" />
             <meta property="og:type" content="website" />
-            <h1>{metadata.title}</h1>
-            <p>{metadata.topic} - {metadata.director} ({metadata.year})</p>
-            {metadata.spoilers &&
-              <p><SpoilerPill /></p>
-            }
+            <h1>{meta.title}</h1>
+            {meta.type === 'film' ? (
+              <>
+                <p>{meta.topic} - {meta.director} ({meta.year})</p>
+                {meta.spoilers && <p><SpoilerPill /></p>}
+              </>
+            ) : (
+              <p>{meta.location} - {meta.author} ({meta.year})</p>
+            )}
             <br></br>
             {children}
           </article>

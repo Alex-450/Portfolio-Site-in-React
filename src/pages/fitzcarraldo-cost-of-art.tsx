@@ -1,16 +1,12 @@
 import ArticleLayout from '../Components/ArticleLayout';
 import YouTubeEmbed from '../Components/YouTubeEmbed';
-import { ArticleMetadata } from '../types';
-import { findBlogPost } from '../utils/blog';
+import { FilmMetadata } from '../types';
+import { findFilmPost } from '../utils/blog';
 
 const Page = () => {
-  const blog = findBlogPost(b => b.topic.toLowerCase() === "fitzcarraldo");
-  const metadata: ArticleMetadata = {
-    topic: blog.topic,
-    title: blog.title,
-    year: blog.year,
-    author: 'Alex Stearn',
-    director: blog.director,
+  const blog = findFilmPost(b => b.topic.toLowerCase() === "fitzcarraldo");
+  const metadata: FilmMetadata = {
+    ...blog,
     keywords: 'Fitzcarraldo, Werner Herzog, Film analysis',
     description: 'At what point does the cost of art outweigh any benefit it could possibly have?...',
   }

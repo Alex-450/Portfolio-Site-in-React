@@ -1,9 +1,16 @@
 import blogPostArchive from '../blogPostArchive.json';
 import { Container, Col, Row } from 'react-bootstrap';
-import { BlogPost } from '../types';
+import { BlogPost, FilmBlogPost, CreativeWritingBlogPost } from '../types';
 
 const Page = () => {
-  const posts: BlogPost[] = blogPostArchive;
+  const posts: BlogPost[] = blogPostArchive as BlogPost[];
+
+  const getSubtitle = (blog: BlogPost) => {
+    if (blog.type === 'film') return (blog as FilmBlogPost).topic;
+    if (blog.type === 'creative-writing') return (blog as CreativeWritingBlogPost).location;
+    return '';
+  };
+
   return(
     <Container className="title-container flex-grow-1">
       <h1>Blog</h1>
@@ -20,7 +27,7 @@ const Page = () => {
             <div>{blog.dateAdded}</div>
           </Col>
           <Col>
-            <div>{blog.topic} | {blog.title} →</div>
+            <div>{getSubtitle(blog)} | {blog.title} →</div>
           </Col>
           <br></br>
         </Row>

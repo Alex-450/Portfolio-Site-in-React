@@ -1,17 +1,12 @@
 import ArticleLayout from '../Components/ArticleLayout';
-import { ArticleMetadata } from '../types';
-import { findBlogPost } from '../utils/blog';
+import { CreativeWritingMetadata } from '../types';
+import { findCreativeWritingPost } from '../utils/blog';
 
 const Page = () => {
-    const blog = findBlogPost(b => b.title.toLowerCase() === "parc longchamps");
-    const metadata: ArticleMetadata = {
-        topic: blog.topic,
-        year: blog.year,
-        director: blog.director,
-        title: blog.title,
-        author: 'Alex Stearn',
+    const blog = findCreativeWritingPost(b => b.title.toLowerCase() === "parc longchamps");
+    const metadata: CreativeWritingMetadata = {
+        ...blog,
         keywords: 'Parc Longchamps Marseille',
-        description: '',
       }
 
     return (
