@@ -23,7 +23,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.1.2",
-    "@types/node": "24.0.10",
+    "@types/node": "25.0.2",
     "gh-pages": "^6.3.0"
   },
   "scripts": {
