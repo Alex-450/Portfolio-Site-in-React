@@ -1,8 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto+Slab&display=swap');
 
 :root {
-  --dark-background: #171717;
+  --dark-background: #121212;
   --dark-text-color: #ffffff;
+  --dark-hover-background: #888888;
 }
 
 * {
@@ -59,7 +60,7 @@ button.footer-link {
 
 .footer-link:hover {
   color: white;
-  background-color: black;
+  background-color: #888888;
 }
 
 .footer-nav {
@@ -94,7 +95,7 @@ button.footer-link {
 
 .blog-row:hover {
   color: white;
-  background-color: black;
+  background-color: #888888;
 }
 
 .blog-body-text {
