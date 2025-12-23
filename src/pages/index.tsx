@@ -20,7 +20,7 @@ const Page = () => {
       </Row>
       {posts.map((blog, index) => (
       <a href={blog.link} className="blog-link" key={blog.title}>
-        <Row className="blog-row slide-in" style={{ animationDelay: `0.${index + 1}s` }}>
+        <Row className="blog-row slide-in" style={{ animationDelay: `${(index / 10) + 0.1}s` }}>
           <Col md={2}>{blog.dateAdded}</Col>
           <Col>{getSubtitle(blog)} | {blog.title} →</Col>
         </Row>

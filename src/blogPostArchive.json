@@ -1,6 +1,15 @@
 [
   {
     "type": "film",
+    "title": "Tendrils of Fascism",
+    "topic": "Sentimental Value",
+    "year": "2025",
+    "director": "Joachim Trier",
+    "link": "/sentimental-value",
+    "dateAdded": "23/12/2025"
+  },
+  {
+    "type": "film",
     "title": "Navigating Trauma with Humour",
     "topic": "Sorry, Baby",
     "year": "2025",

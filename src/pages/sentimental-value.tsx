@@ -1,0 +1,90 @@
+import ArticleLayout from '../Components/ArticleLayout';
+import YouTubeEmbed from '../Components/YouTubeEmbed';
+import { FilmMetadata } from '../types';
+import { findFilmPost } from '../utils/blog';
+
+const Page = () => {
+  const blog = findFilmPost(b => b.topic.toLowerCase() === "sentimental value");
+  const metadata: FilmMetadata = {
+    ...blog,
+    keywords: 'Sentimental Value, Joachim Trier, film analysis',
+    description: '',
+  }
+
+  return (
+    <ArticleLayout metadata={metadata}>
+      <p>
+        When someone experiences life-altering trauma, the echoes and reverberations can be seen and felt everywhere. 
+        Not just through memories and stories, but in the physical spaces they inhabited.
+        Joachim Trier's latest film tells the story of generational trauma and the gaps and silences it can create between the people who come afterwards.
+      </p>
+
+      <p>
+        We meet Nora and her younger sister Agnes as adults, Agnes is the quieter of the two, a historian who is much less confrontational than her stage actor sister Nora. 
+        Agnes seems to have come out of their childhood calmer, she has a husband and young son and seems stable and content.
+        By contrast we first see Nora being dragged onto stage by her colleagues after trying to sprint out of the theatre before her show opens.
+      </p>
+
+      <p>
+        Nora and Agnes grew up mostly without their father, Gustav, who left when they were young. 
+        The girls lived with their mother in the house he'd grown up in, the house where he found his mother Karin after she had hung herself. 
+        She had never recovered from being taken prisoner and tortured during the Nazi occupation.
+      </p>
+
+      <p>
+        Karin could not reconcile her domestic life with what had happened to her, and Gustav could not stay in the house or the marriage once his daughters started growing up. 
+        His conversations with them now are stitled and awkward, he worries about Nora, but he doesn't know how to connect with her.
+      </p> 
+      
+      <p>
+        Gustav seems to use film as a way to connect with his daughters. 
+        When she was young Agnes appeared in one of his films.
+        We watch a scene where she is being chased by soldiers. 
+        She escapes onto a train, but watches through the window as her brother is captured.
+        We see a helpless child watch on as one of their family members is taken away.
+        Perhaps he is imagining himself in the place of the brother, being taken by the Nazis instead of his mother, with her placed as the helpless one watching from the window. 
+        He certainly sees parallels between his daughters and his mother, and seems to feel a similar sense of helplessness when it comes to their safety.
+        Was he trying to communicate his pain to his young daughter, by having her inhabit this character?
+      </p>
+
+      <p>
+        His attempt to connect with Nora in the present day has him trying to cast her in a film as his mother, and he wants to shoot the film in their old house. 
+        He wants Agnes' son to play a young Gustav, leaving the house and saying goodbye to his mother for the last time. 
+        But this film is not about his mother, it is about his fears for his daughter, that the same sadness and pain that took his mother from him could take his daughter as well. 
+        By imagining Nora killing herself, he lives out his greatest fear through his art, that he will once again be helpless to prevent someone he loves being taken from him.
+      </p>
+        
+      <p>
+        It transpires that Nora actually has attempted suicide, but she and Agnes kept it a secret from their father. 
+        Did he maybe sense what she was feeling? 
+        He wants Nora to read his script, to show her that he understands how she feels. Maybe he feels responsible, feels that the trauma his mother passed to him has made its way to her as well. 
+        When they actually sit face to face to talk they can't say what they want to say and the conversations often end acrimoniously, but through the artifice of the film, they are able to reach one another.
+      </p>
+      
+      <p>
+        The house is not simply a passive onlooker, it was there during the occupation, the neigbouring buildings housed the people who probably turned Gustav's mother in to the authorities. 
+        The creaks and cracks all tell a story, the building has seen happiness and sadness, birth and death. 
+        At one particularly low point, Gustav drunkenly stares into the room where his mother was found, and we are left to guess at what he might be going through his mind: 
+        is he thinking of following her lead? 
+        Or simply cursing the place where his pent up anguish originated. 
+        The house does not forget, and neither do we, the pain of hostile occupation, of betrayal, of freedom curtailed and the deep scars that the people who do survive carry with them forever, sometimes a weight that becomes unbearable.
+      </p>
+
+      <p>
+        Art can often be our attempt to communicate the things that are too painful to say out loud, or impossible to make sense of without distancing ourselves by telling a story. 
+        Maybe its only by creating this distance that we can confront the things that haunt us, even if its the people who are seemimgly closest to us who we are trying to communicate with.
+      </p>
+
+      <p>
+        Gustav and Nora find their emotional release through acting and film making, but for Agnes it comes through her study of history, from discovering in detail exactly what took place in her home country, the unspeakable acts that took place and are now coldly recorded on paper and housed in beautiful, peaceful buildings. 
+        Whichever path we take, we have to find ways to communicate with each other and with ourselves, to somehow break the cycle of unspoken pain that leads us to question whether it might be easier not to exist at all.
+      </p>
+      
+      <hr></hr>
+
+      <YouTubeEmbed videoId='lKbcKQN5Yrw'></YouTubeEmbed>
+    </ArticleLayout>
+    );
+  }
+
+export default Page;
