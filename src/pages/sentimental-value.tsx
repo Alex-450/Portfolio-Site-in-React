@@ -40,9 +40,8 @@ const Page = () => {
         Gustav seems to use film as a way to connect with his daughters. 
         When she was young Agnes appeared in one of his films.
         We watch a scene where she is being chased by soldiers. 
-        She escapes onto a train, but watches through the window as her brother is captured.
-        We see a helpless child watch on as one of their family members is taken away.
-        Perhaps he is imagining himself in the place of the brother, being taken by the Nazis instead of his mother, with her placed as the helpless one watching from the window. 
+        She escapes onto a train, but watches helplessly through the window as the small boy she was with is captured.
+        Perhaps he is imagining himself in the place of the boy, being taken by the Nazis instead of his mother. 
         He certainly sees parallels between his daughters and his mother, and seems to feel a similar sense of helplessness when it comes to their safety.
         Was he trying to communicate his pain to his young daughter, by having her inhabit this character?
       </p>
@@ -76,7 +75,7 @@ const Page = () => {
       </p>
 
       <p>
-        Gustav and Nora find their emotional release through acting and film making, but for Agnes it comes through her study of history, from discovering in detail exactly what took place in her home country, the unspeakable acts that took place and are now coldly recorded on paper and housed in beautiful, peaceful buildings. 
+        Gustav and Nora find their emotional release through acting and film making, but for Agnes it comes through her study of history, from discovering in detail exactly what happened in her home country, the unspeakable acts that took place and are now coldly recorded on paper and housed in beautiful, peaceful buildings. 
         Whichever path we take, we have to find ways to communicate with each other and with ourselves, to somehow break the cycle of unspoken pain that leads us to question whether it might be easier not to exist at all.
       </p>
       
