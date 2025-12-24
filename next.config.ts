@@ -1,12 +1,12 @@
-import type { NextConfig } from 'next'
-import createMDX from '@next/mdx'
+import type { NextConfig } from 'next';
+import createMDX from '@next/mdx';
 
 const nextConfig: NextConfig = {
   output: 'export', // Outputs a Single-Page Application (SPA)
   trailingSlash: true,
   pageExtensions: ['ts', 'tsx', 'md', 'mdx'],
-}
+};
 
-const withMDX = createMDX()
+const withMDX = createMDX();
 
-export default withMDX(nextConfig)
+export default withMDX(nextConfig);

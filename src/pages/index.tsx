@@ -7,11 +7,12 @@ const Page = () => {
 
   const getSubtitle = (blog: BlogPost) => {
     if (blog.type === 'film') return (blog as FilmBlogPost).topic;
-    if (blog.type === 'creative-writing') return (blog as CreativeWritingBlogPost).location;
+    if (blog.type === 'creative-writing')
+      return (blog as CreativeWritingBlogPost).location;
     return '';
   };
 
-  return(
+  return (
     <Container className="title-container flex-grow-1">
       <h1>Blog</h1>
       <Row className="blog-header">
@@ -19,15 +20,20 @@ const Page = () => {
         <Col>Title</Col>
       </Row>
       {posts.map((blog, index) => (
-      <a href={blog.link} className="blog-link" key={blog.title}>
-        <Row className="blog-row slide-in" style={{ animationDelay: `${(index / 10) + 0.1}s` }}>
-          <Col md={2}>{blog.dateAdded}</Col>
-          <Col>{getSubtitle(blog)} | {blog.title} →</Col>
-        </Row>
-      </a>
+        <a href={blog.link} className="blog-link" key={blog.title}>
+          <Row
+            className="blog-row slide-in"
+            style={{ animationDelay: `${index / 10 + 0.1}s` }}
+          >
+            <Col md={2}>{blog.dateAdded}</Col>
+            <Col>
+              {getSubtitle(blog)} | {blog.title} →
+            </Col>
+          </Row>
+        </a>
       ))}
     </Container>
-    )
-}
+  );
+};
 
 export default Page;

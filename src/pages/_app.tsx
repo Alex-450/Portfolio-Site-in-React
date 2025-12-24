@@ -1,10 +1,10 @@
-import '../css/index.css'
-import '../css/dark-mode.css'
+import '../css/index.css';
+import '../css/dark-mode.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NavBar from '../Components/NavBar';
 import Footer from '../Components/Footer';
-import { ThemeProvider } from 'next-themes'
-import type { AppProps } from 'next/app'
+import { ThemeProvider } from 'next-themes';
+import type { AppProps } from 'next/app';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -15,7 +15,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <Footer />
       </div>
     </ThemeProvider>
-  )
+  );
 }
 
 export default MyApp;

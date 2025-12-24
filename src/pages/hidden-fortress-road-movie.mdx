@@ -1,16 +1,18 @@
 import ArticleLayout from '../Components/ArticleLayout';
 import { findFilmPost } from '../utils/blog';
 
-export const blog = findFilmPost(b => b.topic.toLowerCase() === "the hidden fortress");
+export const blog = findFilmPost(
+  (b) => b.topic.toLowerCase() === 'the hidden fortress'
+);
 export const metadata = {
   ...blog,
   keywords: 'The Hidden Fortress, Akira Kurosawa, film anaylsis',
-  spoilers: true
+  spoilers: true,
 };
 
-*"…the happiness of these days - I would never have known living in the castle. I saw people as they really are. I saw their beauty… and their ugliness… with my own eyes … I can now die without regret"* - Princess Yuki
+_"…the happiness of these days - I would never have known living in the castle. I saw people as they really are. I saw their beauty… and their ugliness… with my own eyes … I can now die without regret"_ - Princess Yuki
 
-Set against the backdrop of a civil war in medieval Japan, the protagonists of Akira Kurosawa's *The Hidden Fortress* are never far away from death. We are introduced to the two hapless, greedy, scheming peasants Tahei and Matashichi as they attempt to escape occupied territory. They had left the peace of their home with the hopes of making a fortune in the war, but had arrived too late and had been forced to dig graves instead. In the opening sequence they witness a fleeing soldier being chased down and killed. Shortly afterwards Tahei sees another soldier shot whilst attempting to cross the newly closed and heavily guarded border.
+Set against the backdrop of a civil war in medieval Japan, the protagonists of Akira Kurosawa's _The Hidden Fortress_ are never far away from death. We are introduced to the two hapless, greedy, scheming peasants Tahei and Matashichi as they attempt to escape occupied territory. They had left the peace of their home with the hopes of making a fortune in the war, but had arrived too late and had been forced to dig graves instead. In the opening sequence they witness a fleeing soldier being chased down and killed. Shortly afterwards Tahei sees another soldier shot whilst attempting to cross the newly closed and heavily guarded border.
 
 Whilst plotting their escape they run into General Rokurota who is also on the run from the occupying forces, with a large stash of gold smuggled out of the castle and the Princess Yuki, who is also fleeing for her life. The general initially considers killing them, but when he learns of their unorthodox plan to get across the border he decides to play on their greed and offer them a share of the gold in return for their help.
 
@@ -22,13 +24,13 @@ At one point in their journey they are particularly close to capture and are for
 
 When she is eventually captured and is facing execution, she realises that the richness of life might have passed her by had she spent all of her time in the castle. Her proximity to death has let her experience life more fully and allowed her to see both the darkness and the light. She has been able to interact with people on their level, not as a princess to her subjects. She has proven herself capable not just of living in the real world, but of thriving.
 
-The film also points to the power of mercy and forgiveness in altering people. Rokurota spares a rival Yamana General Hyoe Tadokoro after defeating him in a duel, and Hyoe later helps him and Yuki escape captivity.  Princess Yuki saves one of her subjects from a life of sex work by ordering Rokurota to buy her from a tavern owner. When Tahei and Matashichi draw straws over taking advantage of the princess whilst she sleeps, it is the now fiercely loyal woman who has been saved from a life of constant exploitation who protects her. After finally making it to safety, rather than punishing Tahei and Matashichi for their constant betrayals, Princess Yuki gives them a piece of gold in reward for their efforts, telling them to share it equally and not to fight. Having spent the entirety of the film letting their greed get the better of them and come between them, they walk down the steps of the palace each trying to convince the other to keep the gold piece.
+The film also points to the power of mercy and forgiveness in altering people. Rokurota spares a rival Yamana General Hyoe Tadokoro after defeating him in a duel, and Hyoe later helps him and Yuki escape captivity. Princess Yuki saves one of her subjects from a life of sex work by ordering Rokurota to buy her from a tavern owner. When Tahei and Matashichi draw straws over taking advantage of the princess whilst she sleeps, it is the now fiercely loyal woman who has been saved from a life of constant exploitation who protects her. After finally making it to safety, rather than punishing Tahei and Matashichi for their constant betrayals, Princess Yuki gives them a piece of gold in reward for their efforts, telling them to share it equally and not to fight. Having spent the entirety of the film letting their greed get the better of them and come between them, they walk down the steps of the palace each trying to convince the other to keep the gold piece.
 
-*The Hidden Fortress* is an incredibly accessible film considering its age and setting, filled with laugh out loud moments and beautiful cinematography. It serves ultimately as a reminder to view life as an adventure, to accept the beautiful and the ugly, and to approach others with curiosity rather than judgement.
+_The Hidden Fortress_ is an incredibly accessible film considering its age and setting, filled with laugh out loud moments and beautiful cinematography. It serves ultimately as a reminder to view life as an adventure, to accept the beautiful and the ugly, and to approach others with curiosity rather than judgement.
 
 ---
 
-Note: *The Hidden Fortress* can be viewed for free via the Internet Archive: [https://archive.org/details/the-hidden-fortress](https://archive.org/details/the-hidden-fortress)
+Note: _The Hidden Fortress_ can be viewed for free via the Internet Archive: [https://archive.org/details/the-hidden-fortress](https://archive.org/details/the-hidden-fortress)
 
 export default function Layout({ children }) {
   return <ArticleLayout metadata={metadata}>{children}</ArticleLayout>;

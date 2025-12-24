@@ -2,7 +2,7 @@
 
 Features:
 
--  Personal Blog.
+- Personal Blog.
 
 ## Info
 

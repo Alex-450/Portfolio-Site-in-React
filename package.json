@@ -19,14 +19,17 @@
   },
   "devDependencies": {
     "@types/node": "25.0.2",
-    "gh-pages": "^6.3.0"
+    "gh-pages": "^6.3.0",
+    "prettier": "^3.7.4"
   },
   "scripts": {
     "dev": "next dev",
     "start": "npx serve@latest ./out",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d out --nojekyll --cname a-450.com",
-    "build": "next build"
+    "build": "next build",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "eslintConfig": {
     "extends": "react-app"

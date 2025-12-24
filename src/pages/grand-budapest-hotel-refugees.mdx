@@ -2,11 +2,14 @@ import ArticleLayout from '../Components/ArticleLayout';
 import YouTubeEmbed from '../Components/YouTubeEmbed';
 import { findFilmPost } from '../utils/blog';
 
-export const blog = findFilmPost(b => b.topic.toLowerCase() === "the grand budapest hotel");
+export const blog = findFilmPost(
+  (b) => b.topic.toLowerCase() === 'the grand budapest hotel'
+);
 export const metadata = {
   ...blog,
   keywords: 'The Grand Budapest Hotel, Wes Anderson, Refugees, film anaylsis',
-  description: "'There are still faint glimmers of civilization left in this barbaric slaughterhouse that was once known as humanity.' – M. Gustave",
+  description:
+    "'There are still faint glimmers of civilization left in this barbaric slaughterhouse that was once known as humanity.' – M. Gustave",
 };
 
 'There are still faint glimmers of civilization left in this barbaric slaughterhouse that was once known as humanity.' – M. Gustave
@@ -42,7 +45,7 @@ The Grand Budapest Hotel does not tell us anything particularly new about the pl
 
 ---
 
-<YouTubeEmbed videoId='1Fg5iWmQjwk' />
+<YouTubeEmbed videoId="1Fg5iWmQjwk" />
 
 ---
 
@@ -52,8 +55,11 @@ Anderson, Wes and Guinness, Hugo, The Grand Budapest Hotel Screenplay (2014) [ac
 
 Anderson, Wes, Wes Anderson Shares a Refugee Story from The Grand Budapest Hotel [Youtube Video] United Nations High Commissioner for Refugees (UNHCR), 11 June 2014 [www.youtube.com/watch?v=u_4ZqtDSP4c](https://www.youtube.com/watch?v=u_4ZqtDSP4c) [accessed 1 March 2017]
 
-<div style={{wordWrap: 'break-word'}}>
-Eisen, Norman L., 'The Grand Budapest Hotel is  a Thoughtful Comedy about Tragedy', The Atlantic, 20 Februrary 2015 [https://www.theatlantic.com/entertainment/archive/2015/02/how-grand-budapest-hotel-pays-tribute-to-the-holocaust/385264/](https://www.theatlantic.com/entertainment/archive/2015/02/how-grand-budapest-hotel-pays-tribute-to-the-holocaust/385264/) [accessed 1 March 2017]
+<div style={{ wordWrap: 'break-word' }}>
+  Eisen, Norman L., 'The Grand Budapest Hotel is a Thoughtful Comedy about
+  Tragedy', The Atlantic, 20 Februrary 2015
+  [https://www.theatlantic.com/entertainment/archive/2015/02/how-grand-budapest-hotel-pays-tribute-to-the-holocaust/385264/](https://www.theatlantic.com/entertainment/archive/2015/02/how-grand-budapest-hotel-pays-tribute-to-the-holocaust/385264/)
+  [accessed 1 March 2017]
 </div>
 
 export default function Layout({ children }) {

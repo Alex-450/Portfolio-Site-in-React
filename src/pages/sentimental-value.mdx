@@ -2,11 +2,14 @@ import ArticleLayout from '../Components/ArticleLayout';
 import YouTubeEmbed from '../Components/YouTubeEmbed';
 import { findFilmPost } from '../utils/blog';
 
-export const blog = findFilmPost(b => b.topic.toLowerCase() === "sentimental value");
+export const blog = findFilmPost(
+  (b) => b.topic.toLowerCase() === 'sentimental value'
+);
 export const metadata = {
   ...blog,
   keywords: 'Sentimental Value, Joachim Trier, film analysis',
   description: '',
+  spoilers: true,
 };
 
 When someone experiences life-altering trauma, the echoes and reverberations can be seen and felt everywhere.
@@ -57,7 +60,7 @@ Whichever path we take, we have to find ways to communicate with each other and 
 
 ---
 
-<YouTubeEmbed videoId='lKbcKQN5Yrw' />
+<YouTubeEmbed videoId="lKbcKQN5Yrw" />
 
 export default function Layout({ children }) {
   return <ArticleLayout metadata={metadata}>{children}</ArticleLayout>;

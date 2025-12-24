@@ -1,5 +1,5 @@
 import { Container, Row, Col } from 'react-bootstrap';
-import { useEffect } from "react";
+import { useEffect } from 'react';
 import SpoilerPill from './SpoilerPill';
 import { ArticleLayoutProps } from '../types';
 
@@ -11,9 +11,8 @@ const defaultMetadata = {
 const ArticleLayout = ({ metadata, children }: ArticleLayoutProps) => {
   const meta = { ...defaultMetadata, ...metadata };
 
-  const pageTitle = meta.type === 'film'
-    ? `${meta.topic}: ${meta.title}`
-    : meta.title;
+  const pageTitle =
+    meta.type === 'film' ? `${meta.topic}: ${meta.title}` : meta.title;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -25,19 +24,31 @@ const ArticleLayout = ({ metadata, children }: ArticleLayoutProps) => {
         <Col xs={12} md={10} lg={8}>
           <article>
             <title>{pageTitle}</title>
-            <meta name='description' content={meta.description} property='og:description' />
-            <meta name='author' content={meta.author} />
-            <meta name='keywords' content={meta.keywords} />
-            <meta name='title' content={pageTitle} property="og:title" />
+            <meta
+              name="description"
+              content={meta.description}
+              property="og:description"
+            />
+            <meta name="author" content={meta.author} />
+            <meta name="keywords" content={meta.keywords} />
+            <meta name="title" content={pageTitle} property="og:title" />
             <meta property="og:type" content="website" />
             <h1>{meta.title}</h1>
             {meta.type === 'film' ? (
               <>
-                <p>{meta.topic} - {meta.director} ({meta.year})</p>
-                {meta.spoilers && <p><SpoilerPill /></p>}
+                <p>
+                  {meta.topic} - {meta.director} ({meta.year})
+                </p>
+                {meta.spoilers && (
+                  <p>
+                    <SpoilerPill />
+                  </p>
+                )}
               </>
             ) : (
-              <p>{meta.location} - {meta.author} ({meta.year})</p>
+              <p>
+                {meta.location} - {meta.author} ({meta.year})
+              </p>
             )}
             <br></br>
             {children}

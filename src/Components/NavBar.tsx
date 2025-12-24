@@ -1,4 +1,4 @@
-import { Navbar, Container, Col} from 'react-bootstrap';
+import { Navbar, Container, Col } from 'react-bootstrap';
 import '../css/index.css';
 
 const NavBar = () => (
@@ -6,10 +6,11 @@ const NavBar = () => (
     <Container>
       <Navbar className="navbar" variant="dark" sticky="top" expand="lg">
         <Col md={10}>
-          <a href="/" className="navbar-brand">a-450</a>
+          <a href="/" className="navbar-brand">
+            a-450
+          </a>
         </Col>
-        <Col>
-        </Col>
+        <Col></Col>
       </Navbar>
     </Container>
   </div>

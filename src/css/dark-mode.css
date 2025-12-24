@@ -11,10 +11,12 @@
 
   .blog-row:hover {
     color: var(--dark-background);
-    background-color: var(--dark-hover-background); }
+    background-color: var(--dark-hover-background);
+  }
 
   .blog-header {
-    border-bottom: 1px solid var(--dark-hover-background);     }
+    border-bottom: 1px solid var(--dark-hover-background);
+  }
 
   .footer-container {
     background-color: #272727;

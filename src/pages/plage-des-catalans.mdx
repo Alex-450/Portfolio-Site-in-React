@@ -1,7 +1,9 @@
 import ArticleLayout from '../Components/ArticleLayout';
 import { findCreativeWritingPost } from '../utils/blog';
 
-export const blog = findCreativeWritingPost(b => b.title.toLowerCase() === "plage des catalans");
+export const blog = findCreativeWritingPost(
+  (b) => b.title.toLowerCase() === 'plage des catalans'
+);
 export const metadata = {
   ...blog,
   keywords: 'Plage des Catalans Marseille',
