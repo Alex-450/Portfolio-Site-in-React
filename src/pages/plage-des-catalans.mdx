@@ -1,0 +1,22 @@
+import ArticleLayout from '../Components/ArticleLayout';
+import { findCreativeWritingPost } from '../utils/blog';
+
+export const blog = findCreativeWritingPost(b => b.title.toLowerCase() === "plage des catalans");
+export const metadata = {
+  ...blog,
+  keywords: 'Plage des Catalans Marseille',
+};
+
+Barely perceptible against the bright blue sky<br/>
+An old scar,<br/>
+a slither of white,<br/>
+calmly dangles over the sea<br/>
+If I look away it takes a moment to find it again<br/>
+As if shying away from my gaze<br/>
+But still it sits,<br/>
+waiting for night,<br/>
+as the waves crash against the fading of the day
+
+export default function Layout({ children }) {
+  return <ArticleLayout metadata={metadata}>{children}</ArticleLayout>;
+}
