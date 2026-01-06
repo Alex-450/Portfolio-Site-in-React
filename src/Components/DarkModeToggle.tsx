@@ -24,7 +24,7 @@ const DarkModeToggle = () => {
       className="footer-link"
       onClick={() => setTheme(darkMode ? 'light' : 'dark')}
     >
-      {darkMode ? 'Light mode →' : 'Dark mode →'}
+      {darkMode ? 'Light mode ›' : 'Dark mode ›'}
     </button>
   );
 };

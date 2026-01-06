@@ -7,7 +7,7 @@ const Footer = () => (
     <Container>
       <Row>
         <Col xs={12} md={4} className="footer-explainer">
-          <p>External Links ↓</p>
+          <p>External Links ›</p>
         </Col>
       </Row>
 
@@ -18,7 +18,7 @@ const Footer = () => (
           target="_blank"
           rel="noopener noreferrer"
         >
-          Github →
+          Github ›
         </a>
       </Col>
 
@@ -29,13 +29,13 @@ const Footer = () => (
           target="_blank"
           rel="noopener noreferrer"
         >
-          LinkedIn →
+          LinkedIn ›
         </a>
       </Col>
 
       <Row>
         <Col xs={12} md={{ span: 4, offset: 4 }} className="footer-explainer">
-          <p>Options ↓</p>
+          <p>Options ›</p>
         </Col>
       </Row>
 
@@ -47,14 +47,14 @@ const Footer = () => (
 
       <Row className="d-flex">
         <Col xs={12} md={{ span: 4, offset: 8 }} className="footer-explainer">
-          <p>Sitemap ↓</p>
+          <p>Sitemap ›</p>
         </Col>
       </Row>
 
       <Row>
         <Col xs={12} md={{ span: 4, offset: 8 }}>
           <a className="footer-link" href="/">
-            Blog →
+            Blog ›
           </a>
         </Col>
       </Row>

@@ -26,13 +26,13 @@ const Page = () => {
           className={`blog-pill ${activeCategory === 'film' ? 'blog-pill-active' : ''}`}
           onClick={() => setActiveCategory('film')}
         >
-          Film →
+          Film
         </button>
         <button
           className={`blog-pill ${activeCategory === 'creative-writing' ? 'blog-pill-active' : ''}`}
           onClick={() => setActiveCategory('creative-writing')}
         >
-          Creative Writing →
+          Creative Writing
         </button>
       </div>
       <Row className="blog-header">
@@ -47,7 +47,7 @@ const Page = () => {
           >
             <Col md={2}>{blog.dateAdded}</Col>
             <Col>
-              {getSubtitle(blog)} | {blog.title} →
+              {getSubtitle(blog)} | {blog.title} ›
             </Col>
           </Row>
         </a>
