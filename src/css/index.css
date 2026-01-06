@@ -76,6 +76,35 @@ button.footer-link {
   background-color: #ebeeef;
 }
 
+.blog-pills {
+  display: flex;
+  gap: 5px;
+}
+
+.blog-pill {
+  border: 1px solid black;
+  background-color: #dee2e6;
+  color: black;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.blog-pill:hover {
+  color: white;
+  background-color: #888888;
+}
+
+.blog-pill-active {
+  color: white;
+  background-color: #888888;
+}
+
+.blog-pill-active:hover {
+  background-color: #888888;
+}
+
 .blog-link {
   text-decoration: none;
 }

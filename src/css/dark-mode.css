@@ -4,6 +4,26 @@
     color: var(--dark-text-color);
   }
 
+  .blog-pill {
+    border: 1px solid var(--dark-hover-background);
+    background-color: var(--dark-background);
+    color: var(--dark-text-color);
+  }
+
+  .blog-pill:hover {
+    color: var(--dark-background);
+    background-color: var(--dark-hover-background);
+  }
+
+  .blog-pill-active {
+    background-color: var(--dark-hover-background);
+    color: var(--dark-background);
+  }
+
+  .blog-pill-active:hover {
+    background-color: var(--dark-hover-background);
+  }
+
   .blog-row {
     color: white;
     border-bottom: 1px solid var(--dark-hover-background);
