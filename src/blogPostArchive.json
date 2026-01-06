@@ -1,5 +1,14 @@
 [
   {
+    "type": "film",
+    "title": "Death and Capitalism",
+    "topic": "La Chimera",
+    "year": "2023",
+    "director": "Alice Rohrwacher",
+    "link": "/la-chimera",
+    "dateAdded": "06/01/2026"
+  },
+  {
     "type": "creative-writing",
     "title": "18 Cotland Acres",
     "location": "Redhill",
