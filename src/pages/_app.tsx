@@ -9,9 +9,14 @@ import type { AppProps } from 'next/app';
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider attribute="class" defaultTheme="system">
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
       <div className="d-flex flex-column min-vh-100 blog-container">
         <NavBar />
-        <Component {...pageProps} />
+        <main id="main-content">
+          <Component {...pageProps} />
+        </main>
         <Footer />
       </div>
     </ThemeProvider>
