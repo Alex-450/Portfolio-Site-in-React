@@ -34,6 +34,17 @@ const Footer = () => (
         </a>
       </Col>
 
+      <Col xs={12} md={4}>
+        <a
+          className="footer-link"
+          href="https://letterboxd.com/a_450/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Letterboxd ›
+        </a>
+      </Col>
+
       <Row>
         <Col xs={12} md={{ span: 4, offset: 4 }} className="footer-explainer">
           <p>Options ›</p>

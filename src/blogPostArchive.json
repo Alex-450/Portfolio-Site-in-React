@@ -1,5 +1,14 @@
 [
   {
+    "type": "book",
+    "title": "Incident on Lake Geneva",
+    "topic": "",
+    "year": "",
+    "author": "Stefan Zweig",
+    "link": "",
+    "dateAdded": ""
+  },
+  {
     "type": "film",
     "title": "Death and Capitalism",
     "topic": "La Chimera",
