@@ -6,7 +6,8 @@
     "year": "2023",
     "director": "Alice Rohrwacher",
     "link": "/la-chimera",
-    "dateAdded": "06/01/2026"
+    "dateAdded": "06/01/2026",
+    "description": "An exploration of capitalism and mortality in Alice Rohrwacher's La Chimera, where a man's supernatural gift for finding ancient tombs becomes a meditation on loss and letting go."
   },
   {
     "type": "creative-writing",
@@ -14,7 +15,8 @@
     "location": "Redhill",
     "year": "2025",
     "link": "/18-cotland-acres",
-    "dateAdded": "30/12/2025"
+    "dateAdded": "30/12/2025",
+    "description": "A reflection on time spent in my grandmother's house and the things that she taught me"
   },
   {
     "type": "film",
@@ -23,7 +25,8 @@
     "year": "2025",
     "director": "Joachim Trier",
     "link": "/sentimental-value",
-    "dateAdded": "23/12/2025"
+    "dateAdded": "23/12/2025",
+    "description": "Joachim Trier's Sentimental Value explores how generational trauma echoes through a family, and how art can communicate pain too deep for words."
   },
   {
     "type": "film",
@@ -32,7 +35,8 @@
     "year": "2025",
     "director": "Eva Victor",
     "link": "/sorry-baby",
-    "dateAdded": "01/09/2025"
+    "dateAdded": "01/09/2025",
+    "description": "Eva Victor's Sorry, Baby examines how one woman navigates trauma through dark humour, exploring what helps us continue living."
   },
   {
     "type": "film",
@@ -41,7 +45,8 @@
     "year": "1958",
     "director": "Akira Kurosawa",
     "link": "/hidden-fortress-road-movie",
-    "dateAdded": "20/07/2025"
+    "dateAdded": "20/07/2025",
+    "description": "How Kurosawa's The Hidden Fortress uses a princess's journey through civil war to explore themes of mortality, mercy, and seeing life beyond the castle walls."
   },
   {
     "type": "film",
@@ -50,7 +55,8 @@
     "year": "2025",
     "director": "Danny Boyle",
     "link": "/28-years-later",
-    "dateAdded": "28/06/2025"
+    "dateAdded": "28/06/2025",
+    "description": "A look into the parallels between Danny Boyle's 28 Years Later and the trajectory of the United Kingdom"
   },
   {
     "type": "film",
@@ -59,7 +65,8 @@
     "year": "1982",
     "director": "Werner Herzog",
     "link": "/fitzcarraldo-cost-of-art",
-    "dateAdded": "22/06/2025"
+    "dateAdded": "22/06/2025",
+    "description": "At what point does the cost of art outweigh any benefit it could possibly have? A look into the cost of art through Werner Herzog's Fitzcarraldo"
   },
   {
     "type": "creative-writing",
@@ -67,7 +74,8 @@
     "location": "Marseille",
     "year": "2024",
     "link": "/plage-des-catalans",
-    "dateAdded": "29/09/2024"
+    "dateAdded": "29/09/2024",
+    "description": "A poem watching the moon appear over Plage des Catalans in Marseille as day turns to night."
   },
   {
     "type": "creative-writing",
@@ -75,7 +83,8 @@
     "location": "Marseille",
     "year": "2024",
     "link": "/parc-longchamps",
-    "dateAdded": "08/10/2024"
+    "dateAdded": "08/10/2024",
+    "description": "A short piece capturing the closing moments of Parc Longchamps in Marseille, as the last light fades and the park empties."
   },
   {
     "type": "film",
@@ -84,7 +93,8 @@
     "year": "2018",
     "director": "Ryan Coogler",
     "link": "/black-panther-radical",
-    "dateAdded": "10/03/2020"
+    "dateAdded": "10/03/2020",
+    "description": "Can a film made by Marvel (and therefore Disney) really be a radical moment in the history of film and popular culture?..."
   },
   {
     "type": "film",
@@ -93,7 +103,8 @@
     "year": "2014",
     "director": "Wes Anderson",
     "link": "/grand-budapest-hotel-refugees",
-    "dateAdded": "09/02/2020"
+    "dateAdded": "09/02/2020",
+    "description": "How Wes Anderson uses a fictional setting to tell a refugee story that is distinctly European"
   },
   {
     "type": "film",
@@ -102,6 +113,7 @@
     "year": "1974",
     "director": "Rainer Werner Fassbinder",
     "link": "/ali-angst-essen-seele-auf",
-    "dateAdded": "17/05/2017"
+    "dateAdded": "17/05/2017",
+    "description": "How Rainer Werner Fassbinder explored prejudice and pain through Ali: Fear Eats the Soul"
   }
 ]

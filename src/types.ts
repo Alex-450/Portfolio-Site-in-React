@@ -5,6 +5,7 @@ interface BaseBlogPost {
   title: string;
   link: string;
   dateAdded: string;
+  description: string;
 }
 
 export interface FilmBlogPost extends BaseBlogPost {
