@@ -160,3 +160,12 @@ button.footer-link {
   /* Start hidden */
   animation: slideInLeft 0.5s ease-out forwards;
 }
+
+.reference-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.reference-link:hover {
+  text-decoration: underline;
+}
