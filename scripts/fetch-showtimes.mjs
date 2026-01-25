@@ -20,7 +20,12 @@ function formatDay(dateStr) {
 
 async function fetchFeed(feed) {
   console.log(`Fetching ${feed.name}...`);
-  const response = await fetch(feed.url);
+  const response = await fetch(feed.url, {
+    headers: {
+      'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+      'User-Agent': 'Mozilla/5.0 (compatible; FilmListingsFetcher/1.0)',
+    },
+  });
   if (!response.ok) {
     throw new Error(`Failed to fetch ${feed.name}: ${response.status}`);
   }
