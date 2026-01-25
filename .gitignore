@@ -24,3 +24,7 @@ npm-debug.log*
 .next
 next-env.d.ts
 /out
+
+# generated data
+src/data/showtimes.json
+

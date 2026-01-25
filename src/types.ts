@@ -55,3 +55,27 @@ export interface ArticleLayoutProps {
 export interface YouTubeEmbedProps {
   videoId: string;
 }
+
+// Film listings types
+export interface Showtime {
+  date: string;
+  day: string;
+  datetime: string;
+  time: string;
+  ticketUrl: string;
+  screen: string;
+}
+
+export interface Film {
+  title: string;
+  director: string | null;
+  length: string | null;
+  posterUrl: string;
+  permalink: string;
+  showtimes: Showtime[];
+}
+
+export interface Cinema {
+  name: string;
+  films: Film[];
+}

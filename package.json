@@ -15,7 +15,8 @@
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.2.3",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "fast-xml-parser": "^4.3.0"
   },
   "devDependencies": {
     "@types/node": "25.0.8",
@@ -23,10 +24,13 @@
     "prettier": "^3.7.4"
   },
   "scripts": {
+    "predev": "npm run fetch-showtimes",
     "dev": "next dev",
     "start": "npx serve@latest ./out",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d out --nojekyll --cname a-450.com",
+    "fetch-showtimes": "node scripts/fetch-showtimes.mjs",
+    "prebuild": "npm run fetch-showtimes",
     "build": "next build",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

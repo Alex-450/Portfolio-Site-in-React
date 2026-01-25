@@ -70,6 +70,13 @@ const Footer = () => (
           </Link>
         </Col>
       </Row>
+      <Row>
+        <Col xs={12} md={{ span: 4, offset: 8 }}>
+          <Link className="footer-link" href="/film-listings">
+            Film Listings ›
+          </Link>
+        </Col>
+      </Row>
     </Container>
   </div>
 );

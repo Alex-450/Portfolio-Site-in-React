@@ -56,4 +56,75 @@
     color: var(--dark-background);
     background-color: var(--dark-hover-background);
   }
+
+  /* Film Listings dark mode */
+  .film-listings-header .subtitle {
+    color: #aaa;
+  }
+
+  .filter-select {
+    background-color: var(--dark-background);
+    color: var(--dark-text-color);
+    border-color: var(--dark-hover-background);
+  }
+
+  .filter-select:hover {
+    background-color: var(--dark-hover-background);
+    color: var(--dark-background);
+  }
+
+  .loading-text,
+  .no-results {
+    color: #aaa;
+  }
+
+  .error-text {
+    color: #f87171;
+  }
+
+  .cinema-section {
+    background-color: var(--dark-background);
+    border-color: var(--dark-hover-background);
+  }
+
+  .cinema-section h2 {
+    border-bottom-color: var(--dark-hover-background);
+  }
+
+  .film-card {
+    border-bottom-color: var(--dark-hover-background);
+  }
+
+  .film-poster,
+  .film-poster-placeholder {
+    border-color: var(--dark-hover-background);
+    background: #333;
+  }
+
+  .film-director,
+  .film-length,
+  .showtime-date {
+    color: #aaa;
+  }
+
+  .showtime-link {
+    background-color: var(--dark-background);
+    color: var(--dark-text-color);
+    border-color: var(--dark-hover-background);
+  }
+
+  .showtime-link:hover {
+    background-color: var(--dark-hover-background);
+    color: var(--dark-background);
+  }
+
+  .expand-btn {
+    color: var(--dark-text-color);
+    border-color: var(--dark-hover-background);
+  }
+
+  .expand-btn:hover {
+    background-color: var(--dark-hover-background);
+    color: var(--dark-background);
+  }
 }
