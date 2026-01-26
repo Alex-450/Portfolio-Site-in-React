@@ -23,24 +23,26 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
         if (!dayFilter) return true;
         return film.showtimes.some(s => {
           if (dayFilter === 'today') return s.date === today;
-          const day = new Date(s.date).toLocaleDateString('en-US', { weekday: 'short' });
-          return day === dayFilter;
+          return s.date === dayFilter;
         });
       });
       return { ...cinema, films: filteredFilms };
     })
     .filter(c => c.films.length > 0);
 
-  const allDays = new Set<string>();
+  const allDates = new Set<string>();
   cinemas.forEach(c => {
     c.films.forEach(f => {
       f.showtimes.forEach(s => {
-        const day = new Date(s.date).toLocaleDateString('en-US', { weekday: 'short' });
-        allDays.add(day);
+        if (s.date !== today) allDates.add(s.date);
       });
     });
   });
-  const dayOptions = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].filter(d => allDays.has(d));
+  const dayOptions = Array.from(allDates).sort().map(date => {
+    const d = new Date(date + 'T12:00:00');
+    const label = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+    return { value: date, label };
+  });
 
   return (
     <Container className="film-listings-container">
@@ -70,8 +72,8 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
           <option value="">All Days</option>
           <option value="today">Today</option>
           {dayOptions.map(day => (
-            <option key={day} value={day}>
-              {day}
+            <option key={day.value} value={day.value}>
+              {day.label}
             </option>
           ))}
         </select>

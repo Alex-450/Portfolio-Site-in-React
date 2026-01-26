@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { Film, Showtime } from '../types';
 
 function formatDate(dateStr: string): string {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('en-US', {
+  // Use noon to avoid timezone shifting the date backwards
+  const date = new Date(dateStr + 'T12:00:00');
+  return date.toLocaleDateString('en-GB', {
     weekday: 'short',
     day: 'numeric',
     month: 'short',
@@ -38,8 +39,7 @@ function FilmCard({ film, dayFilter }: FilmCardProps) {
   const filteredGrouped = grouped.filter(([date]) => {
     if (!dayFilter) return true;
     if (dayFilter === 'today') return date === today;
-    const day = new Date(date).toLocaleDateString('en-US', { weekday: 'short' });
-    return day === dayFilter;
+    return date === dayFilter;
   });
 
   if (filteredGrouped.length === 0) return null;
