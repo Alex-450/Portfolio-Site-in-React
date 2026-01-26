@@ -18,17 +18,24 @@ function formatDay(dateStr) {
   return days[date.getDay()];
 }
 
+async function fetchWithRetry(url, options, retries = 3) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    const response = await fetch(url, options);
+    if (response.ok) return response;
+    console.warn(`  Attempt ${attempt}/${retries} failed: ${response.status}`);
+    if (attempt < retries) await new Promise(r => setTimeout(r, attempt * 2000));
+  }
+  throw new Error(`Failed after ${retries} attempts`);
+}
+
 async function fetchFeed(feed) {
   console.log(`Fetching ${feed.name}...`);
-  const response = await fetch(feed.url, {
+  const response = await fetchWithRetry(feed.url, {
     headers: {
       'Accept': 'application/rss+xml, application/xml, text/xml, */*',
       'User-Agent': 'Mozilla/5.0 (compatible; FilmListingsFetcher/1.0)',
     },
   });
-  if (!response.ok) {
-    throw new Error(`Failed to fetch ${feed.name}: ${response.status}`);
-  }
   const xml = await response.text();
   const data = parser.parse(xml);
 
