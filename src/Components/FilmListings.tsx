@@ -50,7 +50,7 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
     <Container className="film-listings-container">
       <header className="film-listings-header">
         <h1>Amsterdam Films</h1>
-        <p className="subtitle">Showtimes from LAB111 & Studio K</p>
+        <p className="subtitle">Showtimes from LAB111, Studio K, Filmhallen & The Movies</p>
       </header>
 
       <div className="film-filters">
