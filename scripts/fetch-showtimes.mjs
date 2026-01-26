@@ -1,6 +1,7 @@
 import { XMLParser } from 'fast-xml-parser';
 import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'fs';
 import { dirname } from 'path';
+import he from 'he';
 
 // Load .env.local if present (Next.js doesn't load it for pre-scripts)
 const envPath = '.env.local';
@@ -29,6 +30,16 @@ function formatDay(dateStr) {
   const date = new Date(dateStr);
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   return days[date.getDay()];
+}
+
+function decodeString(string) {
+  return he.decode(string);
+}
+
+function parseFilmLength(filmLength) {
+  var numberPattern = /\d+/g;
+  var numericLength = String(filmLength).match(numberPattern);
+  return `${numericLength} minutes`;
 }
 
 async function fetchTmdbPoster(tmdbId) {
@@ -91,9 +102,9 @@ async function fetchFeed(feed) {
 
     if (film.title && showtimes.length > 0) {
       films.push({
-        title: film.title,
+        title: decodeString(film.title),
         director: film.director || null,
-        length: film.length || null,
+        length: parseFilmLength(film.length) || null,
         posterUrl: film.posterlink || '',
         permalink: film.permalink || '',
         showtimes,
