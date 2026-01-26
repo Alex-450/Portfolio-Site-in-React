@@ -31,13 +31,15 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
     .filter(c => c.films.length > 0);
 
   const allDates = new Set<string>();
-  cinemas.forEach(c => {
-    c.films.forEach(f => {
-      f.showtimes.forEach(s => {
-        if (s.date !== today) allDates.add(s.date);
+  cinemas
+    .filter(c => !cinemaFilter || c.name === cinemaFilter)
+    .forEach(c => {
+      c.films.forEach(f => {
+        f.showtimes.forEach(s => {
+          if (s.date !== today) allDates.add(s.date);
+        });
       });
     });
-  });
   const dayOptions = Array.from(allDates).sort().map(date => {
     const d = new Date(date + 'T12:00:00');
     const label = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
