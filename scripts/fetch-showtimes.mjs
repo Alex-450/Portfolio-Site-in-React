@@ -1,10 +1,23 @@
 import { XMLParser } from 'fast-xml-parser';
-import { writeFileSync, mkdirSync } from 'fs';
+import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'fs';
 import { dirname } from 'path';
+
+// Load .env.local if present (Next.js doesn't load it for pre-scripts)
+const envPath = '.env.local';
+if (existsSync(envPath)) {
+  for (const line of readFileSync(envPath, 'utf-8').split('\n')) {
+    const match = line.match(/^\s*([\w]+)\s*=\s*['"]?(.*?)['"]?\s*$/);
+    if (match) process.env[match[1]] = match[2];
+  }
+}
+
+const TMDB_API_KEY = process.env.TMDB_API_KEY;
 
 const FEEDS = [
   { name: 'LAB111', url: 'https://www.lab111.nl/feed' },
   { name: 'Studio K', url: 'https://www.studio-k.nu/feed' },
+  { name: 'FilmHallen', url: 'https://www.filmhallen.nl/feed' },
+  { name: 'The Movies', url: 'https://www.themovies.nl/feed' },
 ];
 
 const parser = new XMLParser({
@@ -16,6 +29,17 @@ function formatDay(dateStr) {
   const date = new Date(dateStr);
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   return days[date.getDay()];
+}
+
+async function fetchTmdbPoster(tmdbId) {
+  if (!TMDB_API_KEY || !tmdbId) return null;
+  try {
+    const res = await fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${TMDB_API_KEY}`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (data.poster_path) return `https://image.tmdb.org/t/p/w342${data.poster_path}`;
+  } catch { /* ignore */ }
+  return null;
 }
 
 async function fetchWithRetry(url, options, retries = 3) {
@@ -73,11 +97,22 @@ async function fetchFeed(feed) {
         posterUrl: film.posterlink || '',
         permalink: film.permalink || '',
         showtimes,
+        _tmdbId: film.tmdb || null,
       });
     }
   }
 
-  console.log(`Found ${films.length} films with showtimes`);
+  const needsPoster = films.filter(f => !f.posterUrl && f._tmdbId);
+  if (needsPoster.length > 0) {
+    console.log(`  Fetching ${needsPoster.length} posters from TMDB...`);
+    await Promise.all(needsPoster.map(async (f) => {
+      const url = await fetchTmdbPoster(f._tmdbId);
+      if (url) f.posterUrl = url;
+    }));
+  }
+  for (const f of films) delete f._tmdbId;
+
+  console.log(`Found ${films.length} films with showtimes for ${feed.name}`);
   return { name: feed.name, films };
 }
 
