@@ -1,16 +1,9 @@
+import dotenv from 'dotenv';
+dotenv.config({ path: '.env.local' });
 import { XMLParser } from 'fast-xml-parser';
-import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'fs';
+import { writeFileSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 import he from 'he';
-
-// Load .env.local if present (Next.js doesn't load it for pre-scripts)
-const envPath = '.env.local';
-if (existsSync(envPath)) {
-  for (const line of readFileSync(envPath, 'utf-8').split('\n')) {
-    const match = line.match(/^\s*([\w]+)\s*=\s*['"]?(.*?)['"]?\s*$/);
-    if (match) process.env[match[1]] = match[2];
-  }
-}
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 
@@ -114,16 +107,6 @@ async function fetchFeed(feed) {
     }
   }
 
-  const needsPoster = films.filter(f => !f.posterUrl && f._tmdbId);
-  if (needsPoster.length > 0) {
-    console.log(`  Fetching ${needsPoster.length} posters from TMDB...`);
-    await Promise.all(needsPoster.map(async (f) => {
-      const url = await fetchTmdbPoster(f._tmdbId);
-      if (url) f.posterUrl = url;
-    }));
-  }
-  for (const f of films) delete f._tmdbId;
-
   console.log(`Found ${films.length} films with showtimes for ${feed.name}`);
   return { name: feed.name, films };
 }
@@ -138,6 +121,32 @@ async function fetchAllCinemas() {
       cinemas.push(result.value);
     } else if (result.status === 'rejected') {
       console.error(`Error fetching ${FEEDS[i].name}:`, result.reason.message);
+    }
+  }
+
+  // Collect unique TMDB IDs needing posters and fetch them once
+  const filmsNeedingPoster = cinemas.flatMap(c => c.films).filter(f => !f.posterUrl && f._tmdbId);
+  const uniqueTmdbIds = [...new Set(filmsNeedingPoster.map(f => f._tmdbId))];
+
+  if (uniqueTmdbIds.length > 0) {
+    console.log(`\nFetching ${uniqueTmdbIds.length} unique posters from TMDB...`);
+    const posterMap = new Map();
+    await Promise.all(uniqueTmdbIds.map(async (tmdbId) => {
+      const url = await fetchTmdbPoster(tmdbId);
+      if (url) posterMap.set(tmdbId, url);
+    }));
+
+    // Apply posters to all films
+    for (const film of filmsNeedingPoster) {
+      const url = posterMap.get(film._tmdbId);
+      if (url) film.posterUrl = url;
+    }
+  }
+
+  // Clean up _tmdbId from all films
+  for (const cinema of cinemas) {
+    for (const film of cinema.films) {
+      delete film._tmdbId;
     }
   }
 
