@@ -3,7 +3,12 @@
 Features:
 
 - Personal Blog.
-- Film listings via Amsterdam cinema RSS feeds (LAB111, The Movies, Studio K, Filmhallen)
+- Film listings via Amsterdam/Haarlem cinema RSS feeds:
+  - LAB111
+  - The Movies
+  - Studio K 
+  - Filmhallen 
+  - FilmKoepel
 
 ## Info
 

@@ -19,6 +19,7 @@ const FEEDS = [
   { name: 'Studio K', url: 'https://www.studio-k.nu/feed' },
   { name: 'FilmHallen', url: 'https://www.filmhallen.nl/feed' },
   { name: 'The Movies', url: 'https://www.themovies.nl/feed' },
+  { name: 'FilmKoepel', url: 'https://filmkoepel.nl/feed/' },
 ];
 
 const parser = new XMLParser({
