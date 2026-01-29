@@ -79,3 +79,18 @@ export interface Cinema {
   name: string;
   films: Film[];
 }
+
+// Film-grouped structure for UI
+export interface CinemaShowtimes {
+  cinema: string;
+  showtimes: Showtime[];
+}
+
+export interface FilmWithCinemas {
+  title: string;
+  director: string | null;
+  length: string | null;
+  posterUrl: string;
+  permalink: string;
+  cinemaShowtimes: CinemaShowtimes[];
+}

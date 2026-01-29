@@ -106,6 +106,9 @@
   .showtime-date {
     color: #aaa;
   }
+  .cinema-name {
+    color: #fff;
+  }
 
   .showtime-link {
     background-color: var(--dark-background);
@@ -124,6 +127,16 @@
   }
 
   .expand-btn:hover {
+    background-color: var(--dark-hover-background);
+    color: var(--dark-background);
+  }
+
+  .film-search-dropdown {
+    background-color: var(--dark-background);
+    border-color: var(--dark-hover-background);
+  }
+
+  .film-search-dropdown li:hover {
     background-color: var(--dark-hover-background);
     color: var(--dark-background);
   }

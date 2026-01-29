@@ -210,6 +210,41 @@ button.footer-link {
   color: white;
 }
 
+.filter-select-film {
+  max-width: 300px;
+  text-overflow: ellipsis;
+}
+
+.film-search-container {
+  position: relative;
+}
+
+.film-search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 300px;
+  overflow-y: auto;
+  background-color: #dee2e6;
+  border: 2px solid black;
+  border-top: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  z-index: 100;
+}
+
+.film-search-dropdown li {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.film-search-dropdown li:hover {
+  background-color: #888888;
+  color: white;
+}
+
 .loading-text,
 .error-text,
 .no-results {
@@ -238,6 +273,7 @@ button.footer-link {
 
 .film-card {
   display: flex;
+  align-items: flex-start;
   gap: 1rem;
   padding: 10px 0;
   border-bottom: 1px solid black;
@@ -248,8 +284,8 @@ button.footer-link {
 }
 
 .film-poster {
-  width: 80px;
-  height: 120px;
+  width: 180px;
+  aspect-ratio: 2 / 3;
   object-fit: cover;
   background: #ccc;
   flex-shrink: 0;
@@ -257,8 +293,8 @@ button.footer-link {
 }
 
 .film-poster-placeholder {
-  width: 80px;
-  height: 120px;
+  width: 180px;
+  aspect-ratio: 2 / 3;
   background: #ccc;
   flex-shrink: 0;
   border: 1px solid black;
@@ -296,11 +332,28 @@ button.footer-link {
   margin-bottom: 0.5rem;
 }
 
+.cinema-showtimes {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.cinema-showtime-group {
+  flex-shrink: 0;
+}
+
+.cinema-name {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
 .showtimes {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-top: 0.5rem;
 }
 
 .showtime-group {
@@ -356,14 +409,13 @@ button.footer-link {
 }
 
 @media (max-width: 600px) {
-  .film-card {
-    flex-direction: column;
-  }
-
   .film-poster,
   .film-poster-placeholder {
-    width: 60px;
-    height: 90px;
+    width: 120px;
+  }
+
+  .film-info {
+    overflow-x: auto;
   }
 
   .film-filters {
