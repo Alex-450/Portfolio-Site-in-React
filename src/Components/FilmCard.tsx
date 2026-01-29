@@ -33,6 +33,20 @@ interface FilmCardProps {
 function FilmCard({ film, dayFilter }: FilmCardProps) {
   const [expanded, setExpanded] = useState(false);
   const today = getToday();
+  const showExpanded = expanded || !!dayFilter;
+
+  // Check if any cinema has hidden dates
+  const hasHiddenDates =
+    !showExpanded &&
+    film.cinemaShowtimes.some(cs => {
+      const grouped = groupShowtimesByDate(cs.showtimes);
+      const filteredGrouped = grouped.filter(([date]) => {
+        if (!dayFilter) return true;
+        if (dayFilter === 'today') return date === today;
+        return date === dayFilter;
+      });
+      return filteredGrouped.length > 3;
+    });
 
   return (
     <div className="film-card">
@@ -65,7 +79,6 @@ function FilmCard({ film, dayFilter }: FilmCardProps) {
 
             if (filteredGrouped.length === 0) return null;
 
-            const showExpanded = expanded || !!dayFilter;
             const upcoming = filteredGrouped.slice(0, 3);
             const later = filteredGrouped.slice(3);
 
@@ -91,11 +104,6 @@ function FilmCard({ film, dayFilter }: FilmCardProps) {
                       </div>
                     </div>
                   ))}
-                  {later.length > 0 && !showExpanded && (
-                    <button className="expand-btn" onClick={() => setExpanded(true)}>
-                      + {later.length} more date{later.length > 1 ? 's' : ''}
-                    </button>
-                  )}
                   {showExpanded &&
                     later.map(([date, times]) => (
                       <div key={date} className="showtime-group">
@@ -120,6 +128,11 @@ function FilmCard({ film, dayFilter }: FilmCardProps) {
             );
           })}
         </div>
+        {hasHiddenDates && (
+          <button className="expand-btn" onClick={() => setExpanded(true)}>
+            More dates
+          </button>
+        )}
       </div>
     </div>
   );
