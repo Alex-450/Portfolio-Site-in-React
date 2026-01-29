@@ -49,7 +49,7 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
   return (
     <Container className="film-listings-container">
       <header className="film-listings-header">
-        <h1>Amsterdam Films</h1>
+        <h1>Film Listings</h1>
         <p className="subtitle">Showtimes from LAB111, Studio K, Filmhallen, Filmkoepel & The Movies</p>
       </header>
 
