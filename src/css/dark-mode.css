@@ -141,7 +141,14 @@
     color: var(--dark-background);
   }
 
-  .film-search-clear:hover {
+  .film-search-clear {
     color: var(--dark-text-color);
+    background: var(--dark-background);
+    border: 2px solid var(--dark-hover-background);
+
+  }
+
+  .film-search-clear:hover {
+    background-color: var(--dark-hover-background);
   }
 }
