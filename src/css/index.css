@@ -369,6 +369,10 @@ button.footer-link {
   min-width: 80px;
 }
 
+.showtime-date.with-screen {
+  min-width: 140px;
+}
+
 .showtime-times {
   display: flex;
   flex-wrap: wrap;

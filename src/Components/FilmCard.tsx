@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { FilmWithCinemas, Showtime } from '../types';
 
 function formatDate(dateStr: string): string {
@@ -16,13 +16,20 @@ function getToday(): string {
 
 function groupShowtimesByDate(showtimes: Showtime[]): [string, Showtime[]][] {
   const grouped: Record<string, Showtime[]> = {};
-  showtimes.forEach(s => {
-    if (!grouped[s.date]) {
-      grouped[s.date] = [];
-    }
-    grouped[s.date].push(s);
-  });
+  for (const s of showtimes) {
+    (grouped[s.date] ??= []).push(s);
+  }
   return Object.entries(grouped).sort((a, b) => a[0].localeCompare(b[0]));
+}
+
+function filterByDay(
+  grouped: [string, Showtime[]][],
+  dayFilter: string,
+  today: string
+): [string, Showtime[]][] {
+  if (!dayFilter) return grouped;
+  if (dayFilter === 'today') return grouped.filter(([date]) => date === today);
+  return grouped.filter(([date]) => date === dayFilter);
 }
 
 interface FilmCardProps {
@@ -32,21 +39,16 @@ interface FilmCardProps {
 
 function FilmCard({ film, dayFilter }: FilmCardProps) {
   const [expanded, setExpanded] = useState(false);
-  const today = getToday();
+  const today = useMemo(getToday, []);
   const showExpanded = expanded || !!dayFilter;
 
-  // Check if any cinema has hidden dates
-  const hasHiddenDates =
-    !showExpanded &&
-    film.cinemaShowtimes.some(cs => {
-      const grouped = groupShowtimesByDate(cs.showtimes);
-      const filteredGrouped = grouped.filter(([date]) => {
-        if (!dayFilter) return true;
-        if (dayFilter === 'today') return date === today;
-        return date === dayFilter;
-      });
-      return filteredGrouped.length > 3;
+  const hasHiddenDates = useMemo(() => {
+    if (showExpanded) return false;
+    return film.cinemaShowtimes.some(cs => {
+      const filtered = filterByDay(groupShowtimesByDate(cs.showtimes), dayFilter, today);
+      return filtered.length > 3;
     });
+  }, [film.cinemaShowtimes, dayFilter, today, showExpanded]);
 
   return (
     <div className="film-card">
@@ -70,46 +72,44 @@ function FilmCard({ film, dayFilter }: FilmCardProps) {
 
         <div className="cinema-showtimes">
           {film.cinemaShowtimes.map(cs => {
-            const grouped = groupShowtimesByDate(cs.showtimes);
-            const filteredGrouped = grouped.filter(([date]) => {
-              if (!dayFilter) return true;
-              if (dayFilter === 'today') return date === today;
-              return date === dayFilter;
-            });
+            const filteredGrouped = filterByDay(
+              groupShowtimesByDate(cs.showtimes),
+              dayFilter,
+              today
+            );
 
             if (filteredGrouped.length === 0) return null;
 
-            const upcoming = filteredGrouped.slice(0, 3);
-            const later = filteredGrouped.slice(3);
+            const visibleDates = showExpanded
+              ? filteredGrouped
+              : filteredGrouped.slice(0, 3);
+
+            const screens = new Set(cs.showtimes.map(s => s.screen).filter(Boolean));
+            const singleScreen = screens.size === 1 ? [...screens][0] : null;
 
             return (
               <div key={cs.cinema} className="cinema-showtime-group">
-                <div className="cinema-name">{cs.cinema}</div>
+                <div className="cinema-name">
+                  {cs.cinema}
+                  {singleScreen && <span className="cinema-screen"> ({singleScreen})</span>}
+                </div>
                 <div className="showtimes">
-                  {upcoming.map(([date, times]) => (
-                    <div key={date} className="showtime-group">
-                      <div className="showtime-date">{formatDate(date)}</div>
-                      <div className="showtime-times">
-                        {times.map((s, i) => (
-                          <a
-                            key={i}
-                            href={s.ticketUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="showtime-link"
-                          >
-                            {s.time}
-                          </a>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                  {showExpanded &&
-                    later.map(([date, times]) => (
-                      <div key={date} className="showtime-group">
-                        <div className="showtime-date">{formatDate(date)}</div>
+                  {visibleDates.map(([date, times]) => {
+                    const timesByScreen: Record<string, typeof times> = {};
+                    for (const s of times) {
+                      (timesByScreen[s.screen || ''] ??= []).push(s);
+                    }
+
+                    return Object.entries(timesByScreen).map(([screen, screenTimes]) => (
+                      <div key={`${date}-${screen}`} className="showtime-group">
+                        <div className={`showtime-date${!singleScreen && screen ? ' with-screen' : ''}`}>
+                          {formatDate(date)}
+                          {!singleScreen && screen && (
+                            <span className="showtime-screen"> ({screen})</span>
+                          )}
+                        </div>
                         <div className="showtime-times">
-                          {times.map((s, i) => (
+                          {screenTimes.map((s, i) => (
                             <a
                               key={i}
                               href={s.ticketUrl}
@@ -122,7 +122,8 @@ function FilmCard({ film, dayFilter }: FilmCardProps) {
                           ))}
                         </div>
                       </div>
-                    ))}
+                    ));
+                  })}
                 </div>
               </div>
             );

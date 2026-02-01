@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import Head from 'next/head';
 import { Container } from 'react-bootstrap';
 import { Cinema, FilmWithCinemas } from '../types';
 import FilmCard from './FilmCard';
@@ -97,11 +98,25 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
   });
 
   return (
-    <Container className="film-listings-container">
-      <header className="film-listings-header">
-        <h1>Film Listings</h1>
-        <p className="subtitle">Showtimes from LAB111, Studio K, Filmhallen, Filmkoepel & The Movies</p>
-      </header>
+    <>
+      <Head>
+        <title>Film Listings | a-450</title>
+        <meta
+          name="description"
+          content="Amsterdam cinema showtimes from LAB111, Studio K, Filmhallen, Filmkoepel & The Movies"
+        />
+        <meta property="og:title" content="Film Listings | a-450" />
+        <meta
+          property="og:description"
+          content="Amsterdam cinema showtimes from LAB111, Studio K, Filmhallen, Filmkoepel & The Movies"
+        />
+        <meta property="og:type" content="website" />
+      </Head>
+      <Container className="film-listings-container">
+        <header className="film-listings-header">
+          <h1>Film Listings</h1>
+          <p className="subtitle">Showtimes from LAB111, Studio K, Filmhallen, Filmkoepel & The Movies</p>
+        </header>
 
       <div className="film-filters">
         <select
@@ -172,6 +187,7 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
         <FilmCard key={film.title} film={film} dayFilter={dayFilter} />
       ))}
     </Container>
+    </>
   );
 };
 
