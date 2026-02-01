@@ -57,45 +57,56 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
   const allFilms = groupFilmsByCinema(cinemas);
 
   const matchingFilms = allFilms.filter(
-    film => !filmSearch || film.title.toLowerCase().includes(filmSearch.toLowerCase())
+    (film) =>
+      !filmSearch || film.title.toLowerCase().includes(filmSearch.toLowerCase())
   );
 
   const filteredFilms = allFilms
-    .filter(film => !filmFilter || film.title === filmFilter)
-    .filter(film => !filmSearch || film.title.toLowerCase().includes(filmSearch.toLowerCase()))
-    .map(film => {
+    .filter((film) => !filmFilter || film.title === filmFilter)
+    .filter(
+      (film) =>
+        !filmSearch ||
+        film.title.toLowerCase().includes(filmSearch.toLowerCase())
+    )
+    .map((film) => {
       const filteredCinemaShowtimes = film.cinemaShowtimes
-        .filter(cs => !cinemaFilter || cs.cinema === cinemaFilter)
-        .map(cs => {
+        .filter((cs) => !cinemaFilter || cs.cinema === cinemaFilter)
+        .map((cs) => {
           if (!dayFilter) return cs;
-          const filteredShowtimes = cs.showtimes.filter(s => {
+          const filteredShowtimes = cs.showtimes.filter((s) => {
             if (dayFilter === 'today') return s.date === today;
             return s.date === dayFilter;
           });
           return { ...cs, showtimes: filteredShowtimes };
         })
-        .filter(cs => cs.showtimes.length > 0);
+        .filter((cs) => cs.showtimes.length > 0);
 
       return { ...film, cinemaShowtimes: filteredCinemaShowtimes };
     })
-    .filter(film => film.cinemaShowtimes.length > 0);
+    .filter((film) => film.cinemaShowtimes.length > 0);
 
   const allDates = new Set<string>();
 
-  allFilms.forEach(film => {
+  allFilms.forEach((film) => {
     film.cinemaShowtimes
-      .filter(cs => !cinemaFilter || cs.cinema === cinemaFilter)
-      .forEach(cs => {
-        cs.showtimes.forEach(s => {
+      .filter((cs) => !cinemaFilter || cs.cinema === cinemaFilter)
+      .forEach((cs) => {
+        cs.showtimes.forEach((s) => {
           if (s.date !== today) allDates.add(s.date);
         });
       });
   });
-  const dayOptions = Array.from(allDates).sort().map(date => {
-    const d = new Date(date + 'T12:00:00');
-    const label = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
-    return { value: date, label };
-  });
+  const dayOptions = Array.from(allDates)
+    .sort()
+    .map((date) => {
+      const d = new Date(date + 'T12:00:00');
+      const label = d.toLocaleDateString('en-GB', {
+        weekday: 'short',
+        day: 'numeric',
+        month: 'short',
+      });
+      return { value: date, label };
+    });
 
   return (
     <>
@@ -115,78 +126,93 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
       <Container className="film-listings-container">
         <header className="film-listings-header">
           <h1>Film Listings</h1>
-          <p className="subtitle">Showtimes from LAB111, Studio K, Filmhallen, Filmkoepel & The Movies</p>
+          <p className="subtitle">
+            Showtimes from LAB111, Studio K, Filmhallen, Filmkoepel & The Movies
+          </p>
         </header>
 
-      <div className="film-filters">
-        <select
-          value={cinemaFilter}
-          onChange={e => setCinemaFilter(e.target.value)}
-          className="filter-select"
-        >
-          <option value="">All Cinemas</option>
-          {cinemas.map(c => (
-            <option key={c.name} value={c.name}>
-              {c.name}
-            </option>
-          ))}
-        </select>
-        <select
-          value={dayFilter}
-          onChange={e => setDayFilter(e.target.value)}
-          className="filter-select"
-        >
-          <option value="">All Days</option>
-          <option value="today">Today</option>
-          {dayOptions.map(day => (
-            <option key={day.value} value={day.value}>
-              {day.label}
-            </option>
-          ))}
-        </select>
-        <div className="film-search-container" ref={filmInputRef}>
-          <input
-            type="text"
-            value={filmSearch}
-            onChange={e => {
-              setFilmSearch(e.target.value);
-              setFilmFilter('');
-              setShowFilmDropdown(true);
-            }}
-            onFocus={() => setShowFilmDropdown(true)}
-            onBlur={() => setTimeout(() => setShowFilmDropdown(false), 150)}
-            placeholder="Search films..."
-            className="filter-select filter-select-film"
-          />
-          {showFilmDropdown && matchingFilms.length > 0 && (
-            <ul className="film-search-dropdown">
-              {matchingFilms.map(film => (
-                <li
-                  key={film.title}
-                  onMouseDown={() => {
-                    setFilmSearch(film.title);
-                    setFilmFilter(film.title);
-                    setShowFilmDropdown(false);
-                  }}
-                >
-                  {film.title}
-                </li>
-              ))}
-            </ul>
-          )}
+        <div className="film-filters">
+          <select
+            value={cinemaFilter}
+            onChange={(e) => setCinemaFilter(e.target.value)}
+            className="filter-select"
+          >
+            <option value="">All Cinemas</option>
+            {cinemas.map((c) => (
+              <option key={c.name} value={c.name}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+          <select
+            value={dayFilter}
+            onChange={(e) => setDayFilter(e.target.value)}
+            className="filter-select"
+          >
+            <option value="">All Days</option>
+            <option value="today">Today</option>
+            {dayOptions.map((day) => (
+              <option key={day.value} value={day.value}>
+                {day.label}
+              </option>
+            ))}
+          </select>
+          <div className="film-search-container" ref={filmInputRef}>
+            <input
+              type="text"
+              value={filmSearch}
+              onChange={(e) => {
+                setFilmSearch(e.target.value);
+                setFilmFilter('');
+                setShowFilmDropdown(true);
+              }}
+              onFocus={() => setShowFilmDropdown(true)}
+              onBlur={() => setTimeout(() => setShowFilmDropdown(false), 150)}
+              placeholder="Search films..."
+              className="filter-select filter-select-film"
+            />
+            {(showFilmDropdown || filmSearch) && (
+              <button
+                className="film-search-clear"
+                onMouseDown={() => {
+                  setFilmSearch('');
+                  setFilmFilter('');
+                }}
+              >
+                X
+              </button>
+            )}
+            {showFilmDropdown && matchingFilms.length > 0 && (
+              <ul className="film-search-dropdown">
+                {matchingFilms.map((film) => (
+                  <li
+                    key={film.title}
+                    onMouseDown={() => {
+                      setFilmSearch(film.title);
+                      setFilmFilter(film.title);
+                      setShowFilmDropdown(false);
+                    }}
+                  >
+                    {film.title}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
-      </div>
 
-      {cinemas.length === 0 && <p className="no-results">No showtimes available</p>}
+        {cinemas.length === 0 && (
+          <p className="no-results">No showtimes available</p>
+        )}
 
-      {filteredFilms.length === 0 && cinemas.length > 0 && (
-        <p className="no-results">No showtimes found for selected filters</p>
-      )}
+        {filteredFilms.length === 0 && cinemas.length > 0 && (
+          <p className="no-results">No showtimes found for selected filters</p>
+        )}
 
-      {filteredFilms.map(film => (
-        <FilmCard key={film.title} film={film} dayFilter={dayFilter} />
-      ))}
-    </Container>
+        {filteredFilms.map((film) => (
+          <FilmCard key={film.title} film={film} dayFilter={dayFilter} />
+        ))}
+      </Container>
     </>
   );
 };

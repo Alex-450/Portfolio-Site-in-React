@@ -213,15 +213,32 @@ button.footer-link {
 .filter-select-film {
   max-width: 300px;
   text-overflow: ellipsis;
+  padding-right: 30px;
+  outline: none;
 }
 
 .film-search-container {
   position: relative;
 }
 
+.film-search-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.film-search-clear:hover {
+  color: black;
+}
+
 .film-search-dropdown {
   position: absolute;
-  top: 100%;
   left: 0;
   right: 0;
   max-height: 300px;
@@ -232,7 +249,6 @@ button.footer-link {
   margin: 0;
   padding: 0;
   list-style: none;
-  z-index: 100;
 }
 
 .film-search-dropdown li {

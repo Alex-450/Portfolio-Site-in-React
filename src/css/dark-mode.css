@@ -140,4 +140,8 @@
     background-color: var(--dark-hover-background);
     color: var(--dark-background);
   }
+
+  .film-search-clear:hover {
+    color: var(--dark-text-color);
+  }
 }
