@@ -51,7 +51,6 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
   const [filmSearch, setFilmSearch] = useState('');
   const [filmFilter, setFilmFilter] = useState('');
   const [showFilmDropdown, setShowFilmDropdown] = useState(false);
-  const filmInputRef = useRef<HTMLDivElement>(null);
 
   const today = getToday();
   const allFilms = groupFilmsByCinema(cinemas);
@@ -157,7 +156,7 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
               </option>
             ))}
           </select>
-          <div className="film-search-container" ref={filmInputRef}>
+          <div className="film-search-container">
             <input
               type="text"
               value={filmSearch}
