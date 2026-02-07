@@ -1,5 +1,13 @@
 [
   {
+    "type": "tech",
+    "title": "PostgreSQL comparison with NULL",
+    "topic": "PostgreSQL",
+    "dateAdded": "03/02/2026",
+    "link": "postgresql-null-comparison",
+    "description": ""
+  },
+  {
     "type": "film",
     "title": "Guilt and Forgiveness",
     "topic": "Wake Up Dead Man",

@@ -170,6 +170,33 @@ button.footer-link {
   text-decoration: underline;
 }
 
+/* Code blocks */
+pre {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  border: 2px solid black;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+code {
+  background-color: #e8e8e8;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-size: 0.85em;
+}
+
 /* Film Listings */
 .film-listings-container {
   padding-top: 20px;

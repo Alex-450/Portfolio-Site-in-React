@@ -151,4 +151,15 @@
   .film-search-clear:hover {
     background-color: var(--hover-bg);
   }
+
+  /* Code blocks dark mode */
+  pre {
+    background-color: #0d0d0d;
+    border-color: var(--hover-bg);
+  }
+
+  code {
+    background-color: #2d2d2d;
+    color: var(--dark-text-color);
+  }
 }

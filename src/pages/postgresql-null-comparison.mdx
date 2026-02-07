@@ -1,0 +1,80 @@
+import ArticleLayout from '../Components/ArticleLayout';
+import { findTechPost } from '../utils/blog';
+
+export const blog = findTechPost(
+  (b) => b.title.toLowerCase() === 'postgresql comparison with null'
+);
+export const metadata = {
+  ...blog,
+  keywords: 'PostgreSQL, NULL, comparison',
+};
+
+I came across a slightly unintuitive aspect of PostgreSQL recently. I was trying to find rows using the `!=` operator
+but I was not getting the results I expected.
+
+To illustrate I will create a simple test table:
+
+```sql
+CREATE TABLE 
+  users (id SERIAL, name TEXT);
+
+INSERT INTO 
+  users (name) 
+  VALUES ('test_user'), (NULL), ('another_user');
+
+SELECT * FROM users;
+
+id |     name     
+----+--------------
+  1 | test_user
+  2 | 
+  3 | another_user
+(3 rows)
+```
+
+Say I wanted to find rows where the name is not 'test_user'.
+I'd expect the following query to return users with id 2 and 3:
+
+```sql
+SELECT * FROM users 
+WHERE name != 'test_user';
+
+id |     name     
+----+--------------
+  3 | another_user
+(1 row)
+```
+
+However, in order to actually get that'd result, you'd need to do
+something like the following:
+
+```sql
+SELECT * FROM users 
+WHERE name IS DISTINCT FROM 'test_user';
+
+id |     name     
+----+--------------
+  2 | 
+  3 | another_user
+(2 rows)
+```
+
+Or:
+
+```sql
+SELECT * FROM users
+WHERE name != 'test_user' OR name IS NULL;
+
+id |     name     
+----+--------------
+  2 | 
+  3 | another_user
+(2 rows)
+```
+
+This is because `WHERE` returns rows where the condition is `TRUE` and because
+`NULL != 'test_user'`, that row is excluded from the result.
+
+export default function Layout({ children }) {
+  return <ArticleLayout metadata={metadata}>{children}</ArticleLayout>;
+}
