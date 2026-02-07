@@ -1,12 +1,38 @@
 import { Container, Row, Col } from 'react-bootstrap';
 import { useEffect } from 'react';
 import SpoilerPill from './SpoilerPill';
-import { ArticleLayoutProps } from '../types';
+import { ArticleLayoutProps, ArticleMetadata } from '../types';
 
 const defaultMetadata = {
   author: 'Alex Stearn',
   description: '',
 };
+
+function renderMetadataSubtitle(meta: ArticleMetadata & { author: string }) {
+  switch (meta.type) {
+    case 'film':
+      return (
+        <>
+          <p>
+            {meta.topic} - {meta.director} ({meta.year})
+          </p>
+          {meta.spoilers && (
+            <p>
+              <SpoilerPill />
+            </p>
+          )}
+        </>
+      );
+    case 'creative-writing':
+      return (
+        <p>
+          {meta.location} - {meta.author} ({meta.year})
+        </p>
+      );
+    case 'tech':
+      return <p>{meta.topic}</p>;
+  }
+}
 
 const ArticleLayout = ({ metadata, children }: ArticleLayoutProps) => {
   const meta = { ...defaultMetadata, ...metadata };
@@ -36,26 +62,7 @@ const ArticleLayout = ({ metadata, children }: ArticleLayoutProps) => {
             <meta name="title" content={pageTitle} property="og:title" />
             <meta property="og:type" content="website" />
             <h1>{meta.title}</h1>
-            {meta.type === 'film' && (
-              <>
-                <p>
-                  {meta.topic} - {meta.director} ({meta.year})
-                </p>
-                {meta.spoilers && (
-                  <p>
-                    <SpoilerPill />
-                  </p>
-                )}
-              </>
-            )}
-            {meta.type === 'creative-writing' && (
-              <p>
-                {meta.location} - {meta.author} ({meta.year})
-              </p>
-            )}
-            {meta.type === 'tech' && (
-              <p>{meta.topic}</p>
-            )}
+            {renderMetadataSubtitle(meta)}
             <br></br>
             {children}
           </article>
