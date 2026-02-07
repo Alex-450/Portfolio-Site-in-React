@@ -3,11 +3,15 @@ import blogPostArchive from '../blogPostArchive.json';
 import { Container, Col, Row } from 'react-bootstrap';
 import { BlogPost, FilmBlogPost, CreativeWritingBlogPost } from '../types';
 
-type CategoryFilter = 'film' | 'creative-writing';
+type CategoryFilter = 'film' | 'creative-writing' | 'tech';
 
 const Page = () => {
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>('film');
   const posts: BlogPost[] = blogPostArchive as BlogPost[];
+
+  const hasFilmPosts = posts.some((p) => p.type === 'film');
+  const hasCreativeWritingPosts = posts.some((p) => p.type === 'creative-writing');
+  const hasTechPosts = posts.some((p) => p.type === 'tech');
 
   const filteredPosts = posts.filter((post) => post.type === activeCategory);
 
@@ -15,6 +19,7 @@ const Page = () => {
     if (blog.type === 'film') return (blog as FilmBlogPost).topic;
     if (blog.type === 'creative-writing')
       return (blog as CreativeWritingBlogPost).location;
+    if (blog.type === 'tech') return blog.topic;
     return '';
   };
 
@@ -22,18 +27,30 @@ const Page = () => {
     <Container className="title-container flex-grow-1">
       <h1>Blog</h1>
       <div className="blog-pills">
-        <button
-          className={`blog-pill ${activeCategory === 'film' ? 'blog-pill-active' : ''}`}
-          onClick={() => setActiveCategory('film')}
-        >
-          Film
-        </button>
-        <button
-          className={`blog-pill ${activeCategory === 'creative-writing' ? 'blog-pill-active' : ''}`}
-          onClick={() => setActiveCategory('creative-writing')}
-        >
-          Creative Writing
-        </button>
+        {hasFilmPosts && (
+          <button
+            className={`blog-pill ${activeCategory === 'film' ? 'blog-pill-active' : ''}`}
+            onClick={() => setActiveCategory('film')}
+          >
+            Film
+          </button>
+        )}
+        {hasCreativeWritingPosts && (
+          <button
+            className={`blog-pill ${activeCategory === 'creative-writing' ? 'blog-pill-active' : ''}`}
+            onClick={() => setActiveCategory('creative-writing')}
+          >
+            Creative Writing
+          </button>
+        )}
+        {hasTechPosts && (
+          <button
+            className={`blog-pill ${activeCategory === 'tech' ? 'blog-pill-active' : ''}`}
+            onClick={() => setActiveCategory('tech')}
+          >
+            Tech
+          </button>
+        )}
       </div>
       <Row className="blog-header">
         <Col md={2}>Date</Col>

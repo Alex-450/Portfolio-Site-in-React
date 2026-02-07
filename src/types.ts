@@ -21,7 +21,12 @@ export interface CreativeWritingBlogPost extends BaseBlogPost {
   year: string;
 }
 
-export type BlogPost = FilmBlogPost | CreativeWritingBlogPost;
+export interface TechBlogPost extends BaseBlogPost {
+  type: 'tech';
+  topic: string;
+}
+
+export type BlogPost = FilmBlogPost | CreativeWritingBlogPost | TechBlogPost;
 
 // Article metadata types for the layout
 interface BaseMetadata {
@@ -45,7 +50,12 @@ export interface CreativeWritingMetadata extends BaseMetadata {
   year: string;
 }
 
-export type ArticleMetadata = FilmMetadata | CreativeWritingMetadata;
+export interface TechMetadata extends BaseMetadata {
+  type: 'tech';
+  topic: string;
+}
+
+export type ArticleMetadata = FilmMetadata | CreativeWritingMetadata | TechMetadata;
 
 export interface ArticleLayoutProps {
   metadata: ArticleMetadata;

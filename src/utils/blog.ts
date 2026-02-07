@@ -1,5 +1,10 @@
 import blogPostArchive from '../blogPostArchive.json';
-import { BlogPost, FilmBlogPost, CreativeWritingBlogPost } from '../types';
+import {
+  BlogPost,
+  FilmBlogPost,
+  CreativeWritingBlogPost,
+  TechBlogPost,
+} from '../types';
 
 export function findFilmPost(
   matcher: (blog: FilmBlogPost) => boolean
@@ -23,6 +28,18 @@ export function findCreativeWritingPost(
   const blog = creativeWritingPosts.find(matcher);
   if (!blog) {
     throw new Error('Creative writing post not found');
+  }
+  return blog;
+}
+
+export function findTechPost(
+  matcher: (blog: TechBlogPost) => boolean
+): TechBlogPost {
+  const posts = blogPostArchive as BlogPost[];
+  const techPosts = posts.filter((p): p is TechBlogPost => p.type === 'tech');
+  const blog = techPosts.find(matcher);
+  if (!blog) {
+    throw new Error('Tech post not found');
   }
   return blog;
 }
