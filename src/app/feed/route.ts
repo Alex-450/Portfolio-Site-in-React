@@ -22,7 +22,7 @@ function formatRFC822(date: Date): string {
 }
 
 function getItemTitle(post: BlogPost): string {
-  if (post.type === 'film') {
+  if (post.type === 'film' || post.type === 'tech') {
     return `${post.title} - ${post.topic}`;
   }
   return `${post.title} - ${post.location}`;
@@ -32,10 +32,12 @@ export async function GET() {
   const baseUrl = 'https://a-450.com';
   const posts = blogPostArchive as BlogPost[];
 
-  // Sort by date, newest first
-  const sortedPosts = [...posts].sort((a, b) => {
-    return parseDate(b.dateAdded).getTime() - parseDate(a.dateAdded).getTime();
-  });
+  // Filter to only posts with required fields, then sort by date, newest first
+  const sortedPosts = [...posts]
+    .filter((post) => post.link && post.description)
+    .sort((a, b) => {
+      return parseDate(b.dateAdded).getTime() - parseDate(a.dateAdded).getTime();
+    });
 
   const items = sortedPosts
     .map((post) => {
@@ -63,7 +65,7 @@ ${items}
 
   return new Response(rss, {
     headers: {
-      'Content-Type': 'application/rss+xml; charset=utf-8',
+      'Content-Type': 'application/xml; charset=utf-8',
     },
   });
 }
