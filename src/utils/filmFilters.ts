@@ -1,0 +1,66 @@
+import { FilmWithCinemas, CinemaShowtimes, Showtime } from '../types';
+
+interface FilterOptions {
+  cinemaFilter: string;
+  dayFilter: string;
+  filmSearch: string;
+  filmFilter: string;
+  today: string;
+}
+
+function matchesSearch(title: string, search: string): boolean {
+  return !search || title.toLowerCase().includes(search.toLowerCase());
+}
+
+function filterShowtimesByDay(
+  showtimes: Showtime[],
+  dayFilter: string,
+  today: string
+): Showtime[] {
+  if (!dayFilter) return showtimes;
+  const targetDate = dayFilter === 'today' ? today : dayFilter;
+  return showtimes.filter((s) => s.date === targetDate);
+}
+
+function filterCinemaShowtimes(
+  cinemaShowtimes: CinemaShowtimes[],
+  cinemaFilter: string,
+  dayFilter: string,
+  today: string
+): CinemaShowtimes[] {
+  return cinemaShowtimes
+    .filter((cs) => !cinemaFilter || cs.cinema === cinemaFilter)
+    .map((cs) => ({
+      ...cs,
+      showtimes: filterShowtimesByDay(cs.showtimes, dayFilter, today),
+    }))
+    .filter((cs) => cs.showtimes.length > 0);
+}
+
+export function filterFilms(
+  films: FilmWithCinemas[],
+  options: FilterOptions
+): FilmWithCinemas[] {
+  const { cinemaFilter, dayFilter, filmSearch, filmFilter, today } = options;
+
+  return films
+    .filter((film) => !filmFilter || film.title === filmFilter)
+    .filter((film) => matchesSearch(film.title, filmSearch))
+    .map((film) => ({
+      ...film,
+      cinemaShowtimes: filterCinemaShowtimes(
+        film.cinemaShowtimes,
+        cinemaFilter,
+        dayFilter,
+        today
+      ),
+    }))
+    .filter((film) => film.cinemaShowtimes.length > 0);
+}
+
+export function filterFilmsBySearch(
+  films: FilmWithCinemas[],
+  search: string
+): FilmWithCinemas[] {
+  return films.filter((film) => matchesSearch(film.title, search));
+}

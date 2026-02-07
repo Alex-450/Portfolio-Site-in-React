@@ -1,12 +1,10 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import Head from 'next/head';
 import { Container } from 'react-bootstrap';
 import { Cinema, FilmWithCinemas } from '../types';
 import FilmCard from './FilmCard';
-
-function getToday(): string {
-  return new Date().toISOString().split('T')[0];
-}
+import { getToday, formatDate } from '../utils/date';
+import { filterFilms, filterFilmsBySearch } from '../utils/filmFilters';
 
 function groupFilmsByCinema(cinemas: Cinema[]): FilmWithCinemas[] {
   const filmMap = new Map<string, FilmWithCinemas>();
@@ -55,34 +53,15 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
   const today = getToday();
   const allFilms = groupFilmsByCinema(cinemas);
 
-  const matchingFilms = allFilms.filter(
-    (film) =>
-      !filmSearch || film.title.toLowerCase().includes(filmSearch.toLowerCase())
-  );
+  const matchingFilms = filterFilmsBySearch(allFilms, filmSearch);
 
-  const filteredFilms = allFilms
-    .filter((film) => !filmFilter || film.title === filmFilter)
-    .filter(
-      (film) =>
-        !filmSearch ||
-        film.title.toLowerCase().includes(filmSearch.toLowerCase())
-    )
-    .map((film) => {
-      const filteredCinemaShowtimes = film.cinemaShowtimes
-        .filter((cs) => !cinemaFilter || cs.cinema === cinemaFilter)
-        .map((cs) => {
-          if (!dayFilter) return cs;
-          const filteredShowtimes = cs.showtimes.filter((s) => {
-            if (dayFilter === 'today') return s.date === today;
-            return s.date === dayFilter;
-          });
-          return { ...cs, showtimes: filteredShowtimes };
-        })
-        .filter((cs) => cs.showtimes.length > 0);
-
-      return { ...film, cinemaShowtimes: filteredCinemaShowtimes };
-    })
-    .filter((film) => film.cinemaShowtimes.length > 0);
+  const filteredFilms = filterFilms(allFilms, {
+    cinemaFilter,
+    dayFilter,
+    filmSearch,
+    filmFilter,
+    today,
+  });
 
   const allDates = new Set<string>();
 
@@ -97,15 +76,7 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
   });
   const dayOptions = Array.from(allDates)
     .sort()
-    .map((date) => {
-      const d = new Date(date + 'T12:00:00');
-      const label = d.toLocaleDateString('en-GB', {
-        weekday: 'short',
-        day: 'numeric',
-        month: 'short',
-      });
-      return { value: date, label };
-    });
+    .map((date) => ({ value: date, label: formatDate(date) }));
 
   return (
     <>

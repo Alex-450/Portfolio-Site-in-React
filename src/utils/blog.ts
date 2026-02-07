@@ -6,40 +6,41 @@ import {
   TechBlogPost,
 } from '../types';
 
+type BlogPostType = BlogPost['type'];
+
+type BlogPostByType = {
+  film: FilmBlogPost;
+  'creative-writing': CreativeWritingBlogPost;
+  tech: TechBlogPost;
+};
+
+function findPost<T extends BlogPostType>(
+  type: T,
+  matcher: (blog: BlogPostByType[T]) => boolean
+): BlogPostByType[T] {
+  const posts = blogPostArchive as BlogPost[];
+  const filtered = posts.filter((p): p is BlogPostByType[T] => p.type === type);
+  const blog = filtered.find(matcher);
+  if (!blog) {
+    throw new Error(`${type} post not found`);
+  }
+  return blog;
+}
+
 export function findFilmPost(
   matcher: (blog: FilmBlogPost) => boolean
 ): FilmBlogPost {
-  const posts = blogPostArchive as BlogPost[];
-  const filmPosts = posts.filter((p): p is FilmBlogPost => p.type === 'film');
-  const blog = filmPosts.find(matcher);
-  if (!blog) {
-    throw new Error('Film post not found');
-  }
-  return blog;
+  return findPost('film', matcher);
 }
 
 export function findCreativeWritingPost(
   matcher: (blog: CreativeWritingBlogPost) => boolean
 ): CreativeWritingBlogPost {
-  const posts = blogPostArchive as BlogPost[];
-  const creativeWritingPosts = posts.filter(
-    (p): p is CreativeWritingBlogPost => p.type === 'creative-writing'
-  );
-  const blog = creativeWritingPosts.find(matcher);
-  if (!blog) {
-    throw new Error('Creative writing post not found');
-  }
-  return blog;
+  return findPost('creative-writing', matcher);
 }
 
 export function findTechPost(
   matcher: (blog: TechBlogPost) => boolean
 ): TechBlogPost {
-  const posts = blogPostArchive as BlogPost[];
-  const techPosts = posts.filter((p): p is TechBlogPost => p.type === 'tech');
-  const blog = techPosts.find(matcher);
-  if (!blog) {
-    throw new Error('Tech post not found');
-  }
-  return blog;
+  return findPost('tech', matcher);
 }
