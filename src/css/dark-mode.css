@@ -5,37 +5,37 @@
   }
 
   .blog-pill {
-    border: 2px solid var(--dark-hover-background);
+    border: 2px solid var(--hover-bg);
     background-color: var(--dark-background);
     color: var(--dark-text-color);
   }
 
   .blog-pill:hover {
     color: var(--dark-background);
-    background-color: var(--dark-hover-background);
+    background-color: var(--hover-bg);
   }
 
   .blog-pill-active {
-    background-color: var(--dark-hover-background);
+    background-color: var(--hover-bg);
     color: var(--dark-background);
   }
 
   .blog-pill-active:hover {
-    background-color: var(--dark-hover-background);
+    background-color: var(--hover-bg);
   }
 
   .blog-row {
     color: white;
-    border-bottom: 1px solid var(--dark-hover-background);
+    border-bottom: 1px solid var(--hover-bg);
   }
 
   .blog-row:hover {
     color: var(--dark-background);
-    background-color: var(--dark-hover-background);
+    background-color: var(--hover-bg);
   }
 
   .blog-header {
-    border-bottom: 1px solid var(--dark-hover-background);
+    border-bottom: 1px solid var(--hover-bg);
   }
 
   .footer-container {
@@ -47,14 +47,14 @@
   }
 
   .footer-link {
-    border: 2px solid var(--dark-hover-background);
+    border: 2px solid var(--hover-bg);
     color: var(--dark-text-color);
     background-color: var(--dark-background);
   }
 
   .footer-link:hover {
     color: var(--dark-background);
-    background-color: var(--dark-hover-background);
+    background-color: var(--hover-bg);
   }
 
   /* Film Listings dark mode */
@@ -65,11 +65,11 @@
   .filter-select {
     background-color: var(--dark-background);
     color: var(--dark-text-color);
-    border-color: var(--dark-hover-background);
+    border-color: var(--hover-bg);
   }
 
   .filter-select:hover {
-    background-color: var(--dark-hover-background);
+    background-color: var(--hover-bg);
     color: var(--dark-background);
   }
 
@@ -84,20 +84,20 @@
 
   .cinema-section {
     background-color: var(--dark-background);
-    border-color: var(--dark-hover-background);
+    border-color: var(--hover-bg);
   }
 
   .cinema-section h2 {
-    border-bottom-color: var(--dark-hover-background);
+    border-bottom-color: var(--hover-bg);
   }
 
   .film-card {
-    border-bottom-color: var(--dark-hover-background);
+    border-bottom-color: var(--hover-bg);
   }
 
   .film-poster,
   .film-poster-placeholder {
-    border-color: var(--dark-hover-background);
+    border-color: var(--hover-bg);
     background: #333;
   }
 
@@ -113,42 +113,42 @@
   .showtime-link {
     background-color: var(--dark-background);
     color: var(--dark-text-color);
-    border-color: var(--dark-hover-background);
+    border-color: var(--hover-bg);
   }
 
   .showtime-link:hover {
-    background-color: var(--dark-hover-background);
+    background-color: var(--hover-bg);
     color: var(--dark-background);
   }
 
   .expand-btn {
     color: var(--dark-text-color);
-    border-color: var(--dark-hover-background);
+    border-color: var(--hover-bg);
   }
 
   .expand-btn:hover {
-    background-color: var(--dark-hover-background);
+    background-color: var(--hover-bg);
     color: var(--dark-background);
   }
 
   .film-search-dropdown {
     background-color: var(--dark-background);
-    border-color: var(--dark-hover-background);
+    border-color: var(--hover-bg);
   }
 
   .film-search-dropdown li:hover {
-    background-color: var(--dark-hover-background);
+    background-color: var(--hover-bg);
     color: var(--dark-background);
   }
 
   .film-search-clear {
     color: var(--dark-text-color);
     background: var(--dark-background);
-    border: 2px solid var(--dark-hover-background);
+    border: 2px solid var(--hover-bg);
 
   }
 
   .film-search-clear:hover {
-    background-color: var(--dark-hover-background);
+    background-color: var(--hover-bg);
   }
 }

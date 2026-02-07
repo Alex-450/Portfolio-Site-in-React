@@ -3,7 +3,7 @@
 :root {
   --dark-background: #121212;
   --dark-text-color: #ffffff;
-  --dark-hover-background: #888888;
+  --hover-bg: #888888;
 }
 
 * {
@@ -75,7 +75,7 @@ button.footer-link {
 
 .footer-link:hover {
   color: white;
-  background-color: #888888;
+  background-color: var(--hover-bg);
 }
 
 .footer-nav {
@@ -105,16 +105,16 @@ button.footer-link {
 
 .blog-pill:hover {
   color: white;
-  background-color: #888888;
+  background-color: var(--hover-bg);
 }
 
 .blog-pill-active {
   color: white;
-  background-color: #888888;
+  background-color: var(--hover-bg);
 }
 
 .blog-pill-active:hover {
-  background-color: #888888;
+  background-color: var(--hover-bg);
 }
 
 .blog-link {
@@ -136,7 +136,7 @@ button.footer-link {
 
 .blog-row:hover {
   color: white;
-  background-color: #888888;
+  background-color: var(--hover-bg);
 }
 
 .blog-body-text {
@@ -206,7 +206,7 @@ button.footer-link {
 }
 
 .filter-select:hover {
-  background-color: #888888;
+  background-color: var(--hover-bg);
   color: white;
 }
 
@@ -236,7 +236,7 @@ button.footer-link {
 
 .film-search-clear:hover {
   color: black;
-  background-color: var(--dark-hover-background);
+  background-color: var(--hover-bg);
 }
 
 .film-search-dropdown {
@@ -259,7 +259,7 @@ button.footer-link {
 }
 
 .film-search-dropdown li:hover {
-  background-color: #888888;
+  background-color: var(--hover-bg);
   color: white;
 }
 
@@ -409,7 +409,7 @@ button.footer-link {
 }
 
 .showtime-link:hover {
-  background-color: #888888;
+  background-color: var(--hover-bg);
   color: white;
   text-decoration: none;
 }
@@ -426,7 +426,7 @@ button.footer-link {
 }
 
 .expand-btn:hover {
-  background-color: #888888;
+  background-color: var(--hover-bg);
   color: white;
 }
 
