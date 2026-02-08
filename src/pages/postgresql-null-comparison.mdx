@@ -73,7 +73,8 @@ id |     name
 ```
 
 This is because `WHERE` returns rows where the condition is `TRUE` and because
-`NULL != 'test_user'`, that row is excluded from the result.
+`NULL != 'test_user'` is equal to `NULL`, rather than `TRUE`, 
+that row is excluded from the result.
 
 export default function Layout({ children }) {
   return <ArticleLayout metadata={metadata}>{children}</ArticleLayout>;
