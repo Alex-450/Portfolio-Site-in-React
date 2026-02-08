@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { Container } from 'react-bootstrap';
 import { Cinema, FilmWithCinemas } from '../types';
 import FilmCard from './FilmCard';
+import PosterCarousel from './PosterCarousel';
 import { getToday, formatDate } from '../utils/date';
 import { filterFilms, filterFilmsBySearch } from '../utils/filmFilters';
 
@@ -100,6 +101,14 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
             Showtimes from LAB111, Studio K, Filmhallen, Filmkoepel & The Movies
           </p>
         </header>
+
+        <PosterCarousel
+          films={allFilms}
+          onPosterClick={(title) => {
+            setFilmSearch(title);
+            setFilmFilter(title);
+          }}
+        />
 
         <div className="film-filters">
           <select

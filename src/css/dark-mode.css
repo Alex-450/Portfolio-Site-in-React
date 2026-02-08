@@ -152,6 +152,32 @@
     background-color: var(--hover-bg);
   }
 
+  /* Poster Carousel dark mode */
+  .poster-carousel {
+    scrollbar-color: var(--hover-bg) var(--dark-background);
+  }
+
+  .poster-carousel::-webkit-scrollbar-track {
+    background: var(--dark-background);
+  }
+
+  .poster-carousel::-webkit-scrollbar-thumb {
+    background: var(--hover-bg);
+  }
+
+  .poster-carousel-item {
+    border-color: var(--hover-bg);
+  }
+
+  .poster-carousel-image {
+    background: #333;
+  }
+
+  .poster-carousel-title {
+    background: var(--dark-background);
+    color: var(--dark-text-color);
+  }
+
   /* Code blocks dark mode */
   pre {
     background-color: #0d0d0d;

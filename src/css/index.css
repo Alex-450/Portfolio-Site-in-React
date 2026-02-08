@@ -457,6 +457,67 @@ code {
   color: white;
 }
 
+/* Poster Carousel */
+.poster-carousel {
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #666 #dee2e6;
+}
+
+.poster-carousel::-webkit-scrollbar {
+  height: 8px;
+}
+
+.poster-carousel::-webkit-scrollbar-track {
+  background: #dee2e6;
+}
+
+.poster-carousel::-webkit-scrollbar-thumb {
+  background: #666;
+  border-radius: 4px;
+}
+
+.poster-carousel-track {
+  display: flex;
+  gap: 12px;
+  padding: 4px 0 12px 0;
+}
+
+.poster-carousel-item {
+  flex-shrink: 0;
+  padding: 0;
+  border: 2px solid black;
+  background: none;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.poster-carousel-item:hover {
+  transform: scale(1.05);
+}
+
+.poster-carousel-image {
+  display: block;
+  width: 140px;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  background: #ccc;
+}
+
+.poster-carousel-title {
+  display: block;
+  width: 140px;
+  padding: 6px 4px;
+  font-size: 0.8rem;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: #dee2e6;
+}
+
 @media (max-width: 600px) {
   .film-poster,
   .film-poster-placeholder {
@@ -481,5 +542,13 @@ code {
 
   .filter-select-film {
     max-width: none;
+  }
+
+  .poster-carousel-image {
+    width: 100px;
+  }
+
+  .poster-carousel-title {
+    width: 100px;
   }
 }
