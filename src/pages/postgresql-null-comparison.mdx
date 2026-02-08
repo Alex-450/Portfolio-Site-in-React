@@ -15,12 +15,12 @@ but I was not getting the results I expected.
 To illustrate I will create a simple test table:
 
 ```sql
-CREATE TABLE 
-  users (id SERIAL, name TEXT);
+CREATE TABLE users (
+  id SERIAL, name TEXT
+);
 
-INSERT INTO 
-  users (name) 
-  VALUES ('test_user'), (NULL), ('another_user');
+INSERT INTO users (name) 
+VALUES ('test_user'), (NULL), ('another_user');
 
 SELECT * FROM users;
 
