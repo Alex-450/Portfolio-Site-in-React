@@ -75,11 +75,10 @@ async function fetchAllCinemas() {
 
   if (uniqueTitlesToSearch.length > 0) {
     console.log(`\nSearching TMDB for ${uniqueTitlesToSearch.length} unique film posters...`);
-    for (const film of uniqueTitlesToSearch) {
+    await Promise.all(uniqueTitlesToSearch.map(async (film) => {
       const url = await searchTmdbPoster(film.title);
       if (url) posterByTitle.set(cleanTitle(film.title), url);
-      await new Promise(r => setTimeout(r, 100)); // Small delay between requests
-    }
+    }));
   }
 
   // Apply posters from posterByTitle to all films that still need them
