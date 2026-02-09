@@ -64,6 +64,15 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
     today,
   });
 
+  // Films for carousel: filtered by cinema and day, but not by film search
+  const carouselFilms = filterFilms(allFilms, {
+    cinemaFilter,
+    dayFilter,
+    filmSearch: '',
+    filmFilter: '',
+    today,
+  });
+
   const allDates = new Set<string>();
 
   allFilms.forEach((film) => {
@@ -103,7 +112,7 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
         </header>
 
         <PosterCarousel
-          films={allFilms}
+          films={carouselFilms}
           onPosterClick={(title) => {
             setFilmSearch(title);
             setFilmFilter(title);
