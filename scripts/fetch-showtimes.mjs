@@ -1,131 +1,53 @@
-import dotenv from 'dotenv';
-dotenv.config({ path: '.env.local' });
-import { XMLParser } from 'fast-xml-parser';
 import { writeFileSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
-import he from 'he';
-
-const TMDB_API_KEY = process.env.TMDB_API_KEY;
-
-const FEEDS = [
-  { name: 'LAB111', url: 'https://www.lab111.nl/feed' },
-  { name: 'Studio K', url: 'https://www.studio-k.nu/feed' },
-  { name: 'FilmHallen', url: 'https://www.filmhallen.nl/feed' },
-  { name: 'The Movies', url: 'https://www.themovies.nl/feed' },
-  { name: 'FilmKoepel', url: 'https://filmkoepel.nl/feed/' },
-];
-
-const parser = new XMLParser({
-  ignoreAttributes: false,
-  attributeNamePrefix: '@_',
-});
-
-function formatDay(dateStr) {
-  const date = new Date(dateStr);
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  return days[date.getDay()];
-}
-
-function decodeString(string) {
-  return he.decode(string);
-}
-
-function parseFilmLength(filmLength) {
-  var numberPattern = /\d+/g;
-  var numericLength = String(filmLength).match(numberPattern);
-  return `${numericLength} minutes`;
-}
-
-async function fetchTmdbPoster(tmdbId) {
-  if (!TMDB_API_KEY || !tmdbId) return null;
-  try {
-    const res = await fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${TMDB_API_KEY}`);
-    if (!res.ok) return null;
-    const data = await res.json();
-    if (data.poster_path) return `https://image.tmdb.org/t/p/w342${data.poster_path}`;
-  } catch { /* ignore */ }
-  return null;
-}
-
-async function fetchWithRetry(url, options, retries = 3) {
-  for (let attempt = 1; attempt <= retries; attempt++) {
-    const response = await fetch(url, options);
-    if (response.ok) return response;
-    console.warn(`  Attempt ${attempt}/${retries} failed: ${response.status}`);
-    if (attempt < retries) await new Promise(r => setTimeout(r, attempt * 2000));
-  }
-  throw new Error(`Failed after ${retries} attempts`);
-}
-
-async function fetchFeed(feed) {
-  console.log(`Fetching ${feed.name}...`);
-  const response = await fetchWithRetry(feed.url, {
-    headers: {
-      'Accept': 'application/rss+xml, application/xml, text/xml, */*',
-      'User-Agent': 'Mozilla/5.0 (compatible; FilmListingsFetcher/1.0)',
-    },
-  });
-  const xml = await response.text();
-  const data = parser.parse(xml);
-
-  const films = [];
-  const filmList = data.schedule?.film || [];
-  const filmArray = Array.isArray(filmList) ? filmList : [filmList];
-
-  for (const film of filmArray) {
-    const showtimes = [];
-    const cinema = film.cinema;
-
-    if (cinema) {
-      const showtimeList = cinema.showtime || [];
-      const showtimeArray = Array.isArray(showtimeList) ? showtimeList : [showtimeList];
-
-      for (const st of showtimeArray) {
-        if (st.day && st.time) {
-          showtimes.push({
-            date: st.day,
-            day: formatDay(st.day),
-            datetime: `${st.day}T${st.time}`,
-            time: st.time,
-            ticketUrl: st.bookinglink || '',
-            screen: st.screen || '',
-          });
-        }
-      }
-    }
-
-    if (film.title && showtimes.length > 0) {
-      films.push({
-        title: decodeString(film.title),
-        director: film.director || null,
-        length: parseFilmLength(film.length) || null,
-        posterUrl: film.posterlink || '',
-        permalink: film.permalink || '',
-        showtimes,
-        _tmdbId: film.tmdb || null,
-      });
-    }
-  }
-
-  console.log(`Found ${films.length} films with showtimes for ${feed.name}`);
-  return { name: feed.name, films };
-}
+import { fetchAllRssFeeds } from './scrapers/rss-feeds.mjs';
+import { fetchKriterion } from './scrapers/kriterion.mjs';
+import { fetchFcHyena } from './scrapers/fc-hyena.mjs';
+import { fetchEye } from './scrapers/eye.mjs';
+import { fetchTmdbPoster, searchTmdbPoster, cleanTitle } from './scrapers/tmdb.mjs';
 
 async function fetchAllCinemas() {
-  const results = await Promise.allSettled(FEEDS.map(fetchFeed));
+  // Fetch all sources in parallel
+  const [rssResults, kriterionResult, fcHyenaResult, eyeResult] = await Promise.allSettled([
+    fetchAllRssFeeds(),
+    fetchKriterion(),
+    fetchFcHyena(),
+    fetchEye(),
+  ]);
+
   const cinemas = [];
 
-  for (let i = 0; i < results.length; i++) {
-    const result = results[i];
-    if (result.status === 'fulfilled' && result.value.films.length > 0) {
-      cinemas.push(result.value);
-    } else if (result.status === 'rejected') {
-      console.error(`Error fetching ${FEEDS[i].name}:`, result.reason.message);
+  // Process results
+  const namedResults = [
+    { name: 'RSS feeds', result: rssResults, isArray: true },
+    { name: 'Kriterion', result: kriterionResult },
+    { name: 'FC Hyena', result: fcHyenaResult },
+    { name: 'Eye', result: eyeResult },
+  ];
+
+  for (const { name, result, isArray } of namedResults) {
+    if (result.status === 'fulfilled') {
+      if (isArray) {
+        cinemas.push(...result.value);
+      } else if (result.value.films.length > 0) {
+        cinemas.push(result.value);
+      }
+    } else {
+      console.error(`Error fetching ${name}:`, result.reason?.message);
+    }
+  }
+
+  // Build a map of cleaned title -> poster URL from films that already have posters
+  const allFilms = cinemas.flatMap(c => c.films);
+  const posterByTitle = new Map();
+  for (const film of allFilms) {
+    if (film.posterUrl) {
+      posterByTitle.set(cleanTitle(film.title), film.posterUrl);
     }
   }
 
   // Collect unique TMDB IDs needing posters and fetch them once
-  const filmsNeedingPoster = cinemas.flatMap(c => c.films).filter(f => !f.posterUrl && f._tmdbId);
+  const filmsNeedingPoster = allFilms.filter(f => !f.posterUrl && f._tmdbId);
   const uniqueTmdbIds = [...new Set(filmsNeedingPoster.map(f => f._tmdbId))];
 
   if (uniqueTmdbIds.length > 0) {
@@ -136,17 +58,43 @@ async function fetchAllCinemas() {
       if (url) posterMap.set(tmdbId, url);
     }));
 
-    // Apply posters to all films
+    // Apply posters to all films and update posterByTitle
     for (const film of filmsNeedingPoster) {
       const url = posterMap.get(film._tmdbId);
+      if (url) {
+        film.posterUrl = url;
+        posterByTitle.set(cleanTitle(film.title), url);
+      }
+    }
+  }
+
+  // Search TMDB for films without posters, skipping titles we already have
+  const filmsNeedingSearch = allFilms.filter(f => !f.posterUrl && f._needsTmdbSearch);
+  const uniqueTitlesToSearch = [...new Map(filmsNeedingSearch.map(f => [cleanTitle(f.title), f])).values()]
+    .filter(f => !posterByTitle.has(cleanTitle(f.title)));
+
+  if (uniqueTitlesToSearch.length > 0) {
+    console.log(`\nSearching TMDB for ${uniqueTitlesToSearch.length} unique film posters...`);
+    for (const film of uniqueTitlesToSearch) {
+      const url = await searchTmdbPoster(film.title);
+      if (url) posterByTitle.set(cleanTitle(film.title), url);
+      await new Promise(r => setTimeout(r, 100)); // Small delay between requests
+    }
+  }
+
+  // Apply posters from posterByTitle to all films that still need them
+  for (const film of allFilms) {
+    if (!film.posterUrl) {
+      const url = posterByTitle.get(cleanTitle(film.title));
       if (url) film.posterUrl = url;
     }
   }
 
-  // Clean up _tmdbId from all films
+  // Clean up internal fields from all films
   for (const cinema of cinemas) {
     for (const film of cinema.films) {
       delete film._tmdbId;
+      delete film._needsTmdbSearch;
     }
   }
 

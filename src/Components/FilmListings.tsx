@@ -98,7 +98,7 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
         <header className="film-listings-header">
           <h1>Film Listings</h1>
           <p className="subtitle">
-            Showtimes from LAB111, Studio K, Filmhallen, Filmkoepel & The Movies
+            Showtimes from LAB111, Studio K, Filmhallen, Filmkoepel, The Movies, Kriterion, Eye & FC Hyena
           </p>
         </header>
 
