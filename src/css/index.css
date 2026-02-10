@@ -316,6 +316,61 @@ code {
   color: white;
 }
 
+/* Genre Filter */
+.genre-filter {
+  position: relative;
+}
+
+.genre-filter-button {
+  text-align: left;
+  min-width: 120px;
+}
+
+.genre-filter-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 180px;
+  max-height: 300px;
+  overflow-y: auto;
+  background-color: #dee2e6;
+  border: 2px solid black;
+  border-top: none;
+  z-index: 10;
+}
+
+.genre-filter-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.genre-filter-option:hover {
+  background-color: var(--hover-bg);
+  color: white;
+}
+
+.genre-filter-option input {
+  cursor: pointer;
+}
+
+.genre-filter-clear {
+  width: 100%;
+  padding: 6px 10px;
+  border: none;
+  border-top: 1px solid black;
+  background: #ccc;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.genre-filter-clear:hover {
+  background-color: var(--hover-bg);
+  color: white;
+}
+
 .loading-text,
 .error-text,
 .no-results {
@@ -701,6 +756,18 @@ code {
 
   .film-search-container {
     width: 100%;
+  }
+
+  .genre-filter {
+    width: 100%;
+  }
+
+  .genre-filter-button {
+    width: 100%;
+  }
+
+  .genre-filter-dropdown {
+    right: 0;
   }
 
   .filter-select-film {

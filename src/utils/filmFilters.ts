@@ -5,6 +5,7 @@ interface FilterOptions {
   dayFilter: string;
   filmSearch: string;
   filmFilter: string;
+  genreFilter: string[];
   today: string;
 }
 
@@ -41,11 +42,15 @@ export function filterFilms(
   films: FilmWithCinemas[],
   options: FilterOptions
 ): FilmWithCinemas[] {
-  const { cinemaFilter, dayFilter, filmSearch, filmFilter, today } = options;
+  const { cinemaFilter, dayFilter, filmSearch, filmFilter, genreFilter, today } = options;
 
   return films
     .filter((film) => !filmFilter || film.title === filmFilter)
     .filter((film) => matchesSearch(film.title, filmSearch))
+    .filter((film) =>
+      genreFilter.length === 0 ||
+      film.genres?.some((g) => genreFilter.includes(g))
+    )
     .map((film) => ({
       ...film,
       cinemaShowtimes: filterCinemaShowtimes(

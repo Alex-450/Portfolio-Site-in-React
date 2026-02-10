@@ -81,6 +81,27 @@
     color: var(--dark-background);
   }
 
+  .genre-filter-dropdown {
+    background-color: var(--dark-background);
+    border-color: var(--hover-bg);
+  }
+
+  .genre-filter-option:hover {
+    background-color: var(--hover-bg);
+    color: var(--dark-background);
+  }
+
+  .genre-filter-clear {
+    background-color: #333;
+    border-top-color: var(--hover-bg);
+    color: var(--dark-text-color);
+  }
+
+  .genre-filter-clear:hover {
+    background-color: var(--hover-bg);
+    color: var(--dark-background);
+  }
+
   .loading-text,
   .no-results {
     color: #aaa;

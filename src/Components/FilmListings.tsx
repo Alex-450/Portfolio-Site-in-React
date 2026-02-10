@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Head from 'next/head';
 import { Container } from 'react-bootstrap';
-import { Cinema, FilmWithCinemas } from '../types';
+import { Cinema, FilmWithCinemas, FilmsIndex } from '../types';
 import FilmCard from './FilmCard';
 import PosterCarousel from './PosterCarousel';
 import { getToday, formatDate } from '../utils/date';
@@ -14,7 +14,7 @@ function generateSlug(title: string): string {
     .replace(/(^-|-$)/g, '');
 }
 
-function groupFilmsByCinema(cinemas: Cinema[]): FilmWithCinemas[] {
+function groupFilmsByCinema(cinemas: Cinema[], filmsIndex: FilmsIndex): FilmWithCinemas[] {
   const filmMap = new Map<string, FilmWithCinemas>();
   const usedSlugs = new Set<string>();
 
@@ -31,6 +31,12 @@ function groupFilmsByCinema(cinemas: Cinema[]): FilmWithCinemas[] {
         }
         usedSlugs.add(slug);
 
+        // Look up genres from films index
+        const filmDetail = Object.values(filmsIndex).find(
+          (f) => f.title.toLowerCase() === key
+        );
+        const genres = filmDetail?.tmdb?.genres;
+
         filmMap.set(key, {
           slug,
           title: film.title,
@@ -38,6 +44,7 @@ function groupFilmsByCinema(cinemas: Cinema[]): FilmWithCinemas[] {
           length: film.length,
           posterUrl: film.posterUrl,
           permalink: film.permalink,
+          genres,
           cinemaShowtimes: [],
         });
       }
@@ -60,17 +67,21 @@ function groupFilmsByCinema(cinemas: Cinema[]): FilmWithCinemas[] {
 
 interface FilmListingsProps {
   cinemas: Cinema[];
+  filmsIndex: FilmsIndex;
 }
 
-const FilmListings = ({ cinemas }: FilmListingsProps) => {
+const FilmListings = ({ cinemas, filmsIndex }: FilmListingsProps) => {
   const [cinemaFilter, setCinemaFilter] = useState('');
   const [dayFilter, setDayFilter] = useState('');
   const [filmSearch, setFilmSearch] = useState('');
   const [filmFilter, setFilmFilter] = useState('');
+  const [genreFilter, setGenreFilter] = useState<string[]>([]);
   const [showFilmDropdown, setShowFilmDropdown] = useState(false);
+  const [showGenreDropdown, setShowGenreDropdown] = useState(false);
 
   const today = getToday();
-  const allFilms = groupFilmsByCinema(cinemas);
+  const allFilms = groupFilmsByCinema(cinemas, filmsIndex);
+  const allGenres = [...new Set(allFilms.flatMap((f) => f.genres || []))].sort();
 
   const matchingFilms = filterFilmsBySearch(allFilms, filmSearch);
 
@@ -79,6 +90,7 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
     dayFilter,
     filmSearch,
     filmFilter,
+    genreFilter,
     today,
   });
 
@@ -88,6 +100,7 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
     dayFilter,
     filmSearch: '',
     filmFilter: '',
+    genreFilter,
     today,
   });
 
@@ -160,6 +173,47 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
               </option>
             ))}
           </select>
+          {allGenres.length > 0 && (
+            <div className="genre-filter">
+              <button
+                className="filter-select genre-filter-button"
+                onClick={() => setShowGenreDropdown(!showGenreDropdown)}
+                onBlur={() => setTimeout(() => setShowGenreDropdown(false), 150)}
+              >
+                {genreFilter.length === 0
+                  ? 'All Genres'
+                  : `${genreFilter.length} Genre${genreFilter.length > 1 ? 's' : ''}`}
+              </button>
+              {showGenreDropdown && (
+                <div className="genre-filter-dropdown">
+                  {allGenres.map((genre) => (
+                    <label key={genre} className="genre-filter-option">
+                      <input
+                        type="checkbox"
+                        checked={genreFilter.includes(genre)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setGenreFilter([...genreFilter, genre]);
+                          } else {
+                            setGenreFilter(genreFilter.filter((g) => g !== genre));
+                          }
+                        }}
+                      />
+                      {genre}
+                    </label>
+                  ))}
+                  {genreFilter.length > 0 && (
+                    <button
+                      className="genre-filter-clear"
+                      onMouseDown={() => setGenreFilter([])}
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
           <div className="film-search-container">
             <input
               type="text"

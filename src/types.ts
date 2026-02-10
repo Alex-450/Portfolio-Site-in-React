@@ -103,6 +103,7 @@ export interface FilmWithCinemas {
   length: string | null;
   posterUrl: string;
   permalink: string;
+  genres?: string[];
   cinemaShowtimes: CinemaShowtimes[];
 }
 
