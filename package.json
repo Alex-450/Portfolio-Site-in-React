@@ -26,7 +26,6 @@
     "prettier": "^3.8.1"
   },
   "scripts": {
-    "predev": "npm run fetch-showtimes",
     "dev": "next dev",
     "start": "npx serve@latest ./out",
     "predeploy": "npm run build",
