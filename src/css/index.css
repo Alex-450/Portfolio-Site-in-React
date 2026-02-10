@@ -564,6 +564,11 @@ code {
   flex-shrink: 0;
 }
 
+.film-detail-info {
+  flex: 1;
+  max-width: 400px;
+}
+
 .film-detail-info h1 {
   margin-bottom: 0.5rem;
   font-size: 1.75rem;
@@ -624,9 +629,7 @@ code {
 }
 
 .film-detail-overview {
-  margin: 2rem auto;
-  max-width: 800px;
-  text-align: center;
+  margin-top: 1.5rem;
 }
 
 .film-detail-overview h2 {

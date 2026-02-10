@@ -55,20 +55,18 @@ export default function FilmDetailPage({ film }: Props) {
                 ))}
               </div>
             )}
+
+            {film.tmdb?.overview && (
+              <div className="film-detail-overview">
+                <p>{film.tmdb.overview}</p>
+              </div>
+            )}
           </div>
         </div>
 
         {film.tmdb?.youtubeTrailerId && (
           <div className="film-detail-trailer">
-            <h2>Trailer</h2>
             <YouTubeEmbed videoId={film.tmdb.youtubeTrailerId} />
-          </div>
-        )}
-
-        {film.tmdb?.overview && (
-          <div className="film-detail-overview">
-            <h2>Overview</h2>
-            <p>{film.tmdb.overview}</p>
           </div>
         )}
 
