@@ -58,8 +58,16 @@
   }
 
   /* Film Listings dark mode */
-  .film-listings-header .subtitle {
+  .film-listings-footer .cinema-sources {
     color: #aaa;
+  }
+
+  .film-listings-footer .cinema-sources a {
+    color: #aaa;
+  }
+
+  .film-listings-footer .cinema-sources a:hover {
+    color: #fff;
   }
 
   .filter-select {

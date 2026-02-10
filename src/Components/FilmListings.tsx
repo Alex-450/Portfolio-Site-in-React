@@ -124,9 +124,6 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
       <Container className="film-listings-container">
         <header className="film-listings-header">
           <h1>Film Listings</h1>
-          <p className="subtitle">
-            Showtimes from <a href="https://www.lab111.nl/" target="_blank">LAB111</a>, <a href="https://studio-k.nu/" target="_blank">Studio K</a>, <a href="https://filmhallen.nl/" target="_blank">Filmhallen</a>, <a href="https://filmkoepel.nl/" target="_blank">Filmkoepel</a>, <a href="https://themovies.nl/" target="_blank">The Movies</a>, <a href="https://www.kriterion.nl/" target="_blank">Kriterion</a>, <a href="https://www.eyefilm.nl/en" target="_blank">Eye</a> & <a href="https://fchyena.nl/" target="_blank">FC Hyena</a>
-          </p>
         </header>
 
         <PosterCarousel
@@ -219,8 +216,11 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
           <FilmCard key={film.title} film={film} dayFilter={dayFilter} />
         ))}
 
-        <footer className="tmdb-attribution">
-          <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer">
+        <footer className="film-listings-footer">
+          <p className="cinema-sources">
+            Showtimes from <a href="https://www.lab111.nl/" target="_blank">LAB111</a>, <a href="https://studio-k.nu/" target="_blank">Studio K</a>, <a href="https://filmhallen.nl/" target="_blank">Filmhallen</a>, <a href="https://filmkoepel.nl/" target="_blank">Filmkoepel</a>, <a href="https://themovies.nl/" target="_blank">The Movies</a>, <a href="https://www.kriterion.nl/" target="_blank">Kriterion</a>, <a href="https://www.eyefilm.nl/en" target="_blank">Eye</a> & <a href="https://fchyena.nl/" target="_blank">FC Hyena</a>
+          </p>
+          <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer" className="tmdb-link">
             <img src="/tmdb-logo.svg" alt="TMDB" />
           </a>
         </footer>
