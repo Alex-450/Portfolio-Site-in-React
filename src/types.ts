@@ -111,7 +111,6 @@ export interface TmdbData {
   id: number;
   overview: string | null;
   releaseDate: string | null;
-  voteAverage: number | null;
   runtime: number | null;
   genres: string[];
   youtubeTrailerId: string | null;

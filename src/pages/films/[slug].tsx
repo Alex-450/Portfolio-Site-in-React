@@ -41,11 +41,6 @@ export default function FilmDetailPage({ film }: Props) {
             {film.tmdb && (
               <div className="film-detail-meta">
                 {year && <span className="film-detail-badge">{year}</span>}
-                {film.tmdb.voteAverage && (
-                  <span className="film-detail-badge">
-                    {film.tmdb.voteAverage.toFixed(1)}/10
-                  </span>
-                )}
                 {film.tmdb.runtime && (
                   <span className="film-detail-badge">{film.tmdb.runtime} min</span>
                 )}
