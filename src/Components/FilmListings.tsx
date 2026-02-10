@@ -7,14 +7,32 @@ import PosterCarousel from './PosterCarousel';
 import { getToday, formatDate } from '../utils/date';
 import { filterFilms, filterFilmsBySearch } from '../utils/filmFilters';
 
+function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
+
 function groupFilmsByCinema(cinemas: Cinema[]): FilmWithCinemas[] {
   const filmMap = new Map<string, FilmWithCinemas>();
+  const usedSlugs = new Set<string>();
 
   for (const cinema of cinemas) {
     for (const film of cinema.films) {
       const key = film.title.toLowerCase();
       if (!filmMap.has(key)) {
+        // Generate unique slug
+        let slug = generateSlug(film.title);
+        let counter = 1;
+        while (usedSlugs.has(slug)) {
+          slug = `${generateSlug(film.title)}-${counter}`;
+          counter++;
+        }
+        usedSlugs.add(slug);
+
         filmMap.set(key, {
+          slug,
           title: film.title,
           director: film.director,
           length: film.length,
@@ -107,7 +125,7 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
         <header className="film-listings-header">
           <h1>Film Listings</h1>
           <p className="subtitle">
-            Showtimes from LAB111, Studio K, Filmhallen, Filmkoepel, The Movies, Kriterion, Eye & FC Hyena
+            Showtimes from <a href="https://www.lab111.nl/" target="_blank">LAB111</a>, <a href="https://studio-k.nu/" target="_blank">Studio K</a>, <a href="https://filmhallen.nl/" target="_blank">Filmhallen</a>, <a href="https://filmkoepel.nl/" target="_blank">Filmkoepel</a>, <a href="https://themovies.nl/" target="_blank">The Movies</a>, <a href="https://www.kriterion.nl/" target="_blank">Kriterion</a>, <a href="https://www.eyefilm.nl/en" target="_blank">Eye</a> & <a href="https://fchyena.nl/" target="_blank">FC Hyena</a>
           </p>
         </header>
 
@@ -200,6 +218,12 @@ const FilmListings = ({ cinemas }: FilmListingsProps) => {
         {filteredFilms.map((film) => (
           <FilmCard key={film.title} film={film} dayFilter={dayFilter} />
         ))}
+
+        <footer className="tmdb-attribution">
+          <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer">
+            <img src="/tmdb-logo.svg" alt="TMDB" />
+          </a>
+        </footer>
       </Container>
     </>
   );

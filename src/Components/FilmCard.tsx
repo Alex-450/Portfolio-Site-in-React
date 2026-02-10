@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import Link from 'next/link';
 import { FilmWithCinemas } from '../types';
 import { formatDate, getToday, groupShowtimesByDate, filterByDay } from '../utils/date';
 
@@ -22,20 +23,16 @@ function FilmCard({ film, dayFilter }: FilmCardProps) {
 
   return (
     <div className="film-card">
-      {film.posterUrl ? (
-        <img className="film-poster" src={film.posterUrl} alt={film.title} />
-      ) : (
-        <div className="film-poster-placeholder" />
-      )}
+      <Link href={`/films/${film.slug}/`}>
+        {film.posterUrl ? (
+          <img className="film-poster" src={film.posterUrl} alt={film.title} />
+        ) : (
+          <div className="film-poster-placeholder" />
+        )}
+      </Link>
       <div className="film-info">
         <div className="film-title">
-          {film.permalink ? (
-            <a href={film.permalink} target="_blank" rel="noopener noreferrer">
-              {film.title}
-            </a>
-          ) : (
-            film.title
-          )}
+          <Link href={`/films/${film.slug}/`}>{film.title}</Link>
         </div>
         {film.director && <div className="film-director">{film.director}</div>}
         {film.length && <div className="film-length">{film.length}</div>}

@@ -518,6 +518,148 @@ code {
   background: #dee2e6;
 }
 
+/* TMDB Attribution */
+.tmdb-attribution {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  text-align: center;
+}
+
+.tmdb-attribution img {
+  height: 20px;
+  opacity: 0.7;
+}
+
+.tmdb-attribution img:hover {
+  opacity: 1;
+}
+
+/* Film Detail Page */
+.film-detail-container {
+  padding-top: 20px;
+  padding-bottom: 40px;
+}
+
+.film-detail-header {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.film-detail-poster {
+  width: 300px;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border: 2px solid black;
+  flex-shrink: 0;
+}
+
+.film-detail-poster-placeholder {
+  width: 300px;
+  aspect-ratio: 2 / 3;
+  background: #ccc;
+  border: 2px solid black;
+  flex-shrink: 0;
+}
+
+.film-detail-info h1 {
+  margin-bottom: 0.5rem;
+  font-size: 1.75rem;
+}
+
+.film-detail-director {
+  font-size: 1.1rem;
+  color: #444;
+  margin-bottom: 0.25rem;
+}
+
+.film-detail-length {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.film-detail-meta {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.film-detail-badge {
+  padding: 4px 12px;
+  background: #dee2e6;
+  border: 2px solid black;
+  font-size: 0.9rem;
+}
+
+.film-detail-genres {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.film-detail-genre {
+  padding: 2px 10px;
+  background: #dee2e6;
+  border: 1px solid black;
+  font-size: 0.85rem;
+}
+
+.film-detail-trailer {
+  margin: 2rem 0;
+  max-width: 800px;
+}
+
+.film-detail-trailer h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.film-detail-overview {
+  margin: 2rem 0;
+  max-width: 800px;
+}
+
+.film-detail-overview h2 {
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.film-detail-overview p {
+  line-height: 1.6;
+  color: #333;
+}
+
+.film-detail-showtimes {
+  margin: 2rem 0;
+}
+
+.film-detail-showtimes h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.cinema-showtimes-detail {
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 2rem;
+  padding: 8px 16px;
+  background: #dee2e6;
+  border: 2px solid black;
+  color: black;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  background: var(--hover-bg);
+  color: white;
+}
+
 @media (max-width: 600px) {
   .film-poster,
   .film-poster-placeholder {
@@ -550,5 +692,21 @@ code {
 
   .poster-carousel-title {
     width: 100px;
+  }
+
+  .film-detail-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .film-detail-poster,
+  .film-detail-poster-placeholder {
+    width: 200px;
+  }
+
+  .film-detail-meta,
+  .film-detail-genres {
+    justify-content: center;
   }
 }

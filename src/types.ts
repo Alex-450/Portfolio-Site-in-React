@@ -97,10 +97,39 @@ export interface CinemaShowtimes {
 }
 
 export interface FilmWithCinemas {
+  slug: string;
   title: string;
   director: string | null;
   length: string | null;
   posterUrl: string;
   permalink: string;
   cinemaShowtimes: CinemaShowtimes[];
+}
+
+// TMDB data for film detail pages
+export interface TmdbData {
+  id: number;
+  overview: string | null;
+  releaseDate: string | null;
+  voteAverage: number | null;
+  runtime: number | null;
+  genres: string[];
+  youtubeTrailerId: string | null;
+}
+
+// Full film data for detail pages
+export interface FilmDetail {
+  slug: string;
+  title: string;
+  director: string | null;
+  length: string | null;
+  posterUrl: string;
+  permalink: string;
+  tmdb: TmdbData | null;
+  cinemaShowtimes: CinemaShowtimes[];
+}
+
+// Films index (slug -> FilmDetail)
+export interface FilmsIndex {
+  [slug: string]: FilmDetail;
 }
