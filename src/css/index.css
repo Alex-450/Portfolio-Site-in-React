@@ -588,9 +588,11 @@ code {
 
 .film-detail-badge {
   padding: 4px 12px;
-  background: #dee2e6;
-  border: 2px solid black;
+  background: transparent;
+  border: 1px solid #888;
+  border-radius: 12px;
   font-size: 0.9rem;
+  color: #555;
 }
 
 .film-detail-genres {
@@ -601,9 +603,11 @@ code {
 
 .film-detail-genre {
   padding: 2px 10px;
-  background: #dee2e6;
-  border: 1px solid black;
+  background: transparent;
+  border: 1px solid #888;
+  border-radius: 12px;
   font-size: 0.85rem;
+  color: #555;
 }
 
 .film-detail-trailer {

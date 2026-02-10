@@ -188,4 +188,44 @@
     background-color: #2d2d2d;
     color: var(--dark-text-color);
   }
+
+  /* Film Detail page dark mode */
+  .film-detail-poster,
+  .film-detail-poster-placeholder {
+    border-color: var(--hover-bg);
+    background: #333;
+  }
+
+  .film-detail-director {
+    color: #aaa;
+  }
+
+  .film-detail-length {
+    color: #888;
+  }
+
+  .film-detail-badge {
+    border-color: #666;
+    color: #aaa;
+  }
+
+  .film-detail-genre {
+    border-color: #666;
+    color: #aaa;
+  }
+
+  .film-detail-overview p {
+    color: #ccc;
+  }
+
+  .back-link {
+    background: var(--dark-background);
+    border-color: var(--hover-bg);
+    color: var(--dark-text-color);
+  }
+
+  .back-link:hover {
+    background: var(--hover-bg);
+    color: var(--dark-background);
+  }
 }
