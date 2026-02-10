@@ -1,76 +1,42 @@
 import { useState } from 'react';
 import Head from 'next/head';
 import { Container } from 'react-bootstrap';
-import { Cinema, FilmWithCinemas, FilmsIndex } from '../types';
+import { FilmWithCinemas, FilmsIndex } from '../types';
 import FilmCard from './FilmCard';
 import PosterCarousel from './PosterCarousel';
 import { getToday, formatDate } from '../utils/date';
 import { filterFilms, filterFilmsBySearch } from '../utils/filmFilters';
 
-function generateSlug(title: string): string {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
+function filmsIndexToList(filmsIndex: FilmsIndex): FilmWithCinemas[] {
+  return Object.values(filmsIndex)
+    .map((film) => ({
+      slug: film.slug,
+      title: film.title,
+      director: film.director,
+      length: film.length,
+      posterUrl: film.posterUrl,
+      permalink: film.permalink,
+      genres: film.tmdb?.genres,
+      cinemaShowtimes: film.cinemaShowtimes,
+    }))
+    .sort((a, b) => a.title.localeCompare(b.title));
 }
 
-function groupFilmsByCinema(cinemas: Cinema[], filmsIndex: FilmsIndex): FilmWithCinemas[] {
-  const filmMap = new Map<string, FilmWithCinemas>();
-  const usedSlugs = new Set<string>();
-
-  for (const cinema of cinemas) {
-    for (const film of cinema.films) {
-      const key = film.title.toLowerCase();
-      if (!filmMap.has(key)) {
-        // Generate unique slug
-        let slug = generateSlug(film.title);
-        let counter = 1;
-        while (usedSlugs.has(slug)) {
-          slug = `${generateSlug(film.title)}-${counter}`;
-          counter++;
-        }
-        usedSlugs.add(slug);
-
-        // Look up genres from films index
-        const filmDetail = Object.values(filmsIndex).find(
-          (f) => f.title.toLowerCase() === key
-        );
-        const genres = filmDetail?.tmdb?.genres;
-
-        filmMap.set(key, {
-          slug,
-          title: film.title,
-          director: film.director,
-          length: film.length,
-          posterUrl: film.posterUrl,
-          permalink: film.permalink,
-          genres,
-          cinemaShowtimes: [],
-        });
-      }
-      const entry = filmMap.get(key)!;
-      // Use poster/permalink if we didn't have one
-      if (!entry.posterUrl && film.posterUrl) entry.posterUrl = film.posterUrl;
-      if (!entry.permalink && film.permalink) entry.permalink = film.permalink;
-      if (!entry.director && film.director) entry.director = film.director;
-      if (!entry.length && film.length) entry.length = film.length;
-
-      entry.cinemaShowtimes.push({
-        cinema: cinema.name,
-        showtimes: film.showtimes,
-      });
+function getCinemaNames(filmsIndex: FilmsIndex): string[] {
+  const cinemas = new Set<string>();
+  for (const film of Object.values(filmsIndex)) {
+    for (const cs of film.cinemaShowtimes) {
+      cinemas.add(cs.cinema);
     }
   }
-
-  return [...filmMap.values()].sort((a, b) => a.title.localeCompare(b.title));
+  return [...cinemas].sort();
 }
 
 interface FilmListingsProps {
-  cinemas: Cinema[];
   filmsIndex: FilmsIndex;
 }
 
-const FilmListings = ({ cinemas, filmsIndex }: FilmListingsProps) => {
+const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const [cinemaFilter, setCinemaFilter] = useState('');
   const [dayFilter, setDayFilter] = useState('');
   const [filmSearch, setFilmSearch] = useState('');
@@ -80,7 +46,8 @@ const FilmListings = ({ cinemas, filmsIndex }: FilmListingsProps) => {
   const [showGenreDropdown, setShowGenreDropdown] = useState(false);
 
   const today = getToday();
-  const allFilms = groupFilmsByCinema(cinemas, filmsIndex);
+  const allFilms = filmsIndexToList(filmsIndex);
+  const cinemaNames = getCinemaNames(filmsIndex);
   const allGenres = [...new Set(allFilms.flatMap((f) => f.genres || []))].sort();
 
   const matchingFilms = filterFilmsBySearch(allFilms, filmSearch);
@@ -154,9 +121,9 @@ const FilmListings = ({ cinemas, filmsIndex }: FilmListingsProps) => {
             className="filter-select"
           >
             <option value="">All Cinemas</option>
-            {cinemas.map((c) => (
-              <option key={c.name} value={c.name}>
-                {c.name}
+            {cinemaNames.map((name) => (
+              <option key={name} value={name}>
+                {name}
               </option>
             ))}
           </select>
@@ -258,11 +225,11 @@ const FilmListings = ({ cinemas, filmsIndex }: FilmListingsProps) => {
           </div>
         </div>
 
-        {cinemas.length === 0 && (
+        {allFilms.length === 0 && (
           <p className="no-results">No showtimes available</p>
         )}
 
-        {filteredFilms.length === 0 && cinemas.length > 0 && (
+        {filteredFilms.length === 0 && allFilms.length > 0 && (
           <p className="no-results">No showtimes found for selected filters</p>
         )}
 

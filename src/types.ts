@@ -76,24 +76,11 @@ export interface Showtime {
   screen: string;
 }
 
-export interface Film {
-  title: string;
-  director: string | null;
-  length: string | null;
-  posterUrl: string;
-  permalink: string;
-  showtimes: Showtime[];
-}
-
-export interface Cinema {
-  name: string;
-  films: Film[];
-}
-
 // Film-grouped structure for UI
 export interface CinemaShowtimes {
   cinema: string;
   showtimes: Showtime[];
+  variant?: string | null; // e.g., "50th Anniversary", "ENG SUBS"
 }
 
 export interface FilmWithCinemas {

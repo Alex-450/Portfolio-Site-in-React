@@ -26,6 +26,5 @@ next-env.d.ts
 /out
 
 # generated data
-src/data/showtimes.json
 src/data/films.json
 

@@ -4,7 +4,8 @@ import { fetchAllRssFeeds } from './scrapers/rss-feeds.mjs';
 import { fetchKriterion } from './scrapers/kriterion.mjs';
 import { fetchFcHyena } from './scrapers/fc-hyena.mjs';
 import { fetchEye } from './scrapers/eye.mjs';
-import { fetchTmdbPoster, searchTmdbPoster, searchTmdbMovieDetails, fetchTmdbMovieDetails, cleanTitle } from './scrapers/tmdb.mjs';
+import { fetchTmdbPoster, searchTmdbPoster, searchTmdbMovieDetails, fetchTmdbMovieDetails } from './scrapers/tmdb.mjs';
+import { cleanTitle, generateSlug, extractVariant, getCleanDisplayTitle } from '../src/utils/filmTitle.mjs';
 
 // Process items in batches to avoid rate limiting
 async function processBatched(items, fn, batchSize = 5, delayMs = 250) {
@@ -112,22 +113,17 @@ async function fetchAllCinemas() {
   return cinemas;
 }
 
-function generateSlug(title) {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
-}
-
 function groupFilmsByCinema(cinemas) {
   const filmMap = new Map();
 
   for (const cinema of cinemas) {
     for (const film of cinema.films) {
       const key = cleanTitle(film.title);
+      const variant = extractVariant(film.title);
+
       if (!filmMap.has(key)) {
         filmMap.set(key, {
-          title: film.title,
+          title: getCleanDisplayTitle(film.title),
           director: film.director,
           length: film.length,
           posterUrl: film.posterUrl,
@@ -147,6 +143,7 @@ function groupFilmsByCinema(cinemas) {
       existing.cinemaShowtimes.push({
         cinema: cinema.name,
         showtimes: film.showtimes,
+        variant: variant,
       });
     }
   }
@@ -204,18 +201,15 @@ async function main() {
   console.log('Fetching showtimes...\n');
 
   const cinemas = await fetchAllCinemas();
-  const outputPath = 'src/data/showtimes.json';
-  const filmsOutputPath = 'src/data/films.json';
+  const outputPath = 'src/data/films.json';
 
   mkdirSync(dirname(outputPath), { recursive: true });
-  writeFileSync(outputPath, JSON.stringify(cinemas, null, 2));
 
   // Generate films.json with TMDB details
   const filmsIndex = await generateFilmsJson(cinemas);
-  writeFileSync(filmsOutputPath, JSON.stringify(filmsIndex, null, 2));
+  writeFileSync(outputPath, JSON.stringify(filmsIndex, null, 2));
 
-  console.log(`\nWrote ${cinemas.length} cinemas to ${outputPath}`);
-  console.log(`Wrote ${Object.keys(filmsIndex).length} films to ${filmsOutputPath}`);
+  console.log(`\nWrote ${Object.keys(filmsIndex).length} films to ${outputPath}`);
   console.log(`Last updated: ${new Date().toISOString()}`);
 }
 

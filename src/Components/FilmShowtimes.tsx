@@ -22,10 +22,11 @@ function FilmShowtimes({ cinemaShowtimes }: FilmShowtimesProps) {
         const singleScreen = screens.size === 1 ? [...screens][0] : null;
 
         return (
-          <div key={cs.cinema} className="cinema-showtime-group">
+          <div key={`${cs.cinema}-${cs.variant || ''}`} className="cinema-showtime-group">
             <div className="cinema-name">
               {cs.cinema}
               {singleScreen && <span className="cinema-screen"> ({singleScreen})</span>}
+              {cs.variant && <span className="cinema-variant"> ({cs.variant})</span>}
             </div>
             <div className="showtimes">
               {filtered.map(([date, times]) => {

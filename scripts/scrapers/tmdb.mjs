@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import { cleanTitle } from '../../src/utils/filmTitle.mjs';
 dotenv.config({ path: '.env.local' });
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
@@ -12,15 +13,6 @@ async function fetchTmdbPoster(tmdbId) {
     if (data.poster_path) return `https://image.tmdb.org/t/p/w342${data.poster_path}`;
   } catch { /* ignore */ }
   return null;
-}
-
-function cleanTitle(title) {
-  return title
-    .split(/[|•]/)[0]
-    .replace(/\s*\([^)]*\)\s*/g, ' ')
-    .replace(/´/g, "'")
-    .trim()
-    .toLowerCase();
 }
 
 async function searchTmdbPoster(title) {
@@ -128,4 +120,4 @@ async function fetchTmdbMovieDetails(tmdbId) {
   return null;
 }
 
-export { fetchTmdbPoster, searchTmdbPoster, searchTmdbMovieDetails, fetchTmdbMovieDetails, cleanTitle };
+export { fetchTmdbPoster, searchTmdbPoster, searchTmdbMovieDetails, fetchTmdbMovieDetails };

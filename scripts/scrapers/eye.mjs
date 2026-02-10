@@ -2,6 +2,13 @@ import { formatDay, fetchWithRetry, decodeAndTrim } from './utils.mjs';
 
 const EYE_URL = 'https://service.eyefilm.nl/graphql';
 
+// Eye uses UUIDs for subtitle languages - map known ones
+const SUBTITLE_MAP = {
+  '42c27a5b-2d4e-4195-b547-cb6fbe9fcd49': 'EN', // English subtitles
+  '41ad8fc8-2c17-46fd-9094-fb3d4a2884fa': 'NL', // Dutch subtitles
+  '6e5a13f9-22d0-401c-a5e9-7d3b14578eaf': null, // No subtitles (silent/English films)
+};
+
 async function fetchEye() {
   console.log('Fetching Eye...');
 
@@ -13,6 +20,7 @@ async function fetchEye() {
       endDateTime
       cinemaRoom
       ticketUrl
+      singleSubtitle
       production { id url title }
       relatedProduction { productionType }
     }
@@ -40,6 +48,7 @@ async function fetchEye() {
   });
 
   const data = await response.json();
+  // Group by production ID + subtitle language to create separate entries for different subtitle versions
   const filmMap = new Map();
 
   for (const show of data.data?.shows || []) {
@@ -49,7 +58,11 @@ async function fetchEye() {
     const production = show.production?.[0];
     if (!production?.title) continue;
 
-    const key = production.id;
+    // Get subtitle language and add suffix
+    const subtitleLang = SUBTITLE_MAP[show.singleSubtitle];
+    const suffix = subtitleLang === 'EN' ? ' (ENG SUBS)' : subtitleLang === 'NL' ? ' (NL SUBS)' : '';
+    const key = `${production.id}-${show.singleSubtitle || 'none'}`;
+
     if (!filmMap.has(key)) {
       // Calculate duration from start/end times
       const start = new Date(show.startDateTime);
@@ -57,7 +70,7 @@ async function fetchEye() {
       const durationMinutes = Math.round((end - start) / 60000);
 
       filmMap.set(key, {
-        title: decodeAndTrim(production.title),
+        title: decodeAndTrim(production.title) + suffix,
         director: null,
         length: durationMinutes > 0 ? `${durationMinutes} minutes` : null,
         posterUrl: '',

@@ -18,7 +18,7 @@ export default function FilmDetailPage({ film }: Props) {
   return (
     <>
       <Head>
-        <title>{film.title} | Film Listings | a-450</title>
+        <title>{`${film.title} | Film Listings | a-450`}</title>
         <meta
           name="description"
           content={film.tmdb?.overview || `Showtimes for ${film.title}`}
