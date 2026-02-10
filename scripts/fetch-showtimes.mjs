@@ -6,6 +6,20 @@ import { fetchFcHyena } from './scrapers/fc-hyena.mjs';
 import { fetchEye } from './scrapers/eye.mjs';
 import { fetchTmdbPoster, searchTmdbPoster, searchTmdbMovieDetails, fetchTmdbMovieDetails, cleanTitle } from './scrapers/tmdb.mjs';
 
+// Process items in batches to avoid rate limiting
+async function processBatched(items, fn, batchSize = 5, delayMs = 250) {
+  const results = [];
+  for (let i = 0; i < items.length; i += batchSize) {
+    const batch = items.slice(i, i + batchSize);
+    const batchResults = await Promise.all(batch.map(fn));
+    results.push(...batchResults);
+    if (i + batchSize < items.length) {
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+    }
+  }
+  return results;
+}
+
 async function fetchAllCinemas() {
   // Fetch all sources in parallel
   const [rssResults, kriterionResult, fcHyenaResult, eyeResult] = await Promise.allSettled([
@@ -147,15 +161,13 @@ async function generateFilmsJson(cinemas) {
 
   console.log(`\nFetching TMDB details for ${groupedFilms.length} films...`);
 
-  // Fetch TMDB details for all films in parallel
-  const tmdbResults = await Promise.all(
-    groupedFilms.map(async (film) => {
-      if (film._tmdbId) {
-        return { film, details: await fetchTmdbMovieDetails(film._tmdbId) };
-      }
-      return { film, details: await searchTmdbMovieDetails(film.title) };
-    })
-  );
+  // Fetch TMDB details in batches to avoid rate limiting
+  const tmdbResults = await processBatched(groupedFilms, async (film) => {
+    if (film._tmdbId) {
+      return { film, details: await fetchTmdbMovieDetails(film._tmdbId) };
+    }
+    return { film, details: await searchTmdbMovieDetails(film.title) };
+  });
 
   for (const { film, details } of tmdbResults) {
     // Generate unique slug
