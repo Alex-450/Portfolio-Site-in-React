@@ -41,7 +41,7 @@ export default function FilmDetailPage({ film }: Props) {
               <div className="film-detail-meta">
                 {year && <span className="film-detail-badge">{year}</span>}
                 {(film.tmdb.runtime || film.length) && (
-                  <span className="film-detail-badge">{film.tmdb.runtime || film.length} min</span>
+                  <span className="film-detail-badge">{film.tmdb.runtime || `${film.length} min`}</span>
                 )}
               </div>
             )}
