@@ -542,6 +542,8 @@ code {
 
 .film-detail-header {
   display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
   gap: 2rem;
   margin-bottom: 2rem;
 }
@@ -611,8 +613,9 @@ code {
 }
 
 .film-detail-trailer {
-  margin: 2rem 0;
+  margin: 2rem auto;
   max-width: 800px;
+  text-align: center;
 }
 
 .film-detail-trailer h2 {
@@ -621,8 +624,9 @@ code {
 }
 
 .film-detail-overview {
-  margin: 2rem 0;
+  margin: 2rem auto;
   max-width: 800px;
+  text-align: center;
 }
 
 .film-detail-overview h2 {
