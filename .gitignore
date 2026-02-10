@@ -27,4 +27,5 @@ next-env.d.ts
 
 # generated data
 src/data/showtimes.json
+src/data/films.json
 
