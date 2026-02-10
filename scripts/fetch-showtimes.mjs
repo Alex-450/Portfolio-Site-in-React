@@ -178,7 +178,6 @@ async function generateFilmsJson(cinemas) {
         id: details.tmdbId,
         overview: details.overview,
         releaseDate: details.releaseDate,
-        runtime: details.runtime,
         genres: details.genres,
         youtubeTrailerId: details.youtubeTrailerId,
       } : null,

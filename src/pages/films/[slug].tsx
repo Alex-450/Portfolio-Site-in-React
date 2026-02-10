@@ -36,13 +36,12 @@ export default function FilmDetailPage({ film }: Props) {
             {film.director && (
               <p className="film-detail-director">Directed by {film.director}</p>
             )}
-            {film.length && <p className="film-detail-length">{film.length}</p>}
 
             {film.tmdb && (
               <div className="film-detail-meta">
                 {year && <span className="film-detail-badge">{year}</span>}
-                {film.tmdb.runtime && (
-                  <span className="film-detail-badge">{film.tmdb.runtime} min</span>
+                {(film.tmdb.runtime || film.length) && (
+                  <span className="film-detail-badge">{film.tmdb.runtime || film.length} min</span>
                 )}
               </div>
             )}
