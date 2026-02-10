@@ -1,4 +1,4 @@
-import { formatDay, fetchWithRetry } from './utils.mjs';
+import { formatDay, fetchWithRetry, decodeAndTrim } from './utils.mjs';
 
 const EYE_URL = 'https://service.eyefilm.nl/graphql';
 
@@ -57,7 +57,7 @@ async function fetchEye() {
       const durationMinutes = Math.round((end - start) / 60000);
 
       filmMap.set(key, {
-        title: production.title,
+        title: decodeAndTrim(production.title),
         director: null,
         length: durationMinutes > 0 ? `${durationMinutes} minutes` : null,
         posterUrl: '',

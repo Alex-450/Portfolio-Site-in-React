@@ -1,5 +1,5 @@
 import { XMLParser } from 'fast-xml-parser';
-import { formatDay, decodeString, parseFilmLength, fetchWithRetry } from './utils.mjs';
+import { formatDay, decodeAndTrim, parseFilmLength, fetchWithRetry } from './utils.mjs';
 
 const FEEDS = [
   { name: 'LAB111', url: 'https://www.lab111.nl/feed' },
@@ -53,7 +53,7 @@ export async function fetchFeed(feed) {
 
     if (film.title && showtimes.length > 0) {
       films.push({
-        title: decodeString(film.title),
+        title: decodeAndTrim(film.title),
         director: film.director || null,
         length: parseFilmLength(film.length) || null,
         posterUrl: film.posterlink || '',

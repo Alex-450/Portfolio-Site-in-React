@@ -6,8 +6,8 @@ export function formatDay(dateStr) {
   return days[date.getDay()];
 }
 
-export function decodeString(string) {
-  return he.decode(string);
+export function decodeAndTrim(string) {
+  return he.decode(string).trim();
 }
 
 export function parseFilmLength(filmLength) {

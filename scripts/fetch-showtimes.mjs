@@ -46,42 +46,40 @@ async function fetchAllCinemas() {
     }
   }
 
-  // Collect unique TMDB IDs needing posters and fetch them once
-  const filmsNeedingPoster = allFilms.filter(f => !f.posterUrl && f._tmdbId);
-  const uniqueTmdbIds = [...new Set(filmsNeedingPoster.map(f => f._tmdbId))];
+  // Collect all TMDB fetches needed: by ID or by title search
+  const tmdbIdMap = new Map(); // tmdbId -> films needing this ID
+  const titleSearchMap = new Map(); // cleanedTitle -> film to search
 
-  if (uniqueTmdbIds.length > 0) {
-    console.log(`\nFetching ${uniqueTmdbIds.length} unique posters from TMDB...`);
-    const posterMap = new Map();
-    await Promise.all(uniqueTmdbIds.map(async (tmdbId) => {
-      const url = await fetchTmdbPoster(tmdbId);
-      if (url) posterMap.set(tmdbId, url);
-    }));
+  for (const film of allFilms) {
+    if (film.posterUrl) continue;
+    const cleaned = cleanTitle(film.title);
+    if (posterByTitle.has(cleaned)) continue;
 
-    // Apply posters to all films and update posterByTitle
-    for (const film of filmsNeedingPoster) {
-      const url = posterMap.get(film._tmdbId);
-      if (url) {
-        film.posterUrl = url;
-        posterByTitle.set(cleanTitle(film.title), url);
-      }
+    if (film._tmdbId) {
+      if (!tmdbIdMap.has(film._tmdbId)) tmdbIdMap.set(film._tmdbId, []);
+      tmdbIdMap.get(film._tmdbId).push(film);
+    } else if (film._needsTmdbSearch && !titleSearchMap.has(cleaned)) {
+      titleSearchMap.set(cleaned, film);
     }
   }
 
-  // Search TMDB for films without posters, skipping titles we already have
-  const filmsNeedingSearch = allFilms.filter(f => !f.posterUrl && f._needsTmdbSearch);
-  const uniqueTitlesToSearch = [...new Map(filmsNeedingSearch.map(f => [cleanTitle(f.title), f])).values()]
-    .filter(f => !posterByTitle.has(cleanTitle(f.title)));
-
-  if (uniqueTitlesToSearch.length > 0) {
-    console.log(`\nSearching TMDB for ${uniqueTitlesToSearch.length} unique film posters...`);
-    await Promise.all(uniqueTitlesToSearch.map(async (film) => {
-      const url = await searchTmdbPoster(film.title);
-      if (url) posterByTitle.set(cleanTitle(film.title), url);
-    }));
+  // Fetch all posters in parallel (by ID and by title search)
+  const fetchCount = tmdbIdMap.size + titleSearchMap.size;
+  if (fetchCount > 0) {
+    console.log(`\nFetching ${fetchCount} posters from TMDB...`);
+    await Promise.all([
+      ...Array.from(tmdbIdMap.keys()).map(async (tmdbId) => {
+        const url = await fetchTmdbPoster(tmdbId);
+        if (url) posterByTitle.set(cleanTitle(tmdbIdMap.get(tmdbId)[0].title), url);
+      }),
+      ...Array.from(titleSearchMap.values()).map(async (film) => {
+        const url = await searchTmdbPoster(film.title);
+        if (url) posterByTitle.set(cleanTitle(film.title), url);
+      }),
+    ]);
   }
 
-  // Apply posters from posterByTitle to all films that still need them
+  // Apply posters from posterByTitle to all films that need them
   for (const film of allFilms) {
     if (!film.posterUrl) {
       const url = posterByTitle.get(cleanTitle(film.title));

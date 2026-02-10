@@ -1,4 +1,4 @@
-import { formatDay, fetchWithRetry } from './utils.mjs';
+import { formatDay, fetchWithRetry, decodeAndTrim } from './utils.mjs';
 
 const KRITERION_URL = 'https://storage.googleapis.com/kritsite-buffer/shows.json';
 
@@ -19,7 +19,7 @@ async function fetchKriterion() {
     const key = show.production_id || show.name;
     if (!filmMap.has(key)) {
       filmMap.set(key, {
-        title: show.display_name || show.name,
+        title: decodeAndTrim(show.display_name) || decodeAndTrim(show.name),
         director: show.director || null,
         length: show.duration ? `${show.duration} minutes` : null,
         posterUrl: '',

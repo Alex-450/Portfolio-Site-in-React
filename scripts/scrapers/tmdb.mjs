@@ -16,7 +16,7 @@ async function fetchTmdbPoster(tmdbId) {
 
 function cleanTitle(title) {
   return title
-    .split('|')[0]
+    .split(/[|•]/)[0]
     .replace(/\s*\([^)]*\)\s*/g, ' ')
     .replace(/´/g, "'")
     .trim()
