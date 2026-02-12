@@ -4,21 +4,28 @@ import { fetchAllRssFeeds } from './scrapers/rss-feeds.mjs';
 import { fetchKriterion } from './scrapers/kriterion.mjs';
 import { fetchFcHyena } from './scrapers/fc-hyena.mjs';
 import { fetchEye } from './scrapers/eye.mjs';
-import { fetchTmdbPoster, searchTmdbPoster, searchTmdbMovieDetails, fetchTmdbMovieDetails } from './scrapers/tmdb.mjs';
+import { searchTmdbMovieDetails, fetchTmdbMovieDetails } from './scrapers/tmdb.mjs';
 import { cleanTitle, generateSlug, extractVariant, getCleanDisplayTitle } from '../src/utils/filmTitle.mjs';
 
-// Process items in batches to avoid rate limiting
-async function processBatched(items, fn, batchSize = 5, delayMs = 250) {
+// Run async functions with limited concurrency
+async function mapWithConcurrency(items, fn, concurrency = 10) {
   const results = [];
-  for (let i = 0; i < items.length; i += batchSize) {
-    const batch = items.slice(i, i + batchSize);
-    const batchResults = await Promise.all(batch.map(fn));
-    results.push(...batchResults);
-    if (i + batchSize < items.length) {
-      await new Promise(resolve => setTimeout(resolve, delayMs));
+  const executing = new Set();
+
+  for (const [index, item] of items.entries()) {
+    const promise = fn(item, index).then(result => {
+      executing.delete(promise);
+      return result;
+    });
+    results.push(promise);
+    executing.add(promise);
+
+    if (executing.size >= concurrency) {
+      await Promise.race(executing);
     }
   }
-  return results;
+
+  return Promise.all(results);
 }
 
 async function fetchAllCinemas() {
@@ -49,64 +56,6 @@ async function fetchAllCinemas() {
       }
     } else {
       console.error(`Error fetching ${name}:`, result.reason?.message);
-    }
-  }
-
-  // Build a map of cleaned title -> poster URL from films that already have posters
-  const allFilms = cinemas.flatMap(c => c.films);
-  const posterByTitle = new Map();
-  for (const film of allFilms) {
-    if (film.posterUrl) {
-      posterByTitle.set(cleanTitle(film.title), film.posterUrl);
-    }
-  }
-
-  // Collect all TMDB fetches needed: by ID or by title search
-  const tmdbIdMap = new Map(); // tmdbId -> films needing this ID
-  const titleSearchMap = new Map(); // cleanedTitle -> film to search
-
-  for (const film of allFilms) {
-    if (film.posterUrl) continue;
-    const cleaned = cleanTitle(film.title);
-    if (posterByTitle.has(cleaned)) continue;
-
-    if (film._tmdbId) {
-      if (!tmdbIdMap.has(film._tmdbId)) tmdbIdMap.set(film._tmdbId, []);
-      tmdbIdMap.get(film._tmdbId).push(film);
-    } else if (film._needsTmdbSearch && !titleSearchMap.has(cleaned)) {
-      titleSearchMap.set(cleaned, film);
-    }
-  }
-
-  // Fetch all posters in parallel (by ID and by title search)
-  const fetchCount = tmdbIdMap.size + titleSearchMap.size;
-  if (fetchCount > 0) {
-    console.log(`\nFetching ${fetchCount} posters from TMDB...`);
-    await Promise.all([
-      ...Array.from(tmdbIdMap.keys()).map(async (tmdbId) => {
-        const url = await fetchTmdbPoster(tmdbId);
-        if (url) posterByTitle.set(cleanTitle(tmdbIdMap.get(tmdbId)[0].title), url);
-      }),
-      ...Array.from(titleSearchMap.values()).map(async (film) => {
-        const url = await searchTmdbPoster(film.title);
-        if (url) posterByTitle.set(cleanTitle(film.title), url);
-      }),
-    ]);
-  }
-
-  // Apply posters from posterByTitle to all films that need them
-  for (const film of allFilms) {
-    if (!film.posterUrl) {
-      const url = posterByTitle.get(cleanTitle(film.title));
-      if (url) film.posterUrl = url;
-    }
-  }
-
-  // Clean up internal fields from all films
-  for (const cinema of cinemas) {
-    for (const film of cinema.films) {
-      delete film._tmdbId;
-      delete film._needsTmdbSearch;
     }
   }
 
@@ -155,17 +104,57 @@ async function generateFilmsJson(cinemas) {
   const filmsIndex = {};
   const usedSlugs = new Set();
 
-  console.log(`\nFetching TMDB details for ${groupedFilms.length} films...`);
+  // Build caches from films that already have data
+  const tmdbCacheById = new Map();
+  const tmdbCacheByTitle = new Map();
 
-  // Fetch TMDB details in batches to avoid rate limiting
-  const tmdbResults = await processBatched(groupedFilms, async (film) => {
+  for (const film of groupedFilms) {
     if (film._tmdbId) {
-      return { film, details: await fetchTmdbMovieDetails(film._tmdbId) };
+      tmdbCacheById.set(film._tmdbId, film);
     }
-    return { film, details: await searchTmdbMovieDetails(film.title) };
-  });
+  }
 
-  for (const { film, details } of tmdbResults) {
+  // Deduplicate: only fetch once per unique tmdbId or cleaned title
+  const toFetchById = [];
+  const toFetchByTitle = [];
+  const seenTitles = new Set();
+
+  for (const film of groupedFilms) {
+    const cleaned = cleanTitle(film.title);
+    if (film._tmdbId && !tmdbCacheById.get(film._tmdbId)?._fetchedDetails) {
+      toFetchById.push(film);
+      tmdbCacheById.get(film._tmdbId)._fetchedDetails = 'pending';
+    } else if (!film._tmdbId && !seenTitles.has(cleaned)) {
+      seenTitles.add(cleaned);
+      toFetchByTitle.push(film);
+    }
+  }
+
+  const totalFetches = toFetchById.length + toFetchByTitle.length;
+  console.log(`\nFetching TMDB details for ${totalFetches} unique films (${groupedFilms.length} total)...`);
+
+  // Combine all fetches and run with concurrency limit
+  const allToFetch = [
+    ...toFetchById.map(film => ({ film, byId: true })),
+    ...toFetchByTitle.map(film => ({ film, byId: false })),
+  ];
+
+  await mapWithConcurrency(allToFetch, async ({ film, byId }) => {
+    if (byId) {
+      const details = await fetchTmdbMovieDetails(film._tmdbId);
+      tmdbCacheById.set(film._tmdbId, details);
+    } else {
+      const details = await searchTmdbMovieDetails(film.title);
+      tmdbCacheByTitle.set(cleanTitle(film.title), details);
+    }
+  }, 10);
+
+  // Build results using cached data
+  for (const film of groupedFilms) {
+    const details = film._tmdbId
+      ? tmdbCacheById.get(film._tmdbId)
+      : tmdbCacheByTitle.get(cleanTitle(film.title));
+
     // Generate unique slug
     let slug = generateSlug(film.title);
     let counter = 1;
@@ -196,6 +185,7 @@ async function generateFilmsJson(cinemas) {
 }
 
 async function main() {
+  const startTime = performance.now();
   console.log('Fetching showtimes...\n');
 
   const cinemas = await fetchAllCinemas();
@@ -207,8 +197,10 @@ async function main() {
   const filmsIndex = await generateFilmsJson(cinemas);
   writeFileSync(outputPath, JSON.stringify(filmsIndex, null, 2));
 
+  const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
   console.log(`\nWrote ${Object.keys(filmsIndex).length} films to ${outputPath}`);
   console.log(`Last updated: ${new Date().toISOString()}`);
+  console.log(`Total time: ${elapsed}s`);
 }
 
 main().catch(err => {
