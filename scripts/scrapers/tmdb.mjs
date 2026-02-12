@@ -1,123 +1,92 @@
 import dotenv from 'dotenv';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { cleanTitle } from '../../src/utils/filmTitle.mjs';
+
 dotenv.config({ path: '.env.local' });
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
+const CACHE_PATH = 'src/data/tmdb-cache.json';
+const POSTER_BASE = 'https://image.tmdb.org/t/p/w342';
 
-async function fetchTmdbPoster(tmdbId) {
+// Load/save cache
+let cache = existsSync(CACHE_PATH) ? JSON.parse(readFileSync(CACHE_PATH, 'utf-8')) : {};
+const saveCache = () => writeFileSync(CACHE_PATH, JSON.stringify(cache, null, 2));
+
+function findTrailer(videos) {
+  return videos?.find(v => v.site === 'YouTube' && v.type === 'Trailer' && v.official)
+    || videos?.find(v => v.site === 'YouTube' && v.type === 'Trailer')
+    || videos?.find(v => v.site === 'YouTube');
+}
+
+function buildResult(movie, details, videos) {
+  return {
+    tmdbId: movie.id,
+    overview: details?.overview || null,
+    releaseDate: details?.release_date || movie.release_date || null,
+    genres: (details?.genres || []).map(g => g.name),
+    posterPath: movie.poster_path ? `${POSTER_BASE}${movie.poster_path}` : null,
+    youtubeTrailerId: findTrailer(videos)?.key || null,
+  };
+}
+
+async function fetchDetails(movieId) {
+  const [detailsRes, videosRes] = await Promise.all([
+    fetch(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_API_KEY}`),
+    fetch(`https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${TMDB_API_KEY}`),
+  ]);
+  const details = detailsRes.ok ? await detailsRes.json() : null;
+  const videos = videosRes.ok ? (await videosRes.json()).results : [];
+  return { details, videos };
+}
+
+export async function fetchTmdbMovieDetails(tmdbId) {
   if (!TMDB_API_KEY || !tmdbId) return null;
+
+  const cacheKey = `id:${tmdbId}`;
+  if (cache[cacheKey]) return cache[cacheKey];
+
   try {
-    const res = await fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${TMDB_API_KEY}`);
-    if (!res.ok) return null;
-    const data = await res.json();
-    if (data.poster_path) return `https://image.tmdb.org/t/p/w342${data.poster_path}`;
-  } catch { /* ignore */ }
-  return null;
+    const { details, videos } = await fetchDetails(tmdbId);
+    if (!details) return null;
+
+    const result = buildResult(details, details, videos);
+    cache[cacheKey] = result;
+    saveCache();
+    return result;
+  } catch { return null; }
 }
 
-async function searchTmdbPoster(title) {
+export async function searchTmdbMovieDetails(title, { director = null, year = null } = {}) {
   if (!TMDB_API_KEY || !title) return null;
-  try {
-    const searchTitle = cleanTitle(title);
-    const res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(searchTitle)}`);
-    if (!res.ok) return null;
-    const data = await res.json();
-    const match = data.results?.find(r => {
-      const tmdbTitle = r.title?.toLowerCase() || '';
-      return tmdbTitle.includes(searchTitle) || searchTitle.includes(tmdbTitle);
-    }) || data.results?.[0];
-    if (match?.poster_path) {
-      return `https://image.tmdb.org/t/p/w342${match.poster_path}`;
-    }
-  } catch { /* ignore */ }
-  return null;
-}
 
-async function searchTmdbMovieDetails(title) {
-  if (!TMDB_API_KEY || !title) return null;
+  const cacheKey = `${cleanTitle(title)}|${director?.toLowerCase() || ''}|${year || ''}`;
+  if (cache[cacheKey]) return cache[cacheKey];
+
   try {
     const searchTitle = cleanTitle(title);
-    const searchRes = await fetch(
-      `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(searchTitle)}`
-    );
+    let url = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(searchTitle)}`;
+    if (year) url += `&year=${year}`;
+
+    const searchRes = await fetch(url);
     if (!searchRes.ok) return null;
-    const searchData = await searchRes.json();
+    const { results } = await searchRes.json();
+    if (!results?.length) return null;
 
-    // Find best match
-    const match = searchData.results?.find(r => {
-      const tmdbTitle = r.title?.toLowerCase() || '';
-      return tmdbTitle.includes(searchTitle) || searchTitle.includes(tmdbTitle);
-    }) || searchData.results?.[0];
+    // Score results: exact title > partial match > popularity
+    const scored = results.map(r => {
+      const t = cleanTitle(r.title || '');
+      let score = t === searchTitle ? 100 : (t.includes(searchTitle) || searchTitle.includes(t)) ? 50 : 0;
+      if (year && r.release_date?.startsWith(String(year))) score += 30;
+      score += Math.min(r.popularity || 0, 20);
+      return { movie: r, score };
+    });
+    const bestMatch = scored.sort((a, b) => b.score - a.score)[0].movie;
 
-    if (!match) return null;
+    const { details, videos } = await fetchDetails(bestMatch.id);
+    const result = buildResult(bestMatch, details, videos);
 
-    // Fetch full movie details and videos in parallel
-    const [detailsRes, videosRes] = await Promise.all([
-      fetch(`https://api.themoviedb.org/3/movie/${match.id}?api_key=${TMDB_API_KEY}`),
-      fetch(`https://api.themoviedb.org/3/movie/${match.id}/videos?api_key=${TMDB_API_KEY}`),
-    ]);
-
-    const details = detailsRes.ok ? await detailsRes.json() : null;
-    const videosData = videosRes.ok ? await videosRes.json() : { results: [] };
-
-    // Find YouTube trailer (prefer official trailers)
-    const trailer = videosData.results?.find(
-      v => v.site === 'YouTube' && v.type === 'Trailer' && v.official
-    ) || videosData.results?.find(
-      v => v.site === 'YouTube' && v.type === 'Trailer'
-    ) || videosData.results?.find(
-      v => v.site === 'YouTube'
-    );
-
-    // Map genre IDs to names
-    const genres = (details?.genres || []).map(g => g.name);
-
-    return {
-      tmdbId: match.id,
-      overview: details?.overview || null,
-      releaseDate: details?.release_date || match.release_date || null,
-      genres,
-      posterPath: match.poster_path ? `https://image.tmdb.org/t/p/w342${match.poster_path}` : null,
-      youtubeTrailerId: trailer?.key || null,
-    };
-  } catch { /* ignore */ }
-  return null;
+    cache[cacheKey] = result;
+    saveCache();
+    return result;
+  } catch { return null; }
 }
-
-async function fetchTmdbMovieDetails(tmdbId) {
-  if (!TMDB_API_KEY || !tmdbId) return null;
-  try {
-    // Fetch movie details and videos in parallel
-    const [detailsRes, videosRes] = await Promise.all([
-      fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${TMDB_API_KEY}`),
-      fetch(`https://api.themoviedb.org/3/movie/${tmdbId}/videos?api_key=${TMDB_API_KEY}`),
-    ]);
-
-    if (!detailsRes.ok) return null;
-    const details = await detailsRes.json();
-    const videosData = videosRes.ok ? await videosRes.json() : { results: [] };
-
-    // Find YouTube trailer
-    const trailer = videosData.results?.find(
-      v => v.site === 'YouTube' && v.type === 'Trailer' && v.official
-    ) || videosData.results?.find(
-      v => v.site === 'YouTube' && v.type === 'Trailer'
-    ) || videosData.results?.find(
-      v => v.site === 'YouTube'
-    );
-
-    const genres = (details.genres || []).map(g => g.name);
-
-    return {
-      tmdbId: details.id,
-      overview: details.overview || null,
-      releaseDate: details.release_date || null,
-      genres,
-      posterPath: details.poster_path ? `https://image.tmdb.org/t/p/w342${details.poster_path}` : null,
-      youtubeTrailerId: trailer?.key || null,
-    };
-  } catch { /* ignore */ }
-  return null;
-}
-
-export { fetchTmdbPoster, searchTmdbPoster, searchTmdbMovieDetails, fetchTmdbMovieDetails };

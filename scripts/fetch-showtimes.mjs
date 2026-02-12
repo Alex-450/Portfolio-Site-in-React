@@ -144,7 +144,9 @@ async function generateFilmsJson(cinemas) {
       const details = await fetchTmdbMovieDetails(film._tmdbId);
       tmdbCacheById.set(film._tmdbId, details);
     } else {
-      const details = await searchTmdbMovieDetails(film.title);
+      const details = await searchTmdbMovieDetails(film.title, {
+        director: film.director,
+      });
       tmdbCacheByTitle.set(cleanTitle(film.title), details);
     }
   }, 10);
