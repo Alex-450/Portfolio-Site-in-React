@@ -1,10 +1,10 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { FilmWithCinemas } from '../types';
+import { FilmWithCinemasLite } from '../types';
 import { formatDate, getToday, groupShowtimesByDate, filterByDay } from '../utils/date';
 
 interface FilmCardProps {
-  film: FilmWithCinemas;
+  film: FilmWithCinemasLite;
   dayFilter: string;
 }
 

@@ -1,4 +1,4 @@
-import { formatDay, fetchWithRetry, decodeAndTrim } from './utils.mjs';
+import { fetchWithRetry, decodeAndTrim } from './utils.mjs';
 
 const FC_HYENA_URL = 'https://fchyena.nl/json/shows.json';
 
@@ -29,7 +29,6 @@ async function fetchFcHyena() {
           director: null,
           length: show.duration ? `${show.duration} minutes` : null,
           posterUrl: '',
-          permalink: '',
           showtimes: [],
           _needsTmdbSearch: true,
         });
@@ -48,8 +47,6 @@ async function fetchFcHyena() {
 
         film.showtimes.push({
           date,
-          day: formatDay(date),
-          datetime: `${date}T${show.time_start}`,
           time: show.time_start,
           ticketUrl: `https://tickets.fchyena.nl/fchyena/nl/flow_configs/fchy_1s/steps/start/show/${show.id}`,
           screen: show.room || '',

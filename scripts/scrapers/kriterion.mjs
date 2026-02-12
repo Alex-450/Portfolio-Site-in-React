@@ -1,4 +1,4 @@
-import { formatDay, fetchWithRetry, decodeAndTrim } from './utils.mjs';
+import { fetchWithRetry, decodeAndTrim } from './utils.mjs';
 
 const KRITERION_URL = 'https://storage.googleapis.com/kritsite-buffer/shows.json';
 
@@ -23,7 +23,6 @@ async function fetchKriterion() {
         director: show.director || null,
         length: show.duration ? `${show.duration} minutes` : null,
         posterUrl: '',
-        permalink: '',
         showtimes: [],
         _needsTmdbSearch: true,
       });
@@ -37,8 +36,6 @@ async function fetchKriterion() {
     if (date && time) {
       film.showtimes.push({
         date,
-        day: formatDay(date),
-        datetime: `${date}T${time}`,
         time,
         ticketUrl: `https://tickets.kriterion.nl/kriterion/nl/flow_configs/webshop/steps/start/show/${show.id}`,
         screen: show.theatre_name || '',

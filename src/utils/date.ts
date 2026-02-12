@@ -1,4 +1,4 @@
-import { Showtime } from '../types';
+import { ShowtimeLite } from '../types';
 
 export function getToday(): string {
   return new Date().toISOString().split('T')[0];
@@ -13,8 +13,8 @@ export function formatDate(dateStr: string): string {
   });
 }
 
-export function groupShowtimesByDate(showtimes: Showtime[]): [string, Showtime[]][] {
-  const grouped: Record<string, Showtime[]> = {};
+export function groupShowtimesByDate(showtimes: ShowtimeLite[]): [string, ShowtimeLite[]][] {
+  const grouped: Record<string, ShowtimeLite[]> = {};
   for (const s of showtimes) {
     (grouped[s.date] ??= []).push(s);
   }
@@ -22,10 +22,10 @@ export function groupShowtimesByDate(showtimes: Showtime[]): [string, Showtime[]
 }
 
 export function filterByDay(
-  grouped: [string, Showtime[]][],
+  grouped: [string, ShowtimeLite[]][],
   dayFilter: string,
   today: string
-): [string, Showtime[]][] {
+): [string, ShowtimeLite[]][] {
   if (!dayFilter) return grouped;
   if (dayFilter === 'today') return grouped.filter(([date]) => date === today);
   return grouped.filter(([date]) => date === dayFilter);

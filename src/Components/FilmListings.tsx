@@ -1,28 +1,17 @@
 import { useState } from 'react';
 import Head from 'next/head';
 import { Container } from 'react-bootstrap';
-import { FilmWithCinemas, FilmsIndex } from '../types';
+import { FilmWithCinemasLite, FilmsIndexLite } from '../types';
 import FilmCard from './FilmCard';
 import PosterCarousel from './PosterCarousel';
 import { getToday, formatDate } from '../utils/date';
 import { filterFilms, filterFilmsBySearch } from '../utils/filmFilters';
 
-function filmsIndexToList(filmsIndex: FilmsIndex): FilmWithCinemas[] {
-  return Object.values(filmsIndex)
-    .map((film) => ({
-      slug: film.slug,
-      title: film.title,
-      director: film.director,
-      length: film.length,
-      posterUrl: film.posterUrl,
-      permalink: film.permalink,
-      genres: film.tmdb?.genres,
-      cinemaShowtimes: film.cinemaShowtimes,
-    }))
-    .sort((a, b) => a.title.localeCompare(b.title));
+function filmsIndexToList(filmsIndex: FilmsIndexLite): FilmWithCinemasLite[] {
+  return Object.values(filmsIndex).sort((a, b) => a.title.localeCompare(b.title));
 }
 
-function getCinemaNames(filmsIndex: FilmsIndex): string[] {
+function getCinemaNames(filmsIndex: FilmsIndexLite): string[] {
   const cinemas = new Set<string>();
   for (const film of Object.values(filmsIndex)) {
     for (const cs of film.cinemaShowtimes) {
@@ -33,7 +22,7 @@ function getCinemaNames(filmsIndex: FilmsIndex): string[] {
 }
 
 interface FilmListingsProps {
-  filmsIndex: FilmsIndex;
+  filmsIndex: FilmsIndexLite;
 }
 
 const FilmListings = ({ filmsIndex }: FilmListingsProps) => {

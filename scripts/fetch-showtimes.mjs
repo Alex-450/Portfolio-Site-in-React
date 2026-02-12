@@ -127,7 +127,6 @@ function groupFilmsByCinema(cinemas) {
           director: film.director,
           length: film.length,
           posterUrl: film.posterUrl,
-          permalink: film.permalink,
           _tmdbId: film._tmdbId,
           cinemaShowtimes: [],
         });
@@ -182,7 +181,6 @@ async function generateFilmsJson(cinemas) {
       director: film.director,
       length: film.length,
       posterUrl: film.posterUrl || details?.posterPath || '',
-      permalink: film.permalink,
       tmdb: details ? {
         id: details.tmdbId,
         overview: details.overview,

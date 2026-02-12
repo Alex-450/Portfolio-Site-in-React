@@ -1,5 +1,5 @@
 import { XMLParser } from 'fast-xml-parser';
-import { formatDay, decodeAndTrim, parseFilmLength, fetchWithRetry } from './utils.mjs';
+import { decodeAndTrim, parseFilmLength, fetchWithRetry } from './utils.mjs';
 
 const FEEDS = [
   { name: 'LAB111', url: 'https://www.lab111.nl/feed' },
@@ -41,8 +41,6 @@ export async function fetchFeed(feed) {
         if (st.day && st.time) {
           showtimes.push({
             date: st.day,
-            day: formatDay(st.day),
-            datetime: `${st.day}T${st.time}`,
             time: st.time,
             ticketUrl: st.bookinglink || '',
             screen: st.screen || '',
@@ -57,7 +55,6 @@ export async function fetchFeed(feed) {
         director: film.director || null,
         length: parseFilmLength(film.length) || null,
         posterUrl: film.posterlink || '',
-        permalink: film.permalink || '',
         showtimes,
         _tmdbId: film.tmdb || null,
       });

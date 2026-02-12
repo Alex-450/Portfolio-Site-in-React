@@ -1,7 +1,7 @@
-import { FilmWithCinemas } from '../types';
+import { FilmWithCinemasLite } from '../types';
 
 interface PosterCarouselProps {
-  films: FilmWithCinemas[];
+  films: FilmWithCinemasLite[];
   onPosterClick?: (filmTitle: string) => void;
 }
 

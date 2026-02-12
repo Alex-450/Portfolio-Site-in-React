@@ -1,4 +1,4 @@
-import { formatDay, fetchWithRetry, decodeAndTrim } from './utils.mjs';
+import { fetchWithRetry, decodeAndTrim } from './utils.mjs';
 
 const EYE_URL = 'https://service.eyefilm.nl/graphql';
 
@@ -74,7 +74,6 @@ async function fetchEye() {
         director: null,
         length: durationMinutes > 0 ? `${durationMinutes} minutes` : null,
         posterUrl: '',
-        permalink: production.url || '',
         showtimes: [],
         _needsTmdbSearch: true,
       });
@@ -87,8 +86,6 @@ async function fetchEye() {
 
     film.showtimes.push({
       date,
-      day: formatDay(date),
-      datetime: `${date}T${time}`,
       time,
       ticketUrl: show.ticketUrl || '',
       screen: show.cinemaRoom || '',

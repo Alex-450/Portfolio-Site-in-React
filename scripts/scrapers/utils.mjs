@@ -1,11 +1,5 @@
 import he from 'he';
 
-export function formatDay(dateStr) {
-  const date = new Date(dateStr);
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  return days[date.getDay()];
-}
-
 export function decodeAndTrim(string) {
   return he.decode(string).trim();
 }

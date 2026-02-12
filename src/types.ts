@@ -89,7 +89,6 @@ export interface FilmWithCinemas {
   director: string | null;
   length: string | null;
   posterUrl: string;
-  permalink: string;
   genres?: string[];
   cinemaShowtimes: CinemaShowtimes[];
 }
@@ -111,7 +110,6 @@ export interface FilmDetail {
   director: string | null;
   length: string | null;
   posterUrl: string;
-  permalink: string;
   tmdb: TmdbData | null;
   cinemaShowtimes: CinemaShowtimes[];
 }
@@ -119,4 +117,32 @@ export interface FilmDetail {
 // Films index (slug -> FilmDetail)
 export interface FilmsIndex {
   [slug: string]: FilmDetail;
+}
+
+// Slimmed-down types for listings page (excludes fields not needed for cards)
+export interface ShowtimeLite {
+  date: string;
+  time: string;
+  ticketUrl: string;
+  screen: string;
+}
+
+export interface CinemaShowtimesLite {
+  cinema: string;
+  showtimes: ShowtimeLite[];
+  variant?: string | null;
+}
+
+export interface FilmWithCinemasLite {
+  slug: string;
+  title: string;
+  director: string | null;
+  length: string | null;
+  posterUrl: string;
+  genres: string[];
+  cinemaShowtimes: CinemaShowtimesLite[];
+}
+
+export interface FilmsIndexLite {
+  [slug: string]: FilmWithCinemasLite;
 }

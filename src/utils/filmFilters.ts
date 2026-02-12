@@ -1,4 +1,4 @@
-import { FilmWithCinemas, CinemaShowtimes, Showtime } from '../types';
+import { FilmWithCinemasLite, CinemaShowtimesLite, ShowtimeLite } from '../types';
 
 interface FilterOptions {
   cinemaFilter: string;
@@ -14,21 +14,21 @@ function matchesSearch(title: string, search: string): boolean {
 }
 
 function filterShowtimesByDay(
-  showtimes: Showtime[],
+  showtimes: ShowtimeLite[],
   dayFilter: string,
   today: string
-): Showtime[] {
+): ShowtimeLite[] {
   if (!dayFilter) return showtimes;
   const targetDate = dayFilter === 'today' ? today : dayFilter;
   return showtimes.filter((s) => s.date === targetDate);
 }
 
 function filterCinemaShowtimes(
-  cinemaShowtimes: CinemaShowtimes[],
+  cinemaShowtimes: CinemaShowtimesLite[],
   cinemaFilter: string,
   dayFilter: string,
   today: string
-): CinemaShowtimes[] {
+): CinemaShowtimesLite[] {
   return cinemaShowtimes
     .filter((cs) => !cinemaFilter || cs.cinema === cinemaFilter)
     .map((cs) => ({
@@ -39,9 +39,9 @@ function filterCinemaShowtimes(
 }
 
 export function filterFilms(
-  films: FilmWithCinemas[],
+  films: FilmWithCinemasLite[],
   options: FilterOptions
-): FilmWithCinemas[] {
+): FilmWithCinemasLite[] {
   const { cinemaFilter, dayFilter, filmSearch, filmFilter, genreFilter, today } = options;
 
   return films
@@ -64,8 +64,8 @@ export function filterFilms(
 }
 
 export function filterFilmsBySearch(
-  films: FilmWithCinemas[],
+  films: FilmWithCinemasLite[],
   search: string
-): FilmWithCinemas[] {
+): FilmWithCinemasLite[] {
   return films.filter((film) => matchesSearch(film.title, search));
 }
