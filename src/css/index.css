@@ -522,6 +522,28 @@ code {
   text-decoration: none;
 }
 
+.showtime-item {
+  display: inline-flex;
+  align-items: stretch;
+}
+
+.calendar-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  background-color: #dee2e6;
+  border: 2px solid black;
+  border-left: none;
+  font-size: 0.85rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.calendar-link:hover {
+  background-color: var(--hover-bg);
+}
+
 .expand-btn {
   font-family: inherit;
   font-size: 0.85rem;

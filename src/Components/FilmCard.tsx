@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { FilmWithCinemasLite } from '../types';
 import { formatDate, getToday, groupShowtimesByDate, filterByDay } from '../utils/date';
+import { generateCalendarUrlFromFilm } from '../utils/calendar';
 
 interface FilmCardProps {
   film: FilmWithCinemasLite;
@@ -78,15 +79,33 @@ function FilmCard({ film, dayFilter }: FilmCardProps) {
                         </div>
                         <div className="showtime-times">
                           {screenTimes.map((s, i) => (
-                            <a
-                              key={i}
-                              href={s.ticketUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="showtime-link"
-                            >
-                              {s.time}
-                            </a>
+                            <span key={i} className="showtime-item">
+                              <a
+                                href={s.ticketUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="showtime-link"
+                                title="Buy tickets"
+                              >
+                                {s.time}
+                              </a>
+                              <a
+                                href={generateCalendarUrlFromFilm(
+                                  film.title,
+                                  film.length,
+                                  cs.cinema,
+                                  s.date,
+                                  s.time,
+                                  cs.variant
+                                )}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="calendar-link"
+                                title="Add to Google Calendar"
+                              >
+                                📅
+                              </a>
+                            </span>
                           ))}
                         </div>
                       </div>

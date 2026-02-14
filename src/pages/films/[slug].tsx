@@ -72,7 +72,7 @@ export default function FilmDetailPage({ film }: Props) {
 
         <div className="film-detail-showtimes">
           <h2>Showtimes</h2>
-          <FilmShowtimes cinemaShowtimes={film.cinemaShowtimes} />
+          <FilmShowtimes cinemaShowtimes={film.cinemaShowtimes} filmTitle={film.title} filmLength={film.length} />
         </div>
 
         <Link href="/film-listings/" className="back-link">

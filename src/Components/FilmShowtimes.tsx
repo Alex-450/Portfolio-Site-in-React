@@ -1,12 +1,15 @@
 import { useMemo } from 'react';
 import { CinemaShowtimes } from '../types';
 import { formatDate, getToday, groupShowtimesByDate } from '../utils/date';
+import { generateCalendarUrlFromFilm } from '../utils/calendar';
 
 interface FilmShowtimesProps {
   cinemaShowtimes: CinemaShowtimes[];
+  filmTitle: string;
+  filmLength: string | null;
 }
 
-function FilmShowtimes({ cinemaShowtimes }: FilmShowtimesProps) {
+function FilmShowtimes({ cinemaShowtimes, filmTitle, filmLength }: FilmShowtimesProps) {
   const today = useMemo(getToday, []);
 
   return (
@@ -47,15 +50,33 @@ function FilmShowtimes({ cinemaShowtimes }: FilmShowtimesProps) {
                     </div>
                     <div className="showtime-times">
                       {screenTimes.map((s, i) => (
-                        <a
-                          key={i}
-                          href={s.ticketUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="showtime-link"
-                        >
-                          {s.time}
-                        </a>
+                        <span key={i} className="showtime-item">
+                          <a
+                            href={s.ticketUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="showtime-link"
+                            title="Buy tickets"
+                          >
+                            {s.time}
+                          </a>
+                          <a
+                            href={generateCalendarUrlFromFilm(
+                              filmTitle,
+                              filmLength,
+                              cs.cinema,
+                              s.date,
+                              s.time,
+                              cs.variant
+                            )}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="calendar-link"
+                            title="Add to Google Calendar"
+                          >
+                            📅
+                          </a>
+                        </span>
                       ))}
                     </div>
                   </div>
