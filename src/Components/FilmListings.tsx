@@ -4,8 +4,13 @@ import { Container } from 'react-bootstrap';
 import { FilmWithCinemasLite, FilmsIndexLite } from '../types';
 import FilmCard from './FilmCard';
 import PosterCarousel from './PosterCarousel';
+import CinemaFilter from './filters/CinemaFilter';
+import DayFilter from './filters/DayFilter';
+import DirectorFilter from './filters/DirectorFilter';
+import GenreFilter from './filters/GenreFilter';
+import FilmSearchFilter from './filters/FilmSearchFilter';
 import { getToday, formatDate } from '../utils/date';
-import { filterFilms, filterFilmsBySearch } from '../utils/filmFilters';
+import { filterFilms } from '../utils/filmFilters';
 
 function filmsIndexToList(filmsIndex: FilmsIndexLite): FilmWithCinemasLite[] {
   return Object.values(filmsIndex).sort((a, b) => a.title.localeCompare(b.title));
@@ -31,9 +36,8 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const [filmSearch, setFilmSearch] = useState('');
   const [filmFilter, setFilmFilter] = useState('');
   const [genreFilter, setGenreFilter] = useState<string[]>([]);
+  const [directorSearch, setDirectorSearch] = useState('');
   const [directorFilter, setDirectorFilter] = useState('');
-  const [showFilmDropdown, setShowFilmDropdown] = useState(false);
-  const [showGenreDropdown, setShowGenreDropdown] = useState(false);
 
   const today = getToday();
   const allFilms = filmsIndexToList(filmsIndex);
@@ -45,8 +49,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
       .filter((d): d is string => d !== null)
       .map((d) => [d.toLowerCase(), d])
   ).values()].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
-
-  const matchingFilms = filterFilmsBySearch(allFilms, filmSearch);
 
   const filteredFilms = filterFilms(allFilms, {
     cinemaFilter,
@@ -113,128 +115,53 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
         />
 
         <div className="film-filters">
-          <select
+          <CinemaFilter
             value={cinemaFilter}
-            onChange={(e) => setCinemaFilter(e.target.value)}
-            className="filter-select"
-          >
-            <option value="">All Cinemas</option>
-            {cinemaNames.map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </select>
-          <select
+            onChange={setCinemaFilter}
+            cinemaNames={cinemaNames}
+          />
+          <DayFilter
             value={dayFilter}
-            onChange={(e) => setDayFilter(e.target.value)}
-            className="filter-select"
-          >
-            <option value="">All Days</option>
-            <option value="today">Today</option>
-            {dayOptions.map((day) => (
-              <option key={day.value} value={day.value}>
-                {day.label}
-              </option>
-            ))}
-          </select>
-          {allDirectors.length > 0 && (
-            <select
-              value={directorFilter}
-              onChange={(e) => setDirectorFilter(e.target.value)}
-              className="filter-select"
-            >
-              <option value="">All Directors</option>
-              {allDirectors.map((director) => (
-                <option key={director} value={director}>
-                  {director}
-                </option>
-              ))}
-            </select>
-          )}
-          {allGenres.length > 0 && (
-            <div className="genre-filter">
-              <button
-                className="filter-select genre-filter-button"
-                onClick={() => setShowGenreDropdown(!showGenreDropdown)}
-                onBlur={() => setTimeout(() => setShowGenreDropdown(false), 150)}
-              >
-                {genreFilter.length === 0
-                  ? 'All Genres'
-                  : `${genreFilter.length} Genre${genreFilter.length > 1 ? 's' : ''}`}
-              </button>
-              {showGenreDropdown && (
-                <div className="genre-filter-dropdown">
-                  {allGenres.map((genre) => (
-                    <label key={genre} className="genre-filter-option">
-                      <input
-                        type="checkbox"
-                        checked={genreFilter.includes(genre)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setGenreFilter([...genreFilter, genre]);
-                          } else {
-                            setGenreFilter(genreFilter.filter((g) => g !== genre));
-                          }
-                        }}
-                      />
-                      {genre}
-                    </label>
-                  ))}
-                  {genreFilter.length > 0 && (
-                    <button
-                      className="genre-filter-clear"
-                      onMouseDown={() => setGenreFilter([])}
-                    >
-                      Clear
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
-          <div className="film-search-container">
-            <input
-              type="text"
-              value={filmSearch}
-              onChange={(e) => {
-                setFilmSearch(e.target.value);
-                setFilmFilter('');
-                setShowFilmDropdown(true);
-              }}
-              onFocus={() => setShowFilmDropdown(true)}
-              onBlur={() => setTimeout(() => setShowFilmDropdown(false), 150)}
-              placeholder="Search films..."
-              className="filter-select filter-select-film"
-            />
-            {(showFilmDropdown || filmSearch) && (
-              <button
-                className="film-search-clear"
-                onMouseDown={() => {
-                  setFilmSearch('');
-                  setFilmFilter('');
-                }}
-              >
-                X
-              </button>
-            )}
-            {showFilmDropdown && matchingFilms.length > 0 && (
-              <ul className="film-search-dropdown">
-                {matchingFilms.map((film) => (
-                  <li
-                    key={film.title}
-                    onMouseDown={() => {
-                      setFilmSearch(film.title);
-                      setFilmFilter(film.title);
-                      setShowFilmDropdown(false);
-                    }}
-                  >
-                    {film.title}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+            onChange={setDayFilter}
+            dayOptions={dayOptions}
+          />
+          <GenreFilter
+            genres={allGenres}
+            selectedGenres={genreFilter}
+            onChange={setGenreFilter}
+          />
+          <FilmSearchFilter
+            films={allFilms}
+            searchValue={filmSearch}
+            onSearchChange={(value) => {
+              setFilmSearch(value);
+              setFilmFilter('');
+            }}
+            onSelect={(title) => {
+              setFilmSearch(title);
+              setFilmFilter(title);
+            }}
+            onClear={() => {
+              setFilmSearch('');
+              setFilmFilter('');
+            }}
+          />
+          <DirectorFilter
+            directors={allDirectors}
+            searchValue={directorSearch}
+            onSearchChange={(value) => {
+              setDirectorSearch(value);
+              setDirectorFilter('');
+            }}
+            onSelect={(director) => {
+              setDirectorSearch(director);
+              setDirectorFilter(director);
+            }}
+            onClear={() => {
+              setDirectorSearch('');
+              setDirectorFilter('');
+            }}
+          />
         </div>
 
         {allFilms.length === 0 && (
