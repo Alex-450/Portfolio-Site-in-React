@@ -150,6 +150,15 @@
     color: var(--dark-background);
   }
 
+  .calendar-link {
+    background-color: var(--dark-background);
+    border-color: var(--hover-bg);
+  }
+
+  .calendar-link:hover {
+    background-color: var(--hover-bg);
+  }
+
   .expand-btn {
     color: var(--dark-text-color);
     border-color: var(--hover-bg);
