@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 interface CinemaFilterProps {
   value: string;
   onChange: (value: string) => void;
@@ -5,19 +7,43 @@ interface CinemaFilterProps {
 }
 
 const CinemaFilter = ({ value, onChange, cinemaNames }: CinemaFilterProps) => {
+  const [showDropdown, setShowDropdown] = useState(false);
+
   return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="filter-select"
-    >
-      <option value="">All Cinemas</option>
-      {cinemaNames.map((name) => (
-        <option key={name} value={name}>
-          {name}
-        </option>
-      ))}
-    </select>
+    <div className="genre-filter">
+      <button
+        className="filter-select genre-filter-button"
+        onClick={() => setShowDropdown(!showDropdown)}
+        onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+      >
+        {value || 'All Cinemas'}
+      </button>
+      {showDropdown && (
+        <div className="genre-filter-dropdown">
+          <div
+            className="genre-filter-option"
+            onMouseDown={() => {
+              onChange('');
+              setShowDropdown(false);
+            }}
+          >
+            All Cinemas
+          </div>
+          {cinemaNames.map((name) => (
+            <div
+              key={name}
+              className="genre-filter-option"
+              onMouseDown={() => {
+                onChange(name);
+                setShowDropdown(false);
+              }}
+            >
+              {name}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
 
