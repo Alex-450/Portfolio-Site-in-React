@@ -1,0 +1,64 @@
+import ArticleLayout from '../Components/ArticleLayout';
+import YouTubeEmbed from '../Components/YouTubeEmbed';
+import { findFilmPost } from '../utils/blog';
+
+export const blog = findFilmPost(
+  (b) => b.topic.toLowerCase() === 'y tu mamá tambien'
+);
+export const metadata = {
+  ...blog,
+  keywords: 'Y Tu Mamá Tambien Alfonso Cuaron',
+  spoilers: true,
+};
+
+Inseparable teenage friends Julio and Tenoch meet a beautiful older woman (Luisa) at a wedding and boast about a beach that doesn't exist that they're going 
+to drive to. They don't expect her to call a few days later and ask if she can join them. The resulting road trip evokes the experiences and feelings of youth.
+The boys are aimless, incredibly competitive, usually wanting to be either high, drunk or asleep, but also confused and anxious, unable to give voice to
+the things that scare them. *Y Tu Mamá Tambien* uses the setting of a coming of age road trip film to explore the fragility
+of friendship, of love, of dreams and desires and ultimately of life.
+
+The youthful exuberance the two boys is constantly balanced by reminders of mortality, by which the pair appear for the most part blissfully unfazed.
+They drive past an immigrant worker run down by a speeding bus. Luisa tells them that her first lover died in a motorcycle crash at the age of 17 
+and for the first time the boys seem stunned into silence. The narrator informs us that on a stretch of road that they're on, 10 years earlier a truck carrying
+cages full of chickens overturned, leaving two people dead. In the next shot we see a red truck with white cages piled high on its back, and as their car passes it,
+their music sputters and cuts out.
+
+Julio and Tenoch's sexual infatuation with Luisa brings out their competitiveness and leads them to spitefully
+admitting to sleeping with each other's girlfriends. Although they clearly desire Luisa, there is also some level of eroticism
+between them. One scene shows the two of them lying on parallel diving boards, masturbating into a swimming pool whilst calling out the names
+of women they are attracted to. Luisa latches onto this as well and during an eventual threesome scene, the two boys kiss. When they wake up naked
+next to each other the next morning they are panicked and quickly move away from each other.
+
+After the road trip, the two friends drift apart and the final scene of the movie is the two of them having coffee
+together after a chance meeting. The narrator informs us that they will never see each other again. They talk about old friends,
+mentioning one of their close friends who came out and was kicked out of the house by his dad, an acknowledgement of the fate that might
+have befallen them if they'd taken their feelings for one another any further, or perhaps even just admitted to what had happened.
+Tenoch comes from an incredibly privileged background and had already had his car taken away for saying that he was planning to study
+literature instead of economics.
+
+Tenoch tells Julio that Luisa died just a month after their road trip. She stayed where they had been, exploring the beaches. 
+She had known when she asked them to take her with them that she didn't have long to live. 
+Early on in the film, Luisa fills out a quiz in a magazine which concludes that she is "a woman afraid to claim her freedom", 
+later on she tells the boys that the only thing she really wanted to do with her life was to travel. 
+What she does during the film is exactly that. She travels, she loves and she does exactly what she wants. 
+She wanted to give this message to Julio and Tenoch, that they should be free to live and love as they
+please, that life is short and fragile and lovers and friends come and go. 
+But in the end the two boys choose the safety of a conventional path.
+Tenoch finally gives in to the pressure from his dad to study economics and (we assume) gives up his dream of being a writer and Julio is about to start
+a degree in biology. Living in the moment and giving in to our whims and desires is something we have to choose and sometimes that choice only 
+becomes the clear one when we are confronted with our inevitable end.
+
+Although ostensibly a coming of age film about two teenage boys, *Y Tu Mamá Tambien* is really about a woman looking back at her
+life and attempting to impart some wisdom to the next generation, with the hope that they will be less afraid to follow their dreams and
+perhaps help to usher in a more compassionate and understanding world, one where maybe a kiss doesn't need to be the end of a friendship and
+where feelings are allowed to be confusing, free from judgement. 
+
+---
+
+<YouTubeEmbed videoId="UW1LQbtRuAM" />
+
+---
+
+export default function Layout({ children }) {
+  return <ArticleLayout metadata={metadata}>{children}</ArticleLayout>;
+}

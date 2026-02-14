@@ -1,5 +1,15 @@
 [
   {
+    "type": "film",
+    "title": "The Fragility of Everything",
+    "topic": "Y Tu Mamá Tambien",
+    "year": "2001",
+    "director": "Alfonso Cuarón",
+    "link": "/y-tu-mama-tambien",
+    "dateAdded": "27/01/2026",
+    "description": ""
+  },
+  {
     "type": "tech",
     "title": "PostgreSQL comparison with NULL",
     "topic": "PostgreSQL",
