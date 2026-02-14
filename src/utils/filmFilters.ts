@@ -6,6 +6,7 @@ interface FilterOptions {
   filmSearch: string;
   filmFilter: string;
   genreFilter: string[];
+  directorFilter: string;
   today: string;
 }
 
@@ -42,7 +43,7 @@ export function filterFilms(
   films: FilmWithCinemasLite[],
   options: FilterOptions
 ): FilmWithCinemasLite[] {
-  const { cinemaFilter, dayFilter, filmSearch, filmFilter, genreFilter, today } = options;
+  const { cinemaFilter, dayFilter, filmSearch, filmFilter, genreFilter, directorFilter, today } = options;
 
   return films
     .filter((film) => !filmFilter || film.title === filmFilter)
@@ -51,6 +52,7 @@ export function filterFilms(
       genreFilter.length === 0 ||
       film.genres?.some((g) => genreFilter.includes(g))
     )
+    .filter((film) => !directorFilter || film.director?.toLowerCase() === directorFilter.toLowerCase())
     .map((film) => ({
       ...film,
       cinemaShowtimes: filterCinemaShowtimes(

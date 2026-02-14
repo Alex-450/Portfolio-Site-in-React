@@ -31,6 +31,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const [filmSearch, setFilmSearch] = useState('');
   const [filmFilter, setFilmFilter] = useState('');
   const [genreFilter, setGenreFilter] = useState<string[]>([]);
+  const [directorFilter, setDirectorFilter] = useState('');
   const [showFilmDropdown, setShowFilmDropdown] = useState(false);
   const [showGenreDropdown, setShowGenreDropdown] = useState(false);
 
@@ -38,6 +39,12 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const allFilms = filmsIndexToList(filmsIndex);
   const cinemaNames = getCinemaNames(filmsIndex);
   const allGenres = [...new Set(allFilms.flatMap((f) => f.genres || []))].sort();
+  const allDirectors = [...new Map(
+    allFilms
+      .map((f) => f.director)
+      .filter((d): d is string => d !== null)
+      .map((d) => [d.toLowerCase(), d])
+  ).values()].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
   const matchingFilms = filterFilmsBySearch(allFilms, filmSearch);
 
@@ -47,6 +54,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     filmSearch,
     filmFilter,
     genreFilter,
+    directorFilter,
     today,
   });
 
@@ -57,6 +65,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     filmSearch: '',
     filmFilter: '',
     genreFilter,
+    directorFilter,
     today,
   });
 
@@ -129,6 +138,20 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
               </option>
             ))}
           </select>
+          {allDirectors.length > 0 && (
+            <select
+              value={directorFilter}
+              onChange={(e) => setDirectorFilter(e.target.value)}
+              className="filter-select"
+            >
+              <option value="">All Directors</option>
+              {allDirectors.map((director) => (
+                <option key={director} value={director}>
+                  {director}
+                </option>
+              ))}
+            </select>
+          )}
           {allGenres.length > 0 && (
             <div className="genre-filter">
               <button
