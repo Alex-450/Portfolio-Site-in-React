@@ -597,6 +597,7 @@ code {
   text-overflow: ellipsis;
   white-space: nowrap;
   background: #dee2e6;
+  color: black;
 }
 
 /* Film Detail Page */
