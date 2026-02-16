@@ -14,6 +14,30 @@
 }
 
 .dark {
+  /* Header Menu dark mode */
+  .header-menu-dropdown {
+    background-color: var(--dark-bg-primary);
+    border-color: var(--hover-bg);
+  }
+
+  .header-menu-link {
+    color: var(--dark-text-primary);
+    border-bottom-color: var(--hover-bg);
+  }
+
+  .header-menu-link:hover {
+    background-color: var(--hover-bg);
+    color: var(--dark-bg-primary);
+  }
+
+  .header-menu-divider {
+    background-color: var(--hover-bg);
+  }
+
+  .header-menu-dropdown .footer-link {
+    border: none;
+  }
+
   .blog-container {
     background-color: var(--dark-bg-primary);
     color: var(--dark-text-primary);
