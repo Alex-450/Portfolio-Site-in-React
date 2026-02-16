@@ -512,10 +512,12 @@ code {
   font-weight: bold;
   color: var(--text-secondary);
   min-width: 80px;
+  width: 80px;
 }
 
 .showtime-date.with-screen {
-  min-width: 140px;
+  min-width: 200px;
+  width: 200px;
 }
 
 .showtime-times {
@@ -527,7 +529,9 @@ code {
 .showtime-link {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   padding: 2px 8px;
+  width: 50px;
   background-color: var(--bg-primary);
   border: 2px solid var(--border-primary);
   font-size: 0.85rem;
