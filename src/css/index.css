@@ -1,9 +1,37 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto+Slab&display=swap');
 
 :root {
-  --dark-background: #121212;
-  --dark-text-color: #ffffff;
+  /* Core colors */
+  --color-black: #000000;
+  --color-white: #ffffff;
+
+  /* Backgrounds */
+  --bg-primary: #dee2e6;
+  --bg-secondary: #ebeeef;
+  --bg-placeholder: #ccc;
+  --bg-footer-nav: #343a40;
+
+  /* Text */
+  --text-primary: #000000;
+  --text-secondary: #444;
+  --text-muted: #666;
+  --text-subtle: #555;
+  --text-body: #333;
+
+  /* Interactive/hover */
   --hover-bg: #888888;
+
+  /* Borders */
+  --border-primary: #000000;
+  --border-secondary: #888;
+
+  /* Code blocks */
+  --code-bg: #1e1e1e;
+  --code-text: #d4d4d4;
+  --code-inline-bg: #e8e8e8;
+
+  /* Status colors */
+  --color-error: #dc2626;
 }
 
 * {
@@ -18,8 +46,8 @@
   position: absolute;
   top: -40px;
   left: 0;
-  background: black;
-  color: white;
+  background: var(--color-black);
+  color: var(--color-white);
   padding: 8px 16px;
   z-index: 100;
   text-decoration: none;
@@ -30,15 +58,15 @@
 }
 
 .navbar {
-  background-color: black;
+  background-color: var(--color-black);
 }
 
 .navbar-container {
-  background-color: black;
+  background-color: var(--color-black);
 }
 
 .footer-container {
-  background-color: #dee2e6;
+  background-color: var(--bg-primary);
   margin-top: 10px;
   padding-top: 20px;
   padding-bottom: 20px;
@@ -46,40 +74,34 @@
 }
 
 .footer-explainer {
-  color: black;
+  color: var(--text-primary);
   font-weight: 550;
   text-align: center;
 }
 
-button.footer-link {
-  border: 2px solid black;
-  color: black;
+.footer-link {
+  border: 2px solid var(--border-primary);
+  margin-bottom: 10px;
+  background-color: var(--bg-primary);
+  text-decoration: none;
+  color: var(--text-primary);
   padding: 5px 10px;
-  font: inherit;
   display: flex;
   justify-content: space-between;
-  width: 100%;
-  background-color: #dee2e6;
+  font: inherit;
 }
 
-.footer-link {
-  border: 2px black solid;
-  margin-bottom: 10px;
-  background-color: #dee2e6;
-  text-decoration: none;
-  color: black;
-  padding: 5px 10px 5px 10px;
-  display: flex;
-  justify-content: space-between;
+button.footer-link {
+  width: 100%;
 }
 
 .footer-link:hover {
-  color: white;
+  color: var(--color-white);
   background-color: var(--hover-bg);
 }
 
 .footer-nav {
-  background-color: #343a40;
+  background-color: var(--bg-footer-nav);
 }
 
 .title-container {
@@ -88,7 +110,7 @@ button.footer-link {
 }
 
 .blog-container {
-  background-color: #ebeeef;
+  background-color: var(--bg-secondary);
 }
 
 .blog-pills {
@@ -97,19 +119,19 @@ button.footer-link {
 }
 
 .blog-pill {
-  border: 2px solid black;
-  background-color: #dee2e6;
-  color: black;
+  border: 2px solid var(--border-primary);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   padding: 2px 8px;
 }
 
 .blog-pill:hover {
-  color: white;
+  color: var(--color-white);
   background-color: var(--hover-bg);
 }
 
 .blog-pill-active {
-  color: white;
+  color: var(--color-white);
   background-color: var(--hover-bg);
 }
 
@@ -124,18 +146,18 @@ button.footer-link {
 .blog-header {
   padding-bottom: 10px;
   padding-top: 10px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid var(--border-primary);
 }
 
 .blog-row {
-  color: black;
+  color: var(--text-primary);
   padding-bottom: 10px;
   padding-top: 10px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid var(--border-primary);
 }
 
 .blog-row:hover {
-  color: white;
+  color: var(--color-white);
   background-color: var(--hover-bg);
 }
 
@@ -172,15 +194,15 @@ button.footer-link {
 
 /* Code blocks */
 pre {
-  background-color: #1e1e1e;
-  color: #d4d4d4;
+  background-color: var(--code-bg);
+  color: var(--code-text);
   padding: 1rem;
   border-radius: 4px;
   overflow-x: auto;
   font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
   font-size: 0.9rem;
   line-height: 1.5;
-  border: 2px solid black;
+  border: 2px solid var(--border-primary);
 }
 
 pre code {
@@ -190,7 +212,7 @@ pre code {
 }
 
 code {
-  background-color: #e8e8e8;
+  background-color: var(--code-inline-bg);
   padding: 0.2rem 0.4rem;
   border-radius: 3px;
   font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
@@ -218,18 +240,18 @@ code {
 }
 
 .film-listings-footer .cinema-sources {
-  color: #666;
+  color: var(--text-muted);
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
 
 .film-listings-footer .cinema-sources a {
-  color: #666;
+  color: var(--text-muted);
   text-decoration: underline;
 }
 
 .film-listings-footer .cinema-sources a:hover {
-  color: #333;
+  color: var(--text-body);
 }
 
 .film-listings-footer .tmdb-link img {
@@ -252,15 +274,15 @@ code {
   padding: 5px 10px;
   font-family: inherit;
   font-size: 1rem;
-  border: 2px solid black;
-  background-color: #dee2e6;
-  color: black;
+  border: 2px solid var(--border-primary);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   cursor: pointer;
 }
 
 .filter-select:hover {
   background-color: var(--hover-bg);
-  color: white;
+  color: var(--color-white);
 }
 
 .filter-select-film {
@@ -279,16 +301,16 @@ code {
   right: 0;
   top: 0;
   bottom: 0;
-  border: 2px solid black;
-  background: #dee2e6;
+  border: 2px solid var(--border-primary);
+  background: var(--bg-primary);
   cursor: pointer;
   font-size: 0.8rem;
-  color: black;
+  color: var(--text-primary);
   padding: 0 8px;
 }
 
 .film-search-clear:hover {
-  color: black;
+  color: var(--text-primary);
   background-color: var(--hover-bg);
 }
 
@@ -298,8 +320,8 @@ code {
   right: 0;
   max-height: 300px;
   overflow-y: auto;
-  background-color: #dee2e6;
-  border: 2px solid black;
+  background-color: var(--bg-primary);
+  border: 2px solid var(--border-primary);
   border-top: none;
   margin: 0;
   padding: 0;
@@ -313,7 +335,7 @@ code {
 
 .film-search-dropdown li:hover {
   background-color: var(--hover-bg);
-  color: white;
+  color: var(--color-white);
 }
 
 /* Genre Filter */
@@ -333,8 +355,8 @@ code {
   min-width: 180px;
   max-height: 300px;
   overflow-y: auto;
-  background-color: #dee2e6;
-  border: 2px solid black;
+  background-color: var(--bg-primary);
+  border: 2px solid var(--border-primary);
   border-top: none;
   z-index: 10;
 }
@@ -349,27 +371,27 @@ code {
 
 .genre-filter-option:hover {
   background-color: var(--hover-bg);
-  color: white;
+  color: var(--color-white);
 }
 
 .genre-filter-option input {
   cursor: pointer;
-  accent-color: black;
+  accent-color: var(--color-black);
 }
 
 .genre-filter-clear {
   width: 100%;
   padding: 6px 10px;
   border: none;
-  border-top: 1px solid black;
-  background: #ccc;
+  border-top: 1px solid var(--border-primary);
+  background: var(--bg-placeholder);
   cursor: pointer;
   font-size: 0.9rem;
 }
 
 .genre-filter-clear:hover {
   background-color: var(--hover-bg);
-  color: white;
+  color: var(--color-white);
 }
 
 .loading-text,
@@ -377,16 +399,16 @@ code {
 .no-results {
   text-align: center;
   padding: 2rem;
-  color: #666;
+  color: var(--text-muted);
 }
 
 .error-text {
-  color: #dc2626;
+  color: var(--color-error);
 }
 
 .cinema-section {
-  background: #dee2e6;
-  border: 2px solid black;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-primary);
   margin-bottom: 1.5rem;
   padding: 1rem;
 }
@@ -395,7 +417,7 @@ code {
   font-size: 1.25rem;
   margin-bottom: 0.5rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid var(--border-primary);
 }
 
 .film-card {
@@ -403,28 +425,24 @@ code {
   align-items: flex-start;
   gap: 1rem;
   padding: 10px 0;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid var(--border-primary);
 }
 
 .film-card:last-child {
   border-bottom: none;
 }
 
-.film-poster {
-  width: 180px;
-  aspect-ratio: 2 / 3;
-  object-fit: cover;
-  background: #ccc;
-  flex-shrink: 0;
-  border: 1px solid black;
-}
-
+.film-poster,
 .film-poster-placeholder {
   width: 180px;
   aspect-ratio: 2 / 3;
-  background: #ccc;
+  background: var(--bg-placeholder);
   flex-shrink: 0;
-  border: 1px solid black;
+  border: 1px solid var(--border-primary);
+}
+
+.film-poster {
+  object-fit: cover;
 }
 
 .film-info {
@@ -448,13 +466,13 @@ code {
 }
 
 .film-director {
-  color: #444;
+  color: var(--text-secondary);
   font-size: 0.9rem;
   margin-bottom: 0.25rem;
 }
 
 .film-length {
-  color: #666;
+  color: var(--text-muted);
   font-size: 0.85rem;
   margin-bottom: 0.5rem;
 }
@@ -492,7 +510,7 @@ code {
 .showtime-date {
   font-size: 0.85rem;
   font-weight: bold;
-  color: #444;
+  color: var(--text-secondary);
   min-width: 80px;
 }
 
@@ -510,16 +528,16 @@ code {
   display: inline-flex;
   align-items: center;
   padding: 2px 8px;
-  background-color: #dee2e6;
-  border: 2px solid black;
+  background-color: var(--bg-primary);
+  border: 2px solid var(--border-primary);
   font-size: 0.85rem;
-  color: black;
+  color: var(--text-primary);
   text-decoration: none;
 }
 
 .showtime-link:hover {
   background-color: var(--hover-bg);
-  color: white;
+  color: var(--color-white);
   text-decoration: none;
 }
 
@@ -533,8 +551,8 @@ code {
   align-items: center;
   justify-content: center;
   padding: 0 6px;
-  background-color: #dee2e6;
-  border: 2px solid black;
+  background-color: var(--bg-primary);
+  border: 2px solid var(--border-primary);
   border-left: none;
   font-size: 0.85rem;
   text-decoration: none;
@@ -550,15 +568,15 @@ code {
   font-size: 0.85rem;
   padding: 2px 8px;
   background-color: transparent;
-  border: 2px solid black;
-  color: black;
+  border: 2px solid var(--border-primary);
+  color: var(--text-primary);
   cursor: pointer;
   width: 150px;
 }
 
 .expand-btn:hover {
   background-color: var(--hover-bg);
-  color: white;
+  color: var(--color-white);
 }
 
 /* Poster Carousel */
@@ -567,7 +585,7 @@ code {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
-  scrollbar-color: #666 #dee2e6;
+  scrollbar-color: var(--text-muted) var(--bg-primary);
 }
 
 .poster-carousel::-webkit-scrollbar {
@@ -575,11 +593,11 @@ code {
 }
 
 .poster-carousel::-webkit-scrollbar-track {
-  background: #dee2e6;
+  background: var(--bg-primary);
 }
 
 .poster-carousel::-webkit-scrollbar-thumb {
-  background: #666;
+  background: var(--text-muted);
   border-radius: 4px;
 }
 
@@ -592,7 +610,7 @@ code {
 .poster-carousel-item {
   flex-shrink: 0;
   padding: 0;
-  border: 2px solid black;
+  border: 2px solid var(--border-primary);
   background: none;
   cursor: pointer;
   transition: transform 0.2s ease;
@@ -607,7 +625,7 @@ code {
   width: 140px;
   aspect-ratio: 2 / 3;
   object-fit: cover;
-  background: #ccc;
+  background: var(--bg-placeholder);
 }
 
 .poster-carousel-title {
@@ -619,8 +637,8 @@ code {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  background: #dee2e6;
-  color: black;
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 /* Film Detail Page */
@@ -637,20 +655,20 @@ code {
   margin-bottom: 2rem;
 }
 
-.film-detail-poster {
-  width: 300px;
-  aspect-ratio: 2 / 3;
-  object-fit: cover;
-  border: 2px solid black;
-  flex-shrink: 0;
-}
-
+.film-detail-poster,
 .film-detail-poster-placeholder {
   width: 300px;
   aspect-ratio: 2 / 3;
-  background: #ccc;
-  border: 2px solid black;
+  border: 2px solid var(--border-primary);
   flex-shrink: 0;
+}
+
+.film-detail-poster {
+  object-fit: cover;
+}
+
+.film-detail-poster-placeholder {
+  background: var(--bg-placeholder);
 }
 
 .film-detail-info {
@@ -665,13 +683,13 @@ code {
 
 .film-detail-director {
   font-size: 1.1rem;
-  color: #444;
+  color: var(--text-secondary);
   margin-bottom: 0.25rem;
 }
 
 .film-detail-length {
   font-size: 0.95rem;
-  color: #666;
+  color: var(--text-muted);
   margin-bottom: 1rem;
 }
 
@@ -682,13 +700,17 @@ code {
   flex-wrap: wrap;
 }
 
+.film-detail-badge,
+.film-detail-genre {
+  background: transparent;
+  border: 1px solid var(--border-secondary);
+  border-radius: 12px;
+  color: var(--text-subtle);
+}
+
 .film-detail-badge {
   padding: 4px 12px;
-  background: transparent;
-  border: 1px solid #888;
-  border-radius: 12px;
   font-size: 0.9rem;
-  color: #555;
 }
 
 .film-detail-genres {
@@ -699,11 +721,7 @@ code {
 
 .film-detail-genre {
   padding: 2px 10px;
-  background: transparent;
-  border: 1px solid #888;
-  border-radius: 12px;
   font-size: 0.85rem;
-  color: #555;
 }
 
 .film-detail-trailer {
@@ -728,7 +746,7 @@ code {
 
 .film-detail-overview p {
   line-height: 1.6;
-  color: #333;
+  color: var(--text-body);
 }
 
 .film-detail-showtimes {
@@ -749,15 +767,15 @@ code {
   display: inline-block;
   margin-top: 2rem;
   padding: 8px 16px;
-  background: #dee2e6;
-  border: 2px solid black;
-  color: black;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-primary);
+  color: var(--text-primary);
   text-decoration: none;
 }
 
 .back-link:hover {
   background: var(--hover-bg);
-  color: white;
+  color: var(--color-white);
 }
 
 @media (max-width: 600px) {
