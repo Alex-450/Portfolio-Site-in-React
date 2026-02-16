@@ -354,6 +354,7 @@ code {
 
 .genre-filter-option input {
   cursor: pointer;
+  accent-color: black;
 }
 
 .genre-filter-clear {
@@ -781,6 +782,10 @@ code {
     width: 100%;
   }
 
+  .film-search-container:focus-within {
+    z-index: 20;
+  }
+
   .genre-filter {
     width: 100%;
   }
@@ -795,6 +800,7 @@ code {
 
   .filter-select-film {
     max-width: none;
+    width: 100%;
   }
 
   .poster-carousel-image {

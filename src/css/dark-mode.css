@@ -102,6 +102,10 @@
     color: var(--dark-background);
   }
 
+  .genre-filter-option input {
+    accent-color: white;
+  }
+
   .loading-text,
   .no-results {
     color: #aaa;
