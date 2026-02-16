@@ -38,6 +38,7 @@ async function fetchAllCinemas() {
   ]);
 
   const cinemas = [];
+  const failures = [];
 
   // Process results
   const namedResults = [
@@ -56,7 +57,12 @@ async function fetchAllCinemas() {
       }
     } else {
       console.error(`Error fetching ${name}:`, result.reason?.message);
+      failures.push(name);
     }
+  }
+
+  if (failures.length > 0) {
+    throw new Error(`Failed to fetch cinemas: ${failures.join(', ')}`);
   }
 
   return cinemas;
