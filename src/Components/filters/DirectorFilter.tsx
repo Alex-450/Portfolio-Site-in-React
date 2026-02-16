@@ -42,7 +42,16 @@ const DirectorFilter = ({
       {(showDropdown || searchValue) && (
         <button
           className="film-search-clear"
-          onMouseDown={onClear}
+          onMouseDown={(e) => {
+            if (searchValue) e.preventDefault();
+          }}
+          onClick={() => {
+            if (searchValue) {
+              onClear();
+            } else {
+              setShowDropdown(false);
+            }
+          }}
         >
           X
         </button>
