@@ -43,6 +43,7 @@ jobs:
             tmdb-cache-
 
       - name: Cache films.json
+        id: cache-films
         uses: actions/cache@v5
         with:
           path: src/data/films.json
@@ -50,8 +51,8 @@ jobs:
           restore-keys: |
             films-json-
 
-      - name: Fetch showtimes (scheduled only)
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+      - name: Fetch showtimes
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || steps.cache-films.outputs.cache-hit != 'true'
         run: npm run fetch-showtimes
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
