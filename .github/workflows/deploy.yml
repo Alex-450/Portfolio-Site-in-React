@@ -66,7 +66,7 @@ jobs:
             ${{ runner.os }}-nextjs-
 
       - name: Build
-        run: next build
+        run: npm run build:only
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

@@ -33,6 +33,7 @@
     "fetch-showtimes": "node scripts/fetch-showtimes.mjs",
     "prebuild": "npm run fetch-showtimes",
     "build": "next build",
+    "build:only": "next build",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
