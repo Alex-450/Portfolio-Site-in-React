@@ -40,7 +40,15 @@ jobs:
           path: src/data/tmdb-cache.json
           key: tmdb-cache-${{ hashFiles('scripts/scrapers/tmdb.mjs') }}
           restore-keys: |
-            generated-data-
+            tmdb-cache-
+
+      - name: Cache films.json
+        uses: actions/cache@v5
+        with:
+          path: src/data/films.json
+          key: films-json-${{ github.run_id }}
+          restore-keys: |
+            films-json-
 
       - name: Cache Next.js
         uses: actions/cache@v5

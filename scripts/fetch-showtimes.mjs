@@ -1,4 +1,4 @@
-import { writeFileSync, mkdirSync } from 'fs';
+import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'fs';
 import { dirname } from 'path';
 import { fetchAllRssFeeds } from './scrapers/rss-feeds.mjs';
 import { fetchKriterion } from './scrapers/kriterion.mjs';
@@ -194,24 +194,36 @@ async function generateFilmsJson(cinemas) {
 
 async function main() {
   const startTime = performance.now();
-  console.log('Fetching showtimes...\n');
-
-  const cinemas = await fetchAllCinemas();
   const outputPath = 'src/data/films.json';
 
-  mkdirSync(dirname(outputPath), { recursive: true });
+  try {
+    console.log('Fetching showtimes...\n');
 
-  // Generate films.json with TMDB details
-  const filmsIndex = await generateFilmsJson(cinemas);
-  writeFileSync(outputPath, JSON.stringify(filmsIndex, null, 2));
+    const cinemas = await fetchAllCinemas();
 
-  const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
-  console.log(`\nWrote ${Object.keys(filmsIndex).length} films to ${outputPath}`);
-  console.log(`Last updated: ${new Date().toISOString()}`);
-  console.log(`Total time: ${elapsed}s`);
+    mkdirSync(dirname(outputPath), { recursive: true });
+
+    // Generate films.json with TMDB details
+    const filmsIndex = await generateFilmsJson(cinemas);
+    writeFileSync(outputPath, JSON.stringify(filmsIndex, null, 2));
+
+    const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
+    console.log(`\nWrote ${Object.keys(filmsIndex).length} films to ${outputPath}`);
+    console.log(`Last updated: ${new Date().toISOString()}`);
+    console.log(`Total time: ${elapsed}s`);
+  } catch (err) {
+    console.error('Failed to fetch showtimes:', err.message);
+
+    // Fall back to existing cached file if available
+    if (existsSync(outputPath)) {
+      console.log(`\nUsing existing cached ${outputPath}`);
+      const cached = JSON.parse(readFileSync(outputPath, 'utf-8'));
+      console.log(`Cached file contains ${Object.keys(cached).length} films`);
+    } else {
+      console.error('No cached file available, build cannot continue');
+      process.exit(1);
+    }
+  }
 }
 
-main().catch(err => {
-  console.error('Failed to fetch showtimes:', err);
-  process.exit(1);
-});
+main();
