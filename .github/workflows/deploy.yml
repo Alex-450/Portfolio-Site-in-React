@@ -50,6 +50,12 @@ jobs:
           restore-keys: |
             films-json-
 
+      - name: Fetch showtimes (scheduled only)
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: npm run fetch-showtimes
+        env:
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+
       - name: Cache Next.js
         uses: actions/cache@v5
         with:
@@ -60,9 +66,7 @@ jobs:
             ${{ runner.os }}-nextjs-
 
       - name: Build
-        run: npm run build
-        env:
-          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+        run: next build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
