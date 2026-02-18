@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { Container } from 'react-bootstrap';
 import { FilmWithCinemasLite, FilmsIndexLite } from '../types';
@@ -26,18 +27,39 @@ function getCinemaNames(filmsIndex: FilmsIndexLite): string[] {
   return [...cinemas].sort();
 }
 
+const str = (v: unknown) => (typeof v === 'string' ? v : '');
+
 interface FilmListingsProps {
   filmsIndex: FilmsIndexLite;
 }
 
 const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
-  const [cinemaFilter, setCinemaFilter] = useState('');
-  const [dayFilter, setDayFilter] = useState('');
-  const [filmSearch, setFilmSearch] = useState('');
-  const [filmFilter, setFilmFilter] = useState('');
-  const [genreFilter, setGenreFilter] = useState<string[]>([]);
-  const [directorSearch, setDirectorSearch] = useState('');
-  const [directorFilter, setDirectorFilter] = useState('');
+  const router = useRouter();
+  const q = router.query;
+
+  // URL-synced filters
+  const cinemaFilter = str(q.cinema);
+  const dayFilter = str(q.day);
+  const filmFilter = str(q.film);
+  const genreFilter = str(q.genres).split(',').filter(Boolean);
+  const directorFilter = str(q.director);
+
+  // Local search input state
+  const [filmSearch, setFilmSearch] = useState(filmFilter);
+  const [directorSearch, setDirectorSearch] = useState(directorFilter);
+
+  useEffect(() => setFilmSearch(filmFilter), [filmFilter]);
+  useEffect(() => setDirectorSearch(directorFilter), [directorFilter]);
+
+  const setFilter = (key: string, value: string | string[] | undefined) => {
+    const query = { ...q };
+    if (!value || (Array.isArray(value) && !value.length)) {
+      delete query[key];
+    } else {
+      query[key] = Array.isArray(value) ? value.join(',') : value;
+    }
+    router.push({ pathname: router.pathname, query }, undefined, { shallow: true });
+  };
 
   const today = getToday();
   const allFilms = filmsIndexToList(filmsIndex);
@@ -60,7 +82,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     today,
   });
 
-  // Films for carousel: filtered by cinema and day, but not by film search
   const carouselFilms = filterFilms(allFilms, {
     cinemaFilter,
     dayFilter,
@@ -72,7 +93,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   });
 
   const allDates = new Set<string>();
-
   allFilms.forEach((film) => {
     film.cinemaShowtimes
       .filter((cs) => !cinemaFilter || cs.cinema === cinemaFilter)
@@ -110,56 +130,50 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
           films={carouselFilms}
           onPosterClick={(title) => {
             setFilmSearch(title);
-            setFilmFilter(title);
+            setFilter('film', title);
           }}
         />
 
         <div className="film-filters">
           <CinemaFilter
             value={cinemaFilter}
-            onChange={setCinemaFilter}
+            onChange={(v) => setFilter('cinema', v)}
             cinemaNames={cinemaNames}
           />
           <DayFilter
             value={dayFilter}
-            onChange={setDayFilter}
+            onChange={(v) => setFilter('day', v)}
             dayOptions={dayOptions}
           />
           <GenreFilter
             genres={allGenres}
             selectedGenres={genreFilter}
-            onChange={setGenreFilter}
+            onChange={(v) => setFilter('genres', v)}
           />
           <FilmSearchFilter
             films={allFilms}
             searchValue={filmSearch}
-            onSearchChange={(value) => {
-              setFilmSearch(value);
-              setFilmFilter('');
-            }}
+            onSearchChange={setFilmSearch}
             onSelect={(title) => {
               setFilmSearch(title);
-              setFilmFilter(title);
+              setFilter('film', title);
             }}
             onClear={() => {
               setFilmSearch('');
-              setFilmFilter('');
+              setFilter('film', undefined);
             }}
           />
           <DirectorFilter
             directors={allDirectors}
             searchValue={directorSearch}
-            onSearchChange={(value) => {
-              setDirectorSearch(value);
-              setDirectorFilter('');
-            }}
-            onSelect={(director) => {
-              setDirectorSearch(director);
-              setDirectorFilter(director);
+            onSearchChange={setDirectorSearch}
+            onSelect={(d) => {
+              setDirectorSearch(d);
+              setFilter('director', d);
             }}
             onClear={() => {
               setDirectorSearch('');
-              setDirectorFilter('');
+              setFilter('director', undefined);
             }}
           />
         </div>
