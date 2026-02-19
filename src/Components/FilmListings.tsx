@@ -32,6 +32,23 @@ function getCinemaNames(filmsIndex: FilmsIndexLite): string[] {
 
 const str = (v: unknown) => (typeof v === 'string' ? v : '');
 
+const GENRE_ORDER = [
+  'Drama',
+  'Romance',
+  'Comedy',
+  'Action',
+  'Animation',
+  'Science Fiction',
+  'Horror',
+  'Thriller',
+  'Crime',
+  'Music',
+  'Adventure',
+  'Mystery',
+  'History',
+  'Other',
+];
+
 function groupFilmsByGenre(films: FilmWithCinemasLite[]): Map<string, FilmWithCinemasLite[]> {
   const genreMap = new Map<string, FilmWithCinemasLite[]>();
 
@@ -44,8 +61,14 @@ function groupFilmsByGenre(films: FilmWithCinemasLite[]): Map<string, FilmWithCi
     genreMap.get(primaryGenre)!.push(film);
   }
 
-  // Sort by film count descending
-  return new Map([...genreMap.entries()].sort((a, b) => b[1].length - a[1].length));
+  // Sort by custom genre order, unlisted genres go to the end
+  return new Map([...genreMap.entries()].sort((a, b) => {
+    const indexA = GENRE_ORDER.indexOf(a[0]);
+    const indexB = GENRE_ORDER.indexOf(b[0]);
+    const orderA = indexA === -1 ? GENRE_ORDER.length : indexA;
+    const orderB = indexB === -1 ? GENRE_ORDER.length : indexB;
+    return orderA - orderB;
+  }));
 }
 
 interface FilmListingsProps {
@@ -204,41 +227,39 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
             dayOptions={dayOptions}
             showToday={hasShowtimesToday}
           />
+          <GenreFilter
+            genres={allGenres}
+            selectedGenres={genreFilter}
+            onChange={(v) => setFilter('genres', v)}
+          />
           {viewMode === 'list' && (
-            <>
-              <GenreFilter
-                genres={allGenres}
-                selectedGenres={genreFilter}
-                onChange={(v) => setFilter('genres', v)}
-              />
-              <FilmSearchFilter
-                films={allFilms}
-                searchValue={filmSearch}
-                onSearchChange={setFilmSearch}
-                onSelect={(title) => {
-                  setFilmSearch(title);
-                  setFilter('film', title);
-                }}
-                onClear={() => {
-                  setFilmSearch('');
-                  setFilter('film', undefined);
-                }}
-              />
-              <DirectorFilter
-                directors={allDirectors}
-                searchValue={directorSearch}
-                onSearchChange={setDirectorSearch}
-                onSelect={(d) => {
-                  setDirectorSearch(d);
-                  setFilter('director', d);
-                }}
-                onClear={() => {
-                  setDirectorSearch('');
-                  setFilter('director', undefined);
-                }}
-              />
-            </>
+            <FilmSearchFilter
+              films={allFilms}
+              searchValue={filmSearch}
+              onSearchChange={setFilmSearch}
+              onSelect={(title) => {
+                setFilmSearch(title);
+                setFilter('film', title);
+              }}
+              onClear={() => {
+                setFilmSearch('');
+                setFilter('film', undefined);
+              }}
+            />
           )}
+          <DirectorFilter
+            directors={allDirectors}
+            searchValue={directorSearch}
+            onSearchChange={setDirectorSearch}
+            onSelect={(d) => {
+              setDirectorSearch(d);
+              setFilter('director', d);
+            }}
+            onClear={() => {
+              setDirectorSearch('');
+              setFilter('director', undefined);
+            }}
+          />
         </div>
 
         {allFilms.length === 0 && (
