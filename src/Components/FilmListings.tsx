@@ -1,10 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import Link from 'next/link';
 import { Container } from 'react-bootstrap';
 import { FilmWithCinemasLite, FilmsIndexLite } from '../types';
 import FilmCard from './FilmCard';
 import PosterCarousel from './PosterCarousel';
+import ViewToggle from './ViewToggle';
+import GenreCarouselRow from './GenreCarouselRow';
 import CinemaFilter from './filters/CinemaFilter';
 import DayFilter from './filters/DayFilter';
 import DirectorFilter from './filters/DirectorFilter';
@@ -29,6 +32,22 @@ function getCinemaNames(filmsIndex: FilmsIndexLite): string[] {
 
 const str = (v: unknown) => (typeof v === 'string' ? v : '');
 
+function groupFilmsByGenre(films: FilmWithCinemasLite[]): Map<string, FilmWithCinemasLite[]> {
+  const genreMap = new Map<string, FilmWithCinemasLite[]>();
+
+  for (const film of films) {
+    // Use only the first (primary) genre, or 'Other' if none
+    const primaryGenre = film.genres?.[0] || 'Other';
+    if (!genreMap.has(primaryGenre)) {
+      genreMap.set(primaryGenre, []);
+    }
+    genreMap.get(primaryGenre)!.push(film);
+  }
+
+  // Sort by film count descending
+  return new Map([...genreMap.entries()].sort((a, b) => b[1].length - a[1].length));
+}
+
 interface FilmListingsProps {
   filmsIndex: FilmsIndexLite;
 }
@@ -43,6 +62,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const filmFilter = str(q.film);
   const genreFilter = str(q.genres).split(',').filter(Boolean);
   const directorFilter = str(q.director);
+  const viewMode = (str(q.view) === 'carousel' ? 'carousel' : 'list') as 'list' | 'carousel';
 
   // Local search input state
   const [filmSearch, setFilmSearch] = useState(filmFilter);
@@ -132,6 +152,9 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     }
   }, [isDayFilterValid, dayFilter]);
 
+  // Group films by genre for carousel view
+  const filmsByGenre = useMemo(() => groupFilmsByGenre(filteredFilms), [filteredFilms]);
+
   return (
     <>
       <Head>
@@ -149,16 +172,25 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
       </Head>
       <Container className="film-listings-container">
         <header className="film-listings-header">
-          <h1>Film Listings</h1>
+          <h1><Link href="/film-listings">Film Listings</Link></h1>
         </header>
 
-        <PosterCarousel
-          films={carouselFilms}
-          onPosterClick={(title) => {
-            setFilmSearch(title);
-            setFilter('film', title);
-          }}
-        />
+        <div className="film-filters">
+          <ViewToggle
+            view={viewMode}
+            onChange={(v) => setFilter('view', v === 'list' ? undefined : v)}
+          />
+        </div>
+
+        {viewMode === 'list' && (
+          <PosterCarousel
+            films={carouselFilms}
+            onPosterClick={(title) => {
+              setFilmSearch(title);
+              setFilter('film', title);
+            }}
+          />
+        )}
 
         <div className="film-filters">
           <CinemaFilter
@@ -172,37 +204,41 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
             dayOptions={dayOptions}
             showToday={hasShowtimesToday}
           />
-          <GenreFilter
-            genres={allGenres}
-            selectedGenres={genreFilter}
-            onChange={(v) => setFilter('genres', v)}
-          />
-          <FilmSearchFilter
-            films={allFilms}
-            searchValue={filmSearch}
-            onSearchChange={setFilmSearch}
-            onSelect={(title) => {
-              setFilmSearch(title);
-              setFilter('film', title);
-            }}
-            onClear={() => {
-              setFilmSearch('');
-              setFilter('film', undefined);
-            }}
-          />
-          <DirectorFilter
-            directors={allDirectors}
-            searchValue={directorSearch}
-            onSearchChange={setDirectorSearch}
-            onSelect={(d) => {
-              setDirectorSearch(d);
-              setFilter('director', d);
-            }}
-            onClear={() => {
-              setDirectorSearch('');
-              setFilter('director', undefined);
-            }}
-          />
+          {viewMode === 'list' && (
+            <>
+              <GenreFilter
+                genres={allGenres}
+                selectedGenres={genreFilter}
+                onChange={(v) => setFilter('genres', v)}
+              />
+              <FilmSearchFilter
+                films={allFilms}
+                searchValue={filmSearch}
+                onSearchChange={setFilmSearch}
+                onSelect={(title) => {
+                  setFilmSearch(title);
+                  setFilter('film', title);
+                }}
+                onClear={() => {
+                  setFilmSearch('');
+                  setFilter('film', undefined);
+                }}
+              />
+              <DirectorFilter
+                directors={allDirectors}
+                searchValue={directorSearch}
+                onSearchChange={setDirectorSearch}
+                onSelect={(d) => {
+                  setDirectorSearch(d);
+                  setFilter('director', d);
+                }}
+                onClear={() => {
+                  setDirectorSearch('');
+                  setFilter('director', undefined);
+                }}
+              />
+            </>
+          )}
         </div>
 
         {allFilms.length === 0 && (
@@ -213,9 +249,17 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
           <p className="no-results">No showtimes found for selected filters</p>
         )}
 
-        {filteredFilms.map((film) => (
-          <FilmCard key={film.title} film={film} dayFilter={dayFilter} />
-        ))}
+        {viewMode === 'list' ? (
+          filteredFilms.map((film) => (
+            <FilmCard key={film.title} film={film} dayFilter={dayFilter} />
+          ))
+        ) : (
+          <div className="genre-carousel-section">
+            {[...filmsByGenre.entries()].map(([genre, films]) => (
+              <GenreCarouselRow key={genre} genre={genre} films={films} />
+            ))}
+          </div>
+        )}
 
         <footer className="film-listings-footer">
           <p className="cinema-sources">

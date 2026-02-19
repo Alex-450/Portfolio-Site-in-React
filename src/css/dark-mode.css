@@ -259,6 +259,28 @@
     color: var(--dark-text-primary);
   }
 
+  /* View Toggle dark mode */
+  .view-toggle-button {
+    background-color: var(--dark-bg-primary);
+    color: var(--dark-text-primary);
+    border-color: var(--hover-bg);
+  }
+
+  .view-toggle-button:hover {
+    background-color: var(--hover-bg);
+    color: var(--dark-bg-primary);
+  }
+
+  .view-toggle-button-active {
+    background-color: var(--hover-bg);
+    color: var(--dark-bg-primary);
+  }
+
+  /* Genre Carousel dark mode */
+  .genre-carousel-label {
+    border-bottom-color: var(--hover-bg);
+  }
+
   /* Code blocks dark mode */
   pre {
     background-color: var(--dark-code-bg);
