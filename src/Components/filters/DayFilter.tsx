@@ -6,21 +6,24 @@ interface DayOption {
 }
 
 interface DayFilterProps {
-  value: string;
-  onChange: (value: string) => void;
+  selectedDays: string[];
+  onChange: (days: string[]) => void;
   dayOptions: DayOption[];
   showToday?: boolean;
 }
 
-const DayFilter = ({ value, onChange, dayOptions, showToday = true }: DayFilterProps) => {
+const DayFilter = ({ selectedDays, onChange, dayOptions, showToday = true }: DayFilterProps) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const getDisplayLabel = () => {
-    if (!value) return 'All Days';
-    if (value === 'today') return 'Today';
-    const option = dayOptions.find((d) => d.value === value);
-    return option ? option.label : value;
+    if (selectedDays.length === 0) return 'All Days';
+    return `${selectedDays.length} Day${selectedDays.length > 1 ? 's' : ''}`;
   };
+
+  const allOptions = [
+    ...(showToday ? [{ value: 'today', label: 'Today' }] : []),
+    ...dayOptions,
+  ];
 
   return (
     <div className="genre-filter">
@@ -33,38 +36,30 @@ const DayFilter = ({ value, onChange, dayOptions, showToday = true }: DayFilterP
       </button>
       {showDropdown && (
         <div className="genre-filter-dropdown">
-          <div
-            className="genre-filter-option"
-            onMouseDown={() => {
-              onChange('');
-              setShowDropdown(false);
-            }}
-          >
-            All Days
-          </div>
-          {showToday && (
-            <div
-              className="genre-filter-option"
-              onMouseDown={() => {
-                onChange('today');
-                setShowDropdown(false);
-              }}
-            >
-              Today
-            </div>
-          )}
-          {dayOptions.map((day) => (
-            <div
-              key={day.value}
-              className="genre-filter-option"
-              onMouseDown={() => {
-                onChange(day.value);
-                setShowDropdown(false);
-              }}
-            >
+          {allOptions.map((day) => (
+            <label key={day.value} className="genre-filter-option">
+              <input
+                type="checkbox"
+                checked={selectedDays.includes(day.value)}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    onChange([...selectedDays, day.value]);
+                  } else {
+                    onChange(selectedDays.filter((d) => d !== day.value));
+                  }
+                }}
+              />
               {day.label}
-            </div>
+            </label>
           ))}
+          {selectedDays.length > 0 && (
+            <button
+              className="genre-filter-clear"
+              onMouseDown={() => onChange([])}
+            >
+              Clear
+            </button>
+          )}
         </div>
       )}
     </div>

@@ -23,10 +23,10 @@ export function groupShowtimesByDate(showtimes: ShowtimeLite[]): [string, Showti
 
 export function filterByDay(
   grouped: [string, ShowtimeLite[]][],
-  dayFilter: string,
+  dayFilter: string[],
   today: string
 ): [string, ShowtimeLite[]][] {
-  if (!dayFilter) return grouped;
-  if (dayFilter === 'today') return grouped.filter(([date]) => date === today);
-  return grouped.filter(([date]) => date === dayFilter);
+  if (dayFilter.length === 0) return grouped;
+  const targetDates = dayFilter.map((d) => (d === 'today' ? today : d));
+  return grouped.filter(([date]) => targetDates.includes(date));
 }

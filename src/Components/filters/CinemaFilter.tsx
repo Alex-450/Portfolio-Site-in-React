@@ -1,13 +1,17 @@
 import { useState } from 'react';
 
 interface CinemaFilterProps {
-  value: string;
-  onChange: (value: string) => void;
+  selectedCinemas: string[];
+  onChange: (cinemas: string[]) => void;
   cinemaNames: string[];
 }
 
-const CinemaFilter = ({ value, onChange, cinemaNames }: CinemaFilterProps) => {
+const CinemaFilter = ({ selectedCinemas, onChange, cinemaNames }: CinemaFilterProps) => {
   const [showDropdown, setShowDropdown] = useState(false);
+
+  if (cinemaNames.length === 0) {
+    return null;
+  }
 
   return (
     <div className="genre-filter">
@@ -16,31 +20,36 @@ const CinemaFilter = ({ value, onChange, cinemaNames }: CinemaFilterProps) => {
         onClick={() => setShowDropdown(!showDropdown)}
         onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
       >
-        {value || 'All Cinemas'}
+        {selectedCinemas.length === 0
+          ? 'All Cinemas'
+          : `${selectedCinemas.length} Cinema${selectedCinemas.length > 1 ? 's' : ''}`}
       </button>
       {showDropdown && (
         <div className="genre-filter-dropdown">
-          <div
-            className="genre-filter-option"
-            onMouseDown={() => {
-              onChange('');
-              setShowDropdown(false);
-            }}
-          >
-            All Cinemas
-          </div>
           {cinemaNames.map((name) => (
-            <div
-              key={name}
-              className="genre-filter-option"
-              onMouseDown={() => {
-                onChange(name);
-                setShowDropdown(false);
-              }}
-            >
+            <label key={name} className="genre-filter-option">
+              <input
+                type="checkbox"
+                checked={selectedCinemas.includes(name)}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    onChange([...selectedCinemas, name]);
+                  } else {
+                    onChange(selectedCinemas.filter((c) => c !== name));
+                  }
+                }}
+              />
               {name}
-            </div>
+            </label>
           ))}
+          {selectedCinemas.length > 0 && (
+            <button
+              className="genre-filter-clear"
+              onMouseDown={() => onChange([])}
+            >
+              Clear
+            </button>
+          )}
         </div>
       )}
     </div>

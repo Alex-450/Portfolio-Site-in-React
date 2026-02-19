@@ -6,13 +6,13 @@ import { generateCalendarUrlFromFilm } from '../utils/calendar';
 
 interface FilmCardProps {
   film: FilmWithCinemasLite;
-  dayFilter: string;
+  dayFilter: string[];
 }
 
 function FilmCard({ film, dayFilter }: FilmCardProps) {
   const [expanded, setExpanded] = useState(false);
   const today = useMemo(getToday, []);
-  const showExpanded = expanded || !!dayFilter;
+  const showExpanded = expanded || dayFilter.length > 0;
 
   const hasHiddenDates = useMemo(() => {
     if (showExpanded) return false;

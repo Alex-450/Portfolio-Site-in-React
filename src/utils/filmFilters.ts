@@ -1,8 +1,8 @@
 import { FilmWithCinemasLite, CinemaShowtimesLite, ShowtimeLite } from '../types';
 
 interface FilterOptions {
-  cinemaFilter: string;
-  dayFilter: string;
+  cinemaFilter: string[];
+  dayFilter: string[];
   filmSearch: string;
   filmFilter: string;
   genreFilter: string[];
@@ -16,22 +16,22 @@ function matchesSearch(title: string, search: string): boolean {
 
 function filterShowtimesByDay(
   showtimes: ShowtimeLite[],
-  dayFilter: string,
+  dayFilter: string[],
   today: string
 ): ShowtimeLite[] {
-  if (!dayFilter) return showtimes;
-  const targetDate = dayFilter === 'today' ? today : dayFilter;
-  return showtimes.filter((s) => s.date === targetDate);
+  if (dayFilter.length === 0) return showtimes;
+  const targetDates = dayFilter.map((d) => (d === 'today' ? today : d));
+  return showtimes.filter((s) => targetDates.includes(s.date));
 }
 
 function filterCinemaShowtimes(
   cinemaShowtimes: CinemaShowtimesLite[],
-  cinemaFilter: string,
-  dayFilter: string,
+  cinemaFilter: string[],
+  dayFilter: string[],
   today: string
 ): CinemaShowtimesLite[] {
   return cinemaShowtimes
-    .filter((cs) => !cinemaFilter || cs.cinema === cinemaFilter)
+    .filter((cs) => cinemaFilter.length === 0 || cinemaFilter.includes(cs.cinema))
     .map((cs) => ({
       ...cs,
       showtimes: filterShowtimesByDay(cs.showtimes, dayFilter, today),

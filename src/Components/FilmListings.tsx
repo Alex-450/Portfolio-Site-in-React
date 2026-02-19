@@ -80,8 +80,8 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const q = router.query;
 
   // URL-synced filters
-  const cinemaFilter = str(q.cinema);
-  const dayFilter = str(q.day);
+  const cinemaFilter = str(q.cinema).split(',').filter(Boolean);
+  const dayFilter = str(q.day).split(',').filter(Boolean);
   const filmFilter = str(q.film);
   const genreFilter = str(q.genres).split(',').filter(Boolean);
   const directorFilter = str(q.director);
@@ -129,7 +129,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     cinemaFilter,
     dayFilter,
     filmSearch: '',
-    filmFilter: filmFilter && dayFilter ? filmFilter : '',
+    filmFilter: filmFilter && dayFilter.length > 0 ? filmFilter : '',
     genreFilter,
     directorFilter,
     today,
@@ -138,7 +138,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   // Films filtered by everything except day - used for computing day options
   const filmsForDayOptions = filterFilms(allFilms, {
     cinemaFilter,
-    dayFilter: '',
+    dayFilter: [],
     filmSearch,
     filmFilter,
     genreFilter,
@@ -148,7 +148,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const allDates = new Set<string>();
   filmsForDayOptions.forEach((film) => {
     film.cinemaShowtimes
-      .filter((cs) => !cinemaFilter || cs.cinema === cinemaFilter)
+      .filter((cs) => cinemaFilter.length === 0 || cinemaFilter.includes(cs.cinema))
       .forEach((cs) => {
         cs.showtimes.forEach((s) => {
           if (s.date !== today) allDates.add(s.date);
@@ -157,26 +157,34 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   });
   const hasShowtimesToday = filmsForDayOptions.some((film) =>
     film.cinemaShowtimes
-      .filter((cs) => !cinemaFilter || cs.cinema === cinemaFilter)
+      .filter((cs) => cinemaFilter.length === 0 || cinemaFilter.includes(cs.cinema))
       .some((cs) => cs.showtimes.some((s) => s.date === today))
   );
   const dayOptions = Array.from(allDates)
     .sort()
     .map((date) => ({ value: date, label: formatDate(date) }));
 
-  // Clear day filter if it's no longer valid for the current selection
-  const isDayFilterValid = !dayFilter ||
-    (dayFilter === 'today' && hasShowtimesToday) ||
-    dayOptions.some((d) => d.value === dayFilter);
+  // Clear invalid day filters
+  const validDayValues = new Set(['today', ...dayOptions.map((d) => d.value)]);
+  if (!hasShowtimesToday) validDayValues.delete('today');
+  const invalidDays = dayFilter.filter((d) => !validDayValues.has(d));
 
   useEffect(() => {
-    if (dayFilter && !isDayFilterValid) {
-      setFilter('day', undefined);
+    if (invalidDays.length > 0) {
+      const validDays = dayFilter.filter((d) => validDayValues.has(d));
+      setFilter('day', validDays.length > 0 ? validDays : undefined);
     }
-  }, [isDayFilterValid, dayFilter]);
+  }, [invalidDays.length]);
 
   // Group films by genre for carousel view
   const filmsByGenre = useMemo(() => groupFilmsByGenre(filteredFilms), [filteredFilms]);
+
+  // Helper to get day label
+  const getDayLabel = (day: string) => {
+    if (day === 'today') return 'Today';
+    const option = dayOptions.find((d) => d.value === day);
+    return option ? option.label : day;
+  };
 
   return (
     <>
@@ -217,12 +225,12 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
 
         <div className="film-filters">
           <CinemaFilter
-            value={cinemaFilter}
+            selectedCinemas={cinemaFilter}
             onChange={(v) => setFilter('cinema', v)}
             cinemaNames={cinemaNames}
           />
           <DayFilter
-            value={dayFilter}
+            selectedDays={dayFilter}
             onChange={(v) => setFilter('day', v)}
             dayOptions={dayOptions}
             showToday={hasShowtimesToday}
@@ -262,24 +270,26 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
           />
         </div>
 
-        {(cinemaFilter || dayFilter || genreFilter.length > 0 || filmFilter || directorFilter) && (
+        {(cinemaFilter.length > 0 || dayFilter.length > 0 || genreFilter.length > 0 || filmFilter || directorFilter) && (
           <div className="active-filters">
-            {cinemaFilter && (
+            {cinemaFilter.map((cinema) => (
               <button
+                key={cinema}
                 className="filter-chip"
-                onClick={() => setFilter('cinema', undefined)}
+                onClick={() => setFilter('cinema', cinemaFilter.filter((c) => c !== cinema))}
               >
-                {cinemaFilter} <span className="chip-remove">×</span>
+                {cinema} <span className="chip-remove">×</span>
               </button>
-            )}
-            {dayFilter && (
+            ))}
+            {dayFilter.map((day) => (
               <button
+                key={day}
                 className="filter-chip"
-                onClick={() => setFilter('day', undefined)}
+                onClick={() => setFilter('day', dayFilter.filter((d) => d !== day))}
               >
-                {dayFilter === 'today' ? 'Today' : formatDate(dayFilter)} <span className="chip-remove">×</span>
+                {getDayLabel(day)} <span className="chip-remove">×</span>
               </button>
-            )}
+            ))}
             {genreFilter.map((genre) => (
               <button
                 key={genre}
