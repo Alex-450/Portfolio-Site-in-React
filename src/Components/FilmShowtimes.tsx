@@ -16,9 +16,9 @@ interface FilmShowtimesProps {
 function FilmShowtimes({ cinemaShowtimes, filmTitle, filmLength }: FilmShowtimesProps) {
   const router = useRouter();
   const today = useMemo(getToday, []);
-  const dayFilter = str(router.query.day);
+  const dayFilter = [str(router.query.day)];
 
-  const setDayFilter = (value: string) => {
+  const setDayFilter = (value: string[]) => {
     const query = { ...router.query };
     if (!value) {
       delete query.day;

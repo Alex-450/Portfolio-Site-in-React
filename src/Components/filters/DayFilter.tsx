@@ -16,7 +16,7 @@ const DayFilter = ({ selectedDays, onChange, dayOptions, showToday = true }: Day
   const [showDropdown, setShowDropdown] = useState(false);
 
   const getDisplayLabel = () => {
-    if (selectedDays.length === 0) return 'All Days';
+    if (selectedDays === undefined || selectedDays.length === 0) return 'All Days';
     return `${selectedDays.length} Day${selectedDays.length > 1 ? 's' : ''}`;
   };
 
