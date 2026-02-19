@@ -19,7 +19,7 @@
   },
   {
     "type": "tech",
-    "title": "comparison with NULL",
+    "title": "Comparison with NULL",
     "topic": "PostgreSQL",
     "dateAdded": "03/02/2026",
     "link": "postgresql-null-comparison",
