@@ -192,12 +192,12 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
         <title>Film Listings | a-450</title>
         <meta
           name="description"
-          content="Amsterdam cinema showtimes from LAB111, Studio K, Filmhallen, Filmkoepel & The Movies"
+          content="Amsterdam cinema showtimes from LAB111, Studio K, The Movies & more"
         />
         <meta property="og:title" content="Film Listings | a-450" />
         <meta
           property="og:description"
-          content="Amsterdam cinema showtimes from LAB111, Studio K, Filmhallen, Filmkoepel & The Movies"
+          content="Amsterdam cinema showtimes from LAB111, Studio K, The Movies & more"
         />
         <meta property="og:type" content="website" />
       </Head>
