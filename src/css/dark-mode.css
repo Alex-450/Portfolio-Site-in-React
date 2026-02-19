@@ -145,6 +145,26 @@
     accent-color: var(--dark-text-primary);
   }
 
+  .filter-chip {
+    background-color: var(--dark-bg-secondary);
+    color: var(--dark-text-primary);
+    border-color: var(--hover-bg);
+  }
+
+  .filter-chip:hover {
+    background-color: var(--hover-bg);
+    color: var(--dark-bg-primary);
+  }
+
+  .filter-chip.clear-all {
+    background-color: transparent;
+  }
+
+  .filter-chip.clear-all:hover {
+    background-color: var(--hover-bg);
+    color: var(--dark-bg-primary);
+  }
+
   .loading-text,
   .no-results {
     color: var(--dark-text-muted);

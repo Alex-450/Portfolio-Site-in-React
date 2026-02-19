@@ -262,6 +262,68 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
           />
         </div>
 
+        {(cinemaFilter || dayFilter || genreFilter.length > 0 || filmFilter || directorFilter) && (
+          <div className="active-filters">
+            {cinemaFilter && (
+              <button
+                className="filter-chip"
+                onClick={() => setFilter('cinema', undefined)}
+              >
+                {cinemaFilter} <span className="chip-remove">×</span>
+              </button>
+            )}
+            {dayFilter && (
+              <button
+                className="filter-chip"
+                onClick={() => setFilter('day', undefined)}
+              >
+                {dayFilter === 'today' ? 'Today' : formatDate(dayFilter)} <span className="chip-remove">×</span>
+              </button>
+            )}
+            {genreFilter.map((genre) => (
+              <button
+                key={genre}
+                className="filter-chip"
+                onClick={() => setFilter('genres', genreFilter.filter((g) => g !== genre))}
+              >
+                {genre} <span className="chip-remove">×</span>
+              </button>
+            ))}
+            {filmFilter && (
+              <button
+                className="filter-chip"
+                onClick={() => {
+                  setFilmSearch('');
+                  setFilter('film', undefined);
+                }}
+              >
+                Film: {filmFilter} <span className="chip-remove">×</span>
+              </button>
+            )}
+            {directorFilter && (
+              <button
+                className="filter-chip"
+                onClick={() => {
+                  setDirectorSearch('');
+                  setFilter('director', undefined);
+                }}
+              >
+                Director: {directorFilter} <span className="chip-remove">×</span>
+              </button>
+            )}
+            <button
+              className="filter-chip clear-all"
+              onClick={() => {
+                setFilmSearch('');
+                setDirectorSearch('');
+                router.push({ pathname: router.pathname, query: viewMode === 'carousel' ? { view: 'carousel' } : {} }, undefined, { shallow: true });
+              }}
+            >
+              Clear all
+            </button>
+          </div>
+        )}
+
         {allFilms.length === 0 && (
           <p className="no-results">No showtimes available</p>
         )}
