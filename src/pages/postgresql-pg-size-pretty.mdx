@@ -29,3 +29,7 @@ pg_size_pretty
 361 GB
 (1 row)
 ```
+
+export default function Layout({ children }) {
+  return <ArticleLayout metadata={metadata}>{children}</ArticleLayout>;
+}
