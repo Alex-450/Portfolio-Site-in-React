@@ -76,7 +76,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     cinemaFilter,
     dayFilter,
     filmSearch,
-    filmFilter,
+    filmFilter: filmSearch,
     genreFilter,
     directorFilter,
     today,
@@ -209,7 +209,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
           <p className="no-results">No showtimes available</p>
         )}
 
-        {filteredFilms.length === 0 && allFilms.length > 0 && (
+        {filteredFilms.length === 0 && allFilms.length > 0 && !filmSearch && (
           <p className="no-results">No showtimes found for selected filters</p>
         )}
 
