@@ -52,7 +52,7 @@ jobs:
             films-json-
 
       - name: Fetch showtimes
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || steps.cache-films.outputs.cache-hit != 'true'
+        if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || steps.cache-films.outputs.cache-hit != 'true' }}
         run: npm run fetch-showtimes
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
