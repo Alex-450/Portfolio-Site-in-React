@@ -1,7 +1,7 @@
 [
   {
     "type": "tech",
-    "title": "PostgreSQL pg_size_pretty()",
+    "title": "pg_size_pretty()",
     "topic": "PostgreSQL",
     "dateAdded": "03/02/2026",
     "link": "postgresql-pg-size-pretty",
@@ -19,7 +19,7 @@
   },
   {
     "type": "tech",
-    "title": "PostgreSQL comparison with NULL",
+    "title": "comparison with NULL",
     "topic": "PostgreSQL",
     "dateAdded": "03/02/2026",
     "link": "postgresql-null-comparison",

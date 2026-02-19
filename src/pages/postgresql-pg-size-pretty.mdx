@@ -2,7 +2,7 @@ import ArticleLayout from '../Components/ArticleLayout';
 import { findTechPost } from '../utils/blog';
 
 export const blog = findTechPost(
-  (b) => b.title.toLowerCase() === 'postgresql pg_size_pretty()'
+  (b) => b.title.toLowerCase() === 'pg_size_pretty()'
 );
 export const metadata = {
   ...blog,
