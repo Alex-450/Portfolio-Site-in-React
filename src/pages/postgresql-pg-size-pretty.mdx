@@ -1,0 +1,37 @@
+import ArticleLayout from '../Components/ArticleLayout';
+import { findTechPost } from '../utils/blog';
+
+export const blog = findTechPost(
+  (b) => b.title.toLowerCase() === 'pg_size_pretty()'
+);
+export const metadata = {
+  ...blog,
+  keywords: 'PostgreSQL, pg_size_pretty',
+};
+
+When I was looking into moving large numbers of files around recently, I found myself checking the content_length
+and constantly running the same calculation to get size in GB:
+
+```ruby
+content_length = 387229741228 # bytes
+bytes_per_gb = 1073741824
+content_length / bytes_per_gb
+=> 360
+```
+
+Then I was told about the in-built PostgreSQL function `pg_size_pretty()`, which can be used like so:
+
+```sql
+SELECT pg_size_pretty(387229741228);
+
+ pg_size_pretty 
+----------------
+ 361 GB
+(1 row)
+```
+
+You can find more information in the [official PostgreSQL documentation](https://www.postgresql.org/docs/current/functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT)
+
+export default function Layout({ children }) {
+  return <ArticleLayout metadata={metadata}>{children}</ArticleLayout>;
+}

@@ -1,5 +1,13 @@
 [
   {
+    "type": "tech",
+    "title": "pg_size_pretty()",
+    "topic": "PostgreSQL",
+    "dateAdded": "03/02/2026",
+    "link": "postgresql-pg-size-pretty",
+    "description": "postgresql pg_size_pretty function"
+  },
+  {
     "type": "film",
     "title": "The Fragility of Everything",
     "topic": "Y Tu Mamá Tambien",
@@ -11,7 +19,7 @@
   },
   {
     "type": "tech",
-    "title": "PostgreSQL comparison with NULL",
+    "title": "Comparison with NULL",
     "topic": "PostgreSQL",
     "dateAdded": "03/02/2026",
     "link": "postgresql-null-comparison",
