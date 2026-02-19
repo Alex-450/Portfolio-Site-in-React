@@ -818,6 +818,7 @@ code {
 .cinema-showtimes-detail {
   flex-direction: column;
   gap: 1.5rem;
+  overflow: visible;
 }
 
 .back-link {

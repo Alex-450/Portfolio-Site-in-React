@@ -1,7 +1,11 @@
 import { useMemo } from 'react';
+import { useRouter } from 'next/router';
 import { CinemaShowtimes } from '../types';
 import { formatDate, getToday, groupShowtimesByDate } from '../utils/date';
 import { generateCalendarUrlFromFilm } from '../utils/calendar';
+import DayFilter from './filters/DayFilter';
+
+const str = (v: unknown) => (typeof v === 'string' ? v : '');
 
 interface FilmShowtimesProps {
   cinemaShowtimes: CinemaShowtimes[];
@@ -10,14 +14,54 @@ interface FilmShowtimesProps {
 }
 
 function FilmShowtimes({ cinemaShowtimes, filmTitle, filmLength }: FilmShowtimesProps) {
+  const router = useRouter();
   const today = useMemo(getToday, []);
+  const dayFilter = str(router.query.day);
+
+  const setDayFilter = (value: string) => {
+    const query = { ...router.query };
+    if (!value) {
+      delete query.day;
+    } else {
+      query.day = value;
+    }
+    router.push({ pathname: router.pathname, query }, undefined, { shallow: true });
+  };
+
+  // Check if there are showtimes today
+  const hasShowtimesToday = useMemo(() => {
+    return cinemaShowtimes.some(cs =>
+      cs.showtimes.some(s => s.date === today)
+    );
+  }, [cinemaShowtimes, today]);
+
+  // Compute day options from all showtimes (excluding today, which is shown separately)
+  const dayOptions = useMemo(() => {
+    const dates = new Set<string>();
+    cinemaShowtimes.forEach(cs => {
+      cs.showtimes.forEach(s => {
+        if (s.date >= today && s.date !== today) dates.add(s.date);
+      });
+    });
+    return Array.from(dates)
+      .sort()
+      .map(date => ({ value: date, label: formatDate(date) }));
+  }, [cinemaShowtimes, today]);
 
   return (
     <div className="cinema-showtimes cinema-showtimes-detail">
+      <div className="film-detail-day-filter">
+        <DayFilter value={dayFilter} onChange={setDayFilter} dayOptions={dayOptions} showToday={hasShowtimesToday} />
+      </div>
       {cinemaShowtimes.map((cs) => {
         const grouped = groupShowtimesByDate(cs.showtimes);
-        // Filter out past dates
-        const filtered = grouped.filter(([date]) => date >= today);
+        // Filter out past dates and apply day filter
+        const filtered = grouped.filter(([date]) => {
+          if (date < today) return false;
+          if (dayFilter === 'today') return date === today;
+          if (dayFilter) return date === dayFilter;
+          return true;
+        });
 
         if (filtered.length === 0) return null;
 

@@ -9,9 +9,10 @@ interface DayFilterProps {
   value: string;
   onChange: (value: string) => void;
   dayOptions: DayOption[];
+  showToday?: boolean;
 }
 
-const DayFilter = ({ value, onChange, dayOptions }: DayFilterProps) => {
+const DayFilter = ({ value, onChange, dayOptions, showToday = true }: DayFilterProps) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const getDisplayLabel = () => {
@@ -41,15 +42,17 @@ const DayFilter = ({ value, onChange, dayOptions }: DayFilterProps) => {
           >
             All Days
           </div>
-          <div
-            className="genre-filter-option"
-            onMouseDown={() => {
-              onChange('today');
-              setShowDropdown(false);
-            }}
-          >
-            Today
-          </div>
+          {showToday && (
+            <div
+              className="genre-filter-option"
+              onMouseDown={() => {
+                onChange('today');
+                setShowDropdown(false);
+              }}
+            >
+              Today
+            </div>
+          )}
           {dayOptions.map((day) => (
             <div
               key={day.value}
