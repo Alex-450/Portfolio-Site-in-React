@@ -86,14 +86,24 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     cinemaFilter,
     dayFilter,
     filmSearch: '',
-    filmFilter: '',
+    filmFilter: filmFilter && dayFilter ? filmFilter : '',
     genreFilter,
     directorFilter,
     today,
   });
 
+  // Films filtered by everything except day - used for computing day options
+  const filmsForDayOptions = filterFilms(allFilms, {
+    cinemaFilter,
+    dayFilter: '',
+    filmSearch,
+    filmFilter,
+    genreFilter,
+    directorFilter,
+    today,
+  });
   const allDates = new Set<string>();
-  allFilms.forEach((film) => {
+  filmsForDayOptions.forEach((film) => {
     film.cinemaShowtimes
       .filter((cs) => !cinemaFilter || cs.cinema === cinemaFilter)
       .forEach((cs) => {
@@ -102,9 +112,25 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
         });
       });
   });
+  const hasShowtimesToday = filmsForDayOptions.some((film) =>
+    film.cinemaShowtimes
+      .filter((cs) => !cinemaFilter || cs.cinema === cinemaFilter)
+      .some((cs) => cs.showtimes.some((s) => s.date === today))
+  );
   const dayOptions = Array.from(allDates)
     .sort()
     .map((date) => ({ value: date, label: formatDate(date) }));
+
+  // Clear day filter if it's no longer valid for the current selection
+  const isDayFilterValid = !dayFilter ||
+    (dayFilter === 'today' && hasShowtimesToday) ||
+    dayOptions.some((d) => d.value === dayFilter);
+
+  useEffect(() => {
+    if (dayFilter && !isDayFilterValid) {
+      setFilter('day', undefined);
+    }
+  }, [isDayFilterValid, dayFilter]);
 
   return (
     <>
@@ -144,6 +170,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
             value={dayFilter}
             onChange={(v) => setFilter('day', v)}
             dayOptions={dayOptions}
+            showToday={hasShowtimesToday}
           />
           <GenreFilter
             genres={allGenres}
