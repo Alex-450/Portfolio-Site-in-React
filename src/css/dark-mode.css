@@ -242,6 +242,52 @@
     color: var(--dark-bg-primary);
   }
 
+  /* Watchlist Button dark mode */
+  .watchlist-btn {
+    color: var(--dark-text-primary);
+    border-color: var(--hover-bg);
+  }
+
+  .watchlist-btn:hover {
+    background-color: var(--hover-bg);
+    color: var(--dark-bg-primary);
+  }
+
+  .watchlist-btn-active {
+    background-color: var(--hover-bg);
+    color: var(--dark-bg-primary);
+  }
+
+  .watchlist-btn-active:hover {
+    background-color: var(--dark-text-muted);
+  }
+
+  .watchlist-icon {
+    border-color: var(--dark-border);
+    color: var(--dark-text-muted);
+  }
+
+  .watchlist-icon::after {
+    background-color: var(--dark-text-primary);
+    color: var(--dark-bg-primary);
+  }
+
+  .watchlist-icon:hover {
+    border-color: var(--dark-text-primary);
+    color: var(--dark-text-primary);
+  }
+
+  .watchlist-icon-active {
+    background-color: var(--hover-bg);
+    border-color: var(--hover-bg);
+    color: var(--dark-bg-primary);
+  }
+
+  .watchlist-icon-active:hover {
+    background-color: var(--dark-text-muted);
+    border-color: var(--dark-text-muted);
+  }
+
   .film-search-dropdown {
     background-color: var(--dark-bg-primary);
     border-color: var(--hover-bg);

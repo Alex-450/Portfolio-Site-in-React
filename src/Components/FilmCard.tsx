@@ -7,9 +7,11 @@ import { generateCalendarUrlFromFilm } from '../utils/calendar';
 interface FilmCardProps {
   film: FilmWithCinemasLite;
   dayFilter: string[];
+  isInWatchlist?: boolean;
+  onToggleWatchlist?: () => void;
 }
 
-function FilmCard({ film, dayFilter }: FilmCardProps) {
+function FilmCard({ film, dayFilter, isInWatchlist, onToggleWatchlist }: FilmCardProps) {
   const [expanded, setExpanded] = useState(false);
   const today = useMemo(getToday, []);
   const showExpanded = expanded || dayFilter.length > 0;
@@ -32,8 +34,19 @@ function FilmCard({ film, dayFilter }: FilmCardProps) {
         )}
       </Link>
       <div className="film-info">
-        <div className="film-title">
-          <Link href={`/films/${film.slug}/`}>{film.title}</Link>
+        <div className="film-title-row">
+          <div className="film-title">
+            <Link href={`/films/${film.slug}/`}>{film.title}</Link>
+          </div>
+          {onToggleWatchlist && (
+            <button
+              className={`watchlist-icon${isInWatchlist ? ' watchlist-icon-active' : ''}`}
+              onClick={onToggleWatchlist}
+              aria-label={isInWatchlist ? 'Remove from watchlist' : 'Add to watchlist'}
+            >
+              {isInWatchlist ? '−' : '+'}
+            </button>
+          )}
         </div>
         {film.director && <div className="film-director">{film.director}</div>}
         {film.length && <div className="film-length">{film.length}</div>}

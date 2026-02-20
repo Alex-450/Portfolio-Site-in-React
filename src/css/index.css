@@ -557,10 +557,75 @@ code {
   min-width: 0;
 }
 
+.film-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
 .film-title {
   font-size: 1rem;
   font-weight: bold;
-  margin-bottom: 0.25rem;
+}
+
+.watchlist-icon {
+  position: relative;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: bold;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--border-secondary);
+  color: var(--text-muted);
+  cursor: pointer;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.watchlist-icon::after {
+  content: 'Add to watchlist';
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  margin-top: 4px;
+  padding: 4px 8px;
+  background-color: var(--color-black);
+  color: var(--color-white);
+  font-size: 0.75rem;
+  font-weight: normal;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+  z-index: 10;
+}
+
+.watchlist-icon:hover::after {
+  opacity: 1;
+}
+
+.watchlist-icon-active::after {
+  content: 'Remove from watchlist';
+}
+
+.watchlist-icon:hover {
+  border-color: var(--border-primary);
+  color: var(--text-primary);
+}
+
+.watchlist-icon-active {
+  background-color: var(--color-black);
+  border-color: var(--color-black);
+  color: var(--color-white);
+}
+
+.watchlist-icon-active:hover {
+  background-color: var(--hover-bg);
+  border-color: var(--hover-bg);
 }
 
 .film-title a {
@@ -688,6 +753,39 @@ code {
 .expand-btn:hover {
   background-color: var(--hover-bg);
   color: var(--color-white);
+}
+
+/* Watchlist Button */
+.watchlist-btn {
+  font-family: inherit;
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  background-color: transparent;
+  border: 2px solid var(--border-primary);
+  color: var(--text-primary);
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.watchlist-btn:hover {
+  background-color: var(--hover-bg);
+  color: var(--color-white);
+}
+
+.watchlist-btn-active {
+  background-color: var(--color-black);
+  color: var(--color-white);
+}
+
+.watchlist-btn-active:hover {
+  background-color: var(--hover-bg);
+}
+
+.watchlist-btn-large {
+  font-size: 1rem;
+  padding: 6px 16px;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 /* Poster Carousel */

@@ -14,8 +14,10 @@ import DirectorFilter from './filters/DirectorFilter';
 import GenreFilter from './filters/GenreFilter';
 import FilmSearchFilter from './filters/FilmSearchFilter';
 import ReleaseFilter, { ReleaseFilterValue } from './filters/ReleaseFilter';
+import WatchlistFilter from './filters/WatchlistFilter';
 import { getToday, formatDate } from '../utils/date';
 import { filterFilms } from '../utils/filmFilters';
+import { useWatchlist } from '../hooks/useWatchlist';
 
 function filmsIndexToList(filmsIndex: FilmsIndexLite): FilmWithCinemasLite[] {
   return Object.values(filmsIndex).sort((a, b) => a.title.localeCompare(b.title));
@@ -79,6 +81,7 @@ interface FilmListingsProps {
 const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const router = useRouter();
   const q = router.query;
+  const { watchlist, isInWatchlist, toggleWatchlist } = useWatchlist();
 
   // URL-synced filters
   const cinemaFilter = str(q.cinema).split(',').filter(Boolean);
@@ -88,6 +91,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const directorFilter = str(q.director);
   const releaseFilter = (str(q.release) || null) as ReleaseFilterValue;
   const viewMode = (str(q.view) === 'carousel' ? 'carousel' : 'list') as 'list' | 'carousel';
+  const watchlistFilter = str(q.watchlist) === 'true';
 
   // Local search input state
   const [filmSearch, setFilmSearch] = useState(filmFilter);
@@ -129,6 +133,11 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     upcomingRelease: releaseFilter === 'upcoming',
     recentlyReleased: releaseFilter === 'recently-released',
   });
+
+  // Apply watchlist filter
+  if (watchlistFilter) {
+    filteredFilms = filteredFilms.filter((film) => watchlist.includes(film.slug));
+  }
 
   // Sort by release date when release filters are active
   if (releaseFilter === 'recently-released') {
@@ -296,9 +305,14 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
             value={releaseFilter}
             onChange={(value) => setFilter('release', value ?? undefined)}
           />
+          <WatchlistFilter
+            enabled={watchlistFilter}
+            onChange={(enabled) => setFilter('watchlist', enabled ? 'true' : undefined)}
+            watchlistCount={watchlist.length}
+          />
         </div>
 
-        {(cinemaFilter.length > 0 || dayFilter.length > 0 || genreFilter.length > 0 || filmFilter || directorFilter) && (
+        {(cinemaFilter.length > 0 || dayFilter.length > 0 || genreFilter.length > 0 || filmFilter || directorFilter || watchlistFilter) && (
           <div className="active-filters">
             {cinemaFilter.map((cinema) => (
               <button
@@ -349,6 +363,14 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
                 Director: {directorFilter} <span className="chip-remove">×</span>
               </button>
             )}
+            {watchlistFilter && (
+              <button
+                className="filter-chip"
+                onClick={() => setFilter('watchlist', undefined)}
+              >
+                Watchlist <span className="chip-remove">×</span>
+              </button>
+            )}
             <button
               className="filter-chip clear-all"
               onClick={() => {
@@ -372,7 +394,13 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
 
         {viewMode === 'list' ? (
           filteredFilms.map((film) => (
-            <FilmCard key={film.title} film={film} dayFilter={dayFilter} />
+            <FilmCard
+              key={film.title}
+              film={film}
+              dayFilter={dayFilter}
+              isInWatchlist={isInWatchlist(film.slug)}
+              onToggleWatchlist={() => toggleWatchlist(film.slug)}
+            />
           ))
         ) : (
           <div className="genre-carousel-section">

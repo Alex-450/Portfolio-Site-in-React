@@ -7,6 +7,8 @@ import { Container } from 'react-bootstrap';
 import { FilmDetail, FilmsIndex } from '../../types';
 import YouTubeEmbed from '../../Components/YouTubeEmbed';
 import FilmShowtimes from '../../Components/FilmShowtimes';
+import WatchlistButton from '../../Components/WatchlistButton';
+import { useWatchlist } from '../../hooks/useWatchlist';
 
 interface Props {
   film: FilmDetail;
@@ -14,6 +16,7 @@ interface Props {
 
 export default function FilmDetailPage({ film }: Props) {
   const year = film.tmdb?.releaseDate?.split('-')[0];
+  const { isInWatchlist, toggleWatchlist } = useWatchlist();
 
   return (
     <>
@@ -61,6 +64,12 @@ export default function FilmDetailPage({ film }: Props) {
                 <p>{film.tmdb.overview}</p>
               </div>
             )}
+
+            <WatchlistButton
+              isInWatchlist={isInWatchlist(film.slug)}
+              onToggle={() => toggleWatchlist(film.slug)}
+              size="large"
+            />
           </div>
         </div>
 
