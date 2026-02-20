@@ -5,7 +5,11 @@ import { formatDate, getToday, groupShowtimesByDate } from '../utils/date';
 import { generateCalendarUrlFromFilm } from '../utils/calendar';
 import DayFilter from './filters/DayFilter';
 
-const str = (v: unknown) => (typeof v === 'string' ? v : '');
+const toArray = (v: unknown): string[] => {
+  if (Array.isArray(v)) return v.filter((x): x is string => typeof x === 'string');
+  if (typeof v === 'string') return [v];
+  return [];
+};
 
 interface FilmShowtimesProps {
   cinemaShowtimes: CinemaShowtimes[];
@@ -16,11 +20,11 @@ interface FilmShowtimesProps {
 function FilmShowtimes({ cinemaShowtimes, filmTitle, filmLength }: FilmShowtimesProps) {
   const router = useRouter();
   const today = useMemo(getToday, []);
-  const dayFilter = [str(router.query.day)];
+  const dayFilter = toArray(router.query.day);
 
   const setDayFilter = (value: string[]) => {
     const query = { ...router.query };
-    if (!value) {
+    if (value.length === 0) {
       delete query.day;
     } else {
       query.day = value;
@@ -51,16 +55,16 @@ function FilmShowtimes({ cinemaShowtimes, filmTitle, filmLength }: FilmShowtimes
   return (
     <div className="cinema-showtimes cinema-showtimes-detail">
       <div className="film-detail-day-filter">
-        <DayFilter value={dayFilter} onChange={setDayFilter} dayOptions={dayOptions} showToday={hasShowtimesToday} />
+        <DayFilter selectedDays={dayFilter} onChange={setDayFilter} dayOptions={dayOptions} showToday={hasShowtimesToday} />
       </div>
       {cinemaShowtimes.map((cs) => {
         const grouped = groupShowtimesByDate(cs.showtimes);
         // Filter out past dates and apply day filter
         const filtered = grouped.filter(([date]) => {
           if (date < today) return false;
-          if (dayFilter === 'today') return date === today;
-          if (dayFilter) return date === dayFilter;
-          return true;
+          if (dayFilter.length === 0) return true;
+          if (dayFilter.includes('today') && date === today) return true;
+          return dayFilter.includes(date);
         });
 
         if (filtered.length === 0) return null;
