@@ -130,7 +130,8 @@
     "director": "Ryan Coogler",
     "link": "/black-panther-radical",
     "dateAdded": "10/03/2020",
-    "description": "Can a film made by Marvel (and therefore Disney) really be a radical moment in the history of film and popular culture?..."
+    "description": "Can a film made by Marvel (and therefore Disney) really be a radical moment in the history of film and popular culture?...",
+    "archived": true
   },
   {
     "type": "film",
@@ -140,7 +141,8 @@
     "director": "Wes Anderson",
     "link": "/grand-budapest-hotel-refugees",
     "dateAdded": "09/02/2020",
-    "description": "How Wes Anderson uses a fictional setting to tell a refugee story that is distinctly European"
+    "description": "How Wes Anderson uses a fictional setting to tell a refugee story that is distinctly European",
+    "archived": true
   },
   {
     "type": "film",
@@ -150,6 +152,7 @@
     "director": "Rainer Werner Fassbinder",
     "link": "/ali-angst-essen-seele-auf",
     "dateAdded": "17/05/2017",
-    "description": "How Rainer Werner Fassbinder explored prejudice and pain through Ali: Fear Eats the Soul"
+    "description": "How Rainer Werner Fassbinder explored prejudice and pain through Ali: Fear Eats the Soul",
+    "archived": true
   }
 ]

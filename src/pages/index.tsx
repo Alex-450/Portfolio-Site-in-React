@@ -7,13 +7,15 @@ type CategoryFilter = 'film' | 'creative-writing' | 'tech';
 
 const Page = () => {
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>('film');
+  const [showArchive, setShowArchive] = useState(false);
   const posts: BlogPost[] = blogPostArchive as BlogPost[];
 
-  const hasFilmPosts = posts.some((p) => p.type === 'film');
-  const hasCreativeWritingPosts = posts.some((p) => p.type === 'creative-writing');
-  const hasTechPosts = posts.some((p) => p.type === 'tech');
+  const hasFilmPosts = posts.some((p) => p.type === 'film' && !p.archived);
+  const hasCreativeWritingPosts = posts.some((p) => p.type === 'creative-writing' && !p.archived);
+  const hasTechPosts = posts.some((p) => p.type === 'tech' && !p.archived);
 
-  const filteredPosts = posts.filter((post) => post.type === activeCategory);
+  const filteredPosts = posts.filter((post) => post.type === activeCategory && !post.archived);
+  const archivedPosts = posts.filter((post) => post.type === activeCategory && post.archived);
 
   const getSubtitle = (blog: BlogPost) => {
     if (blog.type === 'film') return (blog as FilmBlogPost).topic;
@@ -69,6 +71,29 @@ const Page = () => {
           </Row>
         </a>
       ))}
+      {archivedPosts.length > 0 && (
+        <>
+          <button
+            className="archive-toggle"
+            onClick={() => setShowArchive(!showArchive)}
+          >
+            {showArchive ? 'Hide archive' : 'Show archive'}
+          </button>
+          {showArchive && archivedPosts.map((blog, index) => (
+            <a href={blog.link} className="blog-link" key={blog.title}>
+              <Row
+                className="blog-row slide-in"
+                style={{ animationDelay: `${index / 10 + 0.1}s` }}
+              >
+                <Col md={2}>{blog.dateAdded}</Col>
+                <Col>
+                  {getSubtitle(blog)} | {blog.title} ›
+                </Col>
+              </Row>
+            </a>
+          ))}
+        </>
+      )}
     </Container>
   );
 };

@@ -6,6 +6,7 @@ interface BaseBlogPost {
   link: string;
   dateAdded: string;
   description: string;
+  archived?: boolean;
 }
 
 export interface FilmBlogPost extends BaseBlogPost {

@@ -218,6 +218,19 @@ button.footer-link {
   margin: 15px;
 }
 
+.archive-toggle {
+  border: none;
+  background: none;
+  color: var(--text-secondary);
+  padding: 10px 0;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.archive-toggle:hover {
+  color: var(--text-primary);
+}
+
 @keyframes slideInLeft {
   from {
     transform: translateX(-100%);
