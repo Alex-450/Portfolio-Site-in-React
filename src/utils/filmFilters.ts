@@ -8,6 +8,9 @@ interface FilterOptions {
   genreFilter: string[];
   directorFilter: string;
   today: string;
+  recentlyAdded?: boolean;
+  upcomingRelease?: boolean;
+  recentlyReleased?: boolean;
 }
 
 function matchesSearch(title: string, search: string): boolean {
@@ -39,13 +42,38 @@ function filterCinemaShowtimes(
     .filter((cs) => cs.showtimes.length > 0);
 }
 
+function isRecentlyAdded(dateAdded: string | null | undefined, today: string): boolean {
+  if (!dateAdded) return false;
+  const addedDate = new Date(dateAdded);
+  const todayDate = new Date(today);
+  const diffDays = Math.floor((todayDate.getTime() - addedDate.getTime()) / (1000 * 60 * 60 * 24));
+  return diffDays <= 7;
+}
+
+function isUpcomingRelease(releaseDate: string | null | undefined, today: string): boolean {
+  if (!releaseDate) return false;
+  return releaseDate > today;
+}
+
+function isRecentlyReleased(releaseDate: string | null | undefined, today: string): boolean {
+  if (!releaseDate) return false;
+  if (releaseDate > today) return false;
+  const release = new Date(releaseDate);
+  const todayDate = new Date(today);
+  const diffDays = Math.floor((todayDate.getTime() - release.getTime()) / (1000 * 60 * 60 * 24));
+  return diffDays <= 90; // Last 3 months
+}
+
 export function filterFilms(
   films: FilmWithCinemasLite[],
   options: FilterOptions
 ): FilmWithCinemasLite[] {
-  const { cinemaFilter, dayFilter, filmSearch, filmFilter, genreFilter, directorFilter, today } = options;
+  const { cinemaFilter, dayFilter, filmSearch, filmFilter, genreFilter, directorFilter, today, recentlyAdded, upcomingRelease, recentlyReleased } = options;
 
   return films
+    .filter((film) => !recentlyAdded || isRecentlyAdded(film.dateAdded, today))
+    .filter((film) => !upcomingRelease || isUpcomingRelease(film.releaseDate, today))
+    .filter((film) => !recentlyReleased || isRecentlyReleased(film.releaseDate, today))
     .filter((film) => !filmFilter || film.title === filmFilter)
     .filter((film) => matchesSearch(film.title, filmSearch))
     .filter((film) =>

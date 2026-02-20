@@ -91,6 +91,7 @@ export interface FilmWithCinemas {
   posterUrl: string;
   genres?: string[];
   cinemaShowtimes: CinemaShowtimes[];
+  dateAdded?: string;
 }
 
 // TMDB data for film detail pages
@@ -98,6 +99,7 @@ export interface TmdbData {
   id: number;
   overview: string | null;
   releaseDate: string | null;
+  releaseDateNl: string | null;
   runtime: number | null;
   genres: string[];
   youtubeTrailerId: string | null;
@@ -112,6 +114,7 @@ export interface FilmDetail {
   posterUrl: string;
   tmdb: TmdbData | null;
   cinemaShowtimes: CinemaShowtimes[];
+  dateAdded?: string;
 }
 
 // Films index (slug -> FilmDetail)
@@ -141,6 +144,8 @@ export interface FilmWithCinemasLite {
   posterUrl: string;
   genres: string[];
   cinemaShowtimes: CinemaShowtimesLite[];
+  dateAdded?: string | null;
+  releaseDate?: string | null;
 }
 
 export interface FilmsIndexLite {

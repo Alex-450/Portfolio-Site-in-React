@@ -13,6 +13,7 @@ import DayFilter from './filters/DayFilter';
 import DirectorFilter from './filters/DirectorFilter';
 import GenreFilter from './filters/GenreFilter';
 import FilmSearchFilter from './filters/FilmSearchFilter';
+import ReleaseFilter, { ReleaseFilterValue } from './filters/ReleaseFilter';
 import { getToday, formatDate } from '../utils/date';
 import { filterFilms } from '../utils/filmFilters';
 
@@ -85,6 +86,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const filmFilter = str(q.film);
   const genreFilter = str(q.genres).split(',').filter(Boolean);
   const directorFilter = str(q.director);
+  const releaseFilter = (str(q.release) || null) as ReleaseFilterValue;
   const viewMode = (str(q.view) === 'carousel' ? 'carousel' : 'list') as 'list' | 'carousel';
 
   // Local search input state
@@ -115,7 +117,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
       .map((d) => [d.toLowerCase(), d])
   ).values()].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
-  const filteredFilms = filterFilms(allFilms, {
+  let filteredFilms = filterFilms(allFilms, {
     cinemaFilter,
     dayFilter,
     filmSearch,
@@ -123,7 +125,23 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     genreFilter,
     directorFilter,
     today,
+    recentlyAdded: releaseFilter === 'recently-added',
+    upcomingRelease: releaseFilter === 'upcoming',
+    recentlyReleased: releaseFilter === 'recently-released',
   });
+
+  // Sort by release date when release filters are active
+  if (releaseFilter === 'recently-released') {
+    // Most recent first (descending)
+    filteredFilms = [...filteredFilms].sort((a, b) =>
+      (b.releaseDate ?? '').localeCompare(a.releaseDate ?? '')
+    );
+  } else if (releaseFilter === 'upcoming') {
+    // Closest to today first (ascending)
+    filteredFilms = [...filteredFilms].sort((a, b) =>
+      (a.releaseDate ?? '').localeCompare(b.releaseDate ?? '')
+    );
+  }
 
   const carouselFilms = filterFilms(allFilms, {
     cinemaFilter,
@@ -133,6 +151,9 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     genreFilter,
     directorFilter,
     today,
+    recentlyAdded: releaseFilter === 'recently-added',
+    upcomingRelease: releaseFilter === 'upcoming',
+    recentlyReleased: releaseFilter === 'recently-released',
   });
 
   // Films filtered by everything except day - used for computing day options
@@ -144,6 +165,9 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     genreFilter,
     directorFilter,
     today,
+    recentlyAdded: releaseFilter === 'recently-added',
+    upcomingRelease: releaseFilter === 'upcoming',
+    recentlyReleased: releaseFilter === 'recently-released',
   });
   const allDates = new Set<string>();
   filmsForDayOptions.forEach((film) => {
@@ -267,6 +291,10 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
               setDirectorSearch('');
               setFilter('director', undefined);
             }}
+          />
+          <ReleaseFilter
+            value={releaseFilter}
+            onChange={(value) => setFilter('release', value ?? undefined)}
           />
         </div>
 

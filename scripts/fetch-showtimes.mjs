@@ -182,6 +182,7 @@ async function generateFilmsJson(cinemas) {
         id: details.tmdbId,
         overview: details.overview,
         releaseDate: details.releaseDate,
+        releaseDateNl: details.releaseDateNl,
         genres: details.genres,
         youtubeTrailerId: details.youtubeTrailerId,
       } : null,
@@ -203,8 +204,25 @@ async function main() {
 
     mkdirSync(dirname(outputPath), { recursive: true });
 
+    // Load existing films to preserve dateAdded
+    let existingFilms = {};
+    if (existsSync(outputPath)) {
+      existingFilms = JSON.parse(readFileSync(outputPath, 'utf-8'));
+    }
+
     // Generate films.json with TMDB details
     const filmsIndex = await generateFilmsJson(cinemas);
+
+    // Preserve dateAdded for existing films, set today's date for new films
+    const today = new Date().toISOString().split('T')[0];
+    for (const slug of Object.keys(filmsIndex)) {
+      if (existingFilms[slug]?.dateAdded) {
+        filmsIndex[slug].dateAdded = existingFilms[slug].dateAdded;
+      } else {
+        filmsIndex[slug].dateAdded = today;
+      }
+    }
+
     writeFileSync(outputPath, JSON.stringify(filmsIndex, null, 2));
 
     const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);

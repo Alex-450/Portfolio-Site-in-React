@@ -384,6 +384,15 @@ code {
   color: var(--color-white);
 }
 
+.filter-toggle-active {
+  background-color: var(--text-primary);
+  color: var(--bg-primary);
+}
+
+.filter-toggle-active:hover {
+  background-color: var(--text-secondary);
+}
+
 .filter-select-film {
   max-width: 300px;
   text-overflow: ellipsis;
@@ -449,14 +458,13 @@ code {
 
 .genre-filter-dropdown {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 4px);
   left: 0;
   min-width: 180px;
   max-height: 300px;
   overflow-y: auto;
   background-color: var(--bg-primary);
   border: 2px solid var(--border-primary);
-  border-top: none;
   z-index: 10;
 }
 

@@ -54,6 +54,8 @@ export function getStaticProps() {
           posterUrl: film.posterUrl,
           genres: film.tmdb?.genres ?? [],
           cinemaShowtimes,
+          dateAdded: film.dateAdded,
+          releaseDate: film.tmdb?.releaseDateNl ?? film.tmdb?.releaseDate ?? null,
         };
       }
     }

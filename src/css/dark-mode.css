@@ -120,6 +120,15 @@
     color: var(--dark-bg-primary);
   }
 
+  .filter-toggle-active {
+    background-color: var(--hover-bg);
+    color: var(--dark-bg-primary);
+  }
+
+  .filter-toggle-active:hover {
+    background-color: var(--dark-text-muted);
+  }
+
   .genre-filter-dropdown {
     background-color: var(--dark-bg-primary);
     border-color: var(--hover-bg);
