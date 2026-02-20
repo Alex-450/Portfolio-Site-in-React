@@ -19,9 +19,8 @@ const Page = () => {
   const archivedPosts = posts.filter((post) => post.type === activeCategory && post.archived);
 
   const getSubtitle = (blog: BlogPost) => {
-    if (blog.type === 'film') return (blog as FilmBlogPost).topic;
-    if (blog.type === 'creative-writing')
-      return (blog as CreativeWritingBlogPost).location;
+    if (blog.type === 'film') return blog.topic;
+    if (blog.type === 'creative-writing') return blog.location;
     if (blog.type === 'tech') return blog.topic;
     return '';
   };
