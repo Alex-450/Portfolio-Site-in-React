@@ -1,5 +1,6 @@
 import { Container, Row, Col } from 'react-bootstrap';
 import { useEffect } from 'react';
+import Head from 'next/head';
 import SpoilerPill from './SpoilerPill';
 import { ArticleLayoutProps, ArticleMetadata } from '../types';
 
@@ -50,7 +51,7 @@ const ArticleLayout = ({ metadata, children }: ArticleLayoutProps) => {
     <Container className="my-5">
       <Row className="justify-content-center">
         <Col xs={12} md={10} lg={8}>
-          <article>
+          <Head>
             <title>{pageTitle}</title>
             <meta
               name="description"
@@ -61,9 +62,11 @@ const ArticleLayout = ({ metadata, children }: ArticleLayoutProps) => {
             <meta name="keywords" content={meta.keywords} />
             <meta name="title" content={pageTitle} property="og:title" />
             <meta property="og:type" content="website" />
+          </Head>
+          <article>
             <h1>{meta.title}</h1>
             {renderMetadataSubtitle(meta)}
-            <br></br>
+            <br />
             {children}
           </article>
         </Col>
