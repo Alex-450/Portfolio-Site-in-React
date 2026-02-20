@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Link from 'next/link';
 import blogPostArchive from '../blogPostArchive.json';
 import { Container, Col, Row } from 'react-bootstrap';
 import { BlogPost, FilmBlogPost, CreativeWritingBlogPost } from '../types';
@@ -59,7 +60,7 @@ const Page = () => {
         <Col>Title</Col>
       </Row>
       {filteredPosts.map((blog, index) => (
-        <a href={blog.link} className="blog-link" key={blog.title}>
+        <Link href={blog.link} className="blog-link" key={blog.title}>
           <Row
             className="blog-row slide-in"
             style={{ animationDelay: `${index / 10 + 0.1}s` }}
@@ -69,7 +70,7 @@ const Page = () => {
               {getSubtitle(blog)} | {blog.title} ›
             </Col>
           </Row>
-        </a>
+        </Link>
       ))}
       {archivedPosts.length > 0 && (
         <>
@@ -80,7 +81,7 @@ const Page = () => {
             {showArchive ? 'Hide archive' : 'Show archive'}
           </button>
           {showArchive && archivedPosts.map((blog, index) => (
-            <a href={blog.link} className="blog-link" key={blog.title}>
+            <Link href={blog.link} className="blog-link" key={blog.title}>
               <Row
                 className="blog-row slide-in"
                 style={{ animationDelay: `${index / 10 + 0.1}s` }}
@@ -90,7 +91,7 @@ const Page = () => {
                   {getSubtitle(blog)} | {blog.title} ›
                 </Col>
               </Row>
-            </a>
+            </Link>
           ))}
         </>
       )}
