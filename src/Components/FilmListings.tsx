@@ -125,7 +125,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   let filteredFilms = filterFilms(allFilms, {
     cinemaFilter,
     dayFilter,
-    filmSearch,
     filmFilter: filmSearch,
     genreFilter,
     directorFilter,
@@ -157,7 +156,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const carouselFilms = filterFilms(allFilms, {
     cinemaFilter,
     dayFilter,
-    filmSearch: '',
     filmFilter: filmFilter && dayFilter.length > 0 ? filmFilter : '',
     genreFilter,
     directorFilter,
@@ -172,7 +170,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const filmsForDayOptions = filterFilms(allFilms, {
     cinemaFilter,
     dayFilter: [],
-    filmSearch,
     filmFilter,
     genreFilter,
     directorFilter,

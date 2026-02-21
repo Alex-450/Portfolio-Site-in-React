@@ -4,7 +4,6 @@ import { filterPastShowtimes } from './date';
 interface FilterOptions {
   cinemaFilter: string[];
   dayFilter: string[];
-  filmSearch: string;
   filmFilter: string;
   genreFilter: string[];
   directorFilter: string;
@@ -75,14 +74,13 @@ export function filterFilms(
   films: FilmWithCinemasLite[],
   options: FilterOptions
 ): FilmWithCinemasLite[] {
-  const { cinemaFilter, dayFilter, filmSearch, filmFilter, genreFilter, directorFilter, today, currentTime, recentlyAdded, upcomingRelease, recentlyReleased } = options;
+  const { cinemaFilter, dayFilter, filmFilter, genreFilter, directorFilter, today, currentTime, recentlyAdded, upcomingRelease, recentlyReleased } = options;
 
   return films
     .filter((film) => !recentlyAdded || isRecentlyAdded(film.dateAdded, today))
     .filter((film) => !upcomingRelease || isUpcomingRelease(film.releaseDate, today))
     .filter((film) => !recentlyReleased || isRecentlyReleased(film.releaseDate, today))
-    .filter((film) => !filmFilter || film.title === filmFilter)
-    .filter((film) => matchesSearch(film.title, filmSearch))
+    .filter((film) => matchesSearch(film.title, filmFilter))
     .filter((film) =>
       genreFilter.length === 0 ||
       film.genres?.some((g) => genreFilter.includes(g))
