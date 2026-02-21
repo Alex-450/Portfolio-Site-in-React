@@ -110,17 +110,8 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     router.push({ pathname: router.pathname, query }, undefined, { shallow: true });
   };
 
-  const [now, setNow] = useState(() => ({ today: getToday(), currentTime: getCurrentTime() }));
-
-  // Update time every minute to filter out past showtimes
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setNow({ today: getToday(), currentTime: getCurrentTime() });
-    }, 60000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const { today, currentTime } = now;
+  const today = getToday();
+  const currentTime = getCurrentTime();
   const allFilms = filmsIndexToList(filmsIndex);
   const cinemaNames = getCinemaNames(filmsIndex);
   const allGenres = [...new Set(allFilms.flatMap((f) => f.genres || []))].sort();
