@@ -202,16 +202,19 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   }, [allFilms, cinemaFilter, filmFilter, genreFilter, directorFilter, today, currentTime, releaseFilter]);
 
   // Clear invalid day filters
-  const validDayValues = new Set(['today', ...dayOptions.map((d) => d.value)]);
-  if (!hasShowtimesToday) validDayValues.delete('today');
-  const invalidDays = dayFilter.filter((d) => !validDayValues.has(d));
+  const validDayValues = useMemo(() => {
+    const values = new Set(['today', ...dayOptions.map((d) => d.value)]);
+    if (!hasShowtimesToday) values.delete('today');
+    return values;
+  }, [dayOptions, hasShowtimesToday]);
 
   useEffect(() => {
+    const invalidDays = dayFilter.filter((d) => !validDayValues.has(d));
     if (invalidDays.length > 0) {
       const validDays = dayFilter.filter((d) => validDayValues.has(d));
       setFilter('day', validDays.length > 0 ? validDays : undefined);
     }
-  }, [invalidDays.length]);
+  }, [dayFilter, validDayValues]);
 
   // Group films by genre for carousel view
   const filmsByGenre = useMemo(() => groupFilmsByGenre(filteredFilms), [filteredFilms]);
