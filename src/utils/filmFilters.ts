@@ -1,4 +1,5 @@
 import { FilmWithCinemasLite, CinemaShowtimesLite, ShowtimeLite } from '../types';
+import { filterPastShowtimes } from './date';
 
 interface FilterOptions {
   cinemaFilter: string[];
@@ -8,6 +9,7 @@ interface FilterOptions {
   genreFilter: string[];
   directorFilter: string;
   today: string;
+  currentTime: string;
   recentlyAdded?: boolean;
   upcomingRelease?: boolean;
   recentlyReleased?: boolean;
@@ -31,13 +33,18 @@ function filterCinemaShowtimes(
   cinemaShowtimes: CinemaShowtimesLite[],
   cinemaFilter: string[],
   dayFilter: string[],
-  today: string
+  today: string,
+  currentTime: string
 ): CinemaShowtimesLite[] {
   return cinemaShowtimes
     .filter((cs) => cinemaFilter.length === 0 || cinemaFilter.includes(cs.cinema))
     .map((cs) => ({
       ...cs,
-      showtimes: filterShowtimesByDay(cs.showtimes, dayFilter, today),
+      showtimes: filterPastShowtimes(
+        filterShowtimesByDay(cs.showtimes, dayFilter, today),
+        today,
+        currentTime
+      ),
     }))
     .filter((cs) => cs.showtimes.length > 0);
 }
@@ -68,7 +75,7 @@ export function filterFilms(
   films: FilmWithCinemasLite[],
   options: FilterOptions
 ): FilmWithCinemasLite[] {
-  const { cinemaFilter, dayFilter, filmSearch, filmFilter, genreFilter, directorFilter, today, recentlyAdded, upcomingRelease, recentlyReleased } = options;
+  const { cinemaFilter, dayFilter, filmSearch, filmFilter, genreFilter, directorFilter, today, currentTime, recentlyAdded, upcomingRelease, recentlyReleased } = options;
 
   return films
     .filter((film) => !recentlyAdded || isRecentlyAdded(film.dateAdded, today))
@@ -87,7 +94,8 @@ export function filterFilms(
         film.cinemaShowtimes,
         cinemaFilter,
         dayFilter,
-        today
+        today,
+        currentTime
       ),
     }))
     .filter((film) => film.cinemaShowtimes.length > 0);

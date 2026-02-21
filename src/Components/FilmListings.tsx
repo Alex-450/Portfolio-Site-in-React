@@ -15,7 +15,7 @@ import GenreFilter from './filters/GenreFilter';
 import FilmSearchFilter from './filters/FilmSearchFilter';
 import ReleaseFilter, { ReleaseFilterValue } from './filters/ReleaseFilter';
 import WatchlistFilter from './filters/WatchlistFilter';
-import { getToday, formatDate } from '../utils/date';
+import { getToday, getCurrentTime, formatDate } from '../utils/date';
 import { filterFilms } from '../utils/filmFilters';
 import { useWatchlist } from '../hooks/useWatchlist';
 
@@ -110,7 +110,17 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     router.push({ pathname: router.pathname, query }, undefined, { shallow: true });
   };
 
-  const today = getToday();
+  const [now, setNow] = useState(() => ({ today: getToday(), currentTime: getCurrentTime() }));
+
+  // Update time every minute to filter out past showtimes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow({ today: getToday(), currentTime: getCurrentTime() });
+    }, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const { today, currentTime } = now;
   const allFilms = filmsIndexToList(filmsIndex);
   const cinemaNames = getCinemaNames(filmsIndex);
   const allGenres = [...new Set(allFilms.flatMap((f) => f.genres || []))].sort();
@@ -129,6 +139,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     genreFilter,
     directorFilter,
     today,
+    currentTime,
     recentlyAdded: releaseFilter === 'recently-added',
     upcomingRelease: releaseFilter === 'upcoming',
     recentlyReleased: releaseFilter === 'recently-released',
@@ -160,6 +171,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     genreFilter,
     directorFilter,
     today,
+    currentTime,
     recentlyAdded: releaseFilter === 'recently-added',
     upcomingRelease: releaseFilter === 'upcoming',
     recentlyReleased: releaseFilter === 'recently-released',
@@ -174,6 +186,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     genreFilter,
     directorFilter,
     today,
+    currentTime,
     recentlyAdded: releaseFilter === 'recently-added',
     upcomingRelease: releaseFilter === 'upcoming',
     recentlyReleased: releaseFilter === 'recently-released',
