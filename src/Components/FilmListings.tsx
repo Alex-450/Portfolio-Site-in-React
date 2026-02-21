@@ -405,6 +405,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
               key={film.title}
               film={film}
               dayFilter={dayFilter}
+              today={today}
               isInWatchlist={isInWatchlist(film.slug)}
               onToggleWatchlist={() => toggleWatchlist(film.slug)}
             />

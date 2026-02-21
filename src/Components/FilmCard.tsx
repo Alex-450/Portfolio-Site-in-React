@@ -1,19 +1,19 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { FilmWithCinemasLite } from '../types';
-import { formatDate, getToday, groupShowtimesByDate, filterByDay } from '../utils/date';
+import { formatDate, groupShowtimesByDate, filterByDay } from '../utils/date';
 import { generateCalendarUrlFromFilm } from '../utils/calendar';
 
 interface FilmCardProps {
   film: FilmWithCinemasLite;
   dayFilter: string[];
+  today: string;
   isInWatchlist?: boolean;
   onToggleWatchlist?: () => void;
 }
 
-function FilmCard({ film, dayFilter, isInWatchlist, onToggleWatchlist }: FilmCardProps) {
+function FilmCard({ film, dayFilter, today, isInWatchlist, onToggleWatchlist }: FilmCardProps) {
   const [expanded, setExpanded] = useState(false);
-  const today = useMemo(getToday, []);
   const showExpanded = expanded || dayFilter.length > 0;
 
   const hasHiddenDates = useMemo(() => {
