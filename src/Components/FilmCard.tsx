@@ -16,13 +16,24 @@ function FilmCard({ film, dayFilter, today, isInWatchlist, onToggleWatchlist }: 
   const [expanded, setExpanded] = useState(false);
   const showExpanded = expanded || dayFilter.length > 0;
 
+  // Memoize filtered showtimes to avoid recomputing on every render
+  const filteredCinemaShowtimes = useMemo(() => {
+    return film.cinemaShowtimes.map(cs => {
+      const filteredGrouped = filterByDay(
+        groupShowtimesByDate(cs.showtimes),
+        dayFilter,
+        today
+      );
+      const screens = new Set(cs.showtimes.map(s => s.screen).filter(Boolean));
+      const singleScreen = screens.size === 1 ? [...screens][0] : null;
+      return { cs, filteredGrouped, singleScreen };
+    }).filter(({ filteredGrouped }) => filteredGrouped.length > 0);
+  }, [film.cinemaShowtimes, dayFilter, today]);
+
   const hasHiddenDates = useMemo(() => {
     if (showExpanded) return false;
-    return film.cinemaShowtimes.some(cs => {
-      const filtered = filterByDay(groupShowtimesByDate(cs.showtimes), dayFilter, today);
-      return filtered.length > 3;
-    });
-  }, [film.cinemaShowtimes, dayFilter, today, showExpanded]);
+    return filteredCinemaShowtimes.some(({ filteredGrouped }) => filteredGrouped.length > 3);
+  }, [filteredCinemaShowtimes, showExpanded]);
 
   return (
     <div className="film-card">
@@ -52,21 +63,10 @@ function FilmCard({ film, dayFilter, today, isInWatchlist, onToggleWatchlist }: 
         {film.length && <div className="film-length">{film.length}</div>}
 
         <div className="cinema-showtimes">
-          {film.cinemaShowtimes.map(cs => {
-            const filteredGrouped = filterByDay(
-              groupShowtimesByDate(cs.showtimes),
-              dayFilter,
-              today
-            );
-
-            if (filteredGrouped.length === 0) return null;
-
+          {filteredCinemaShowtimes.map(({ cs, filteredGrouped, singleScreen }) => {
             const visibleDates = showExpanded
               ? filteredGrouped
               : filteredGrouped.slice(0, 3);
-
-            const screens = new Set(cs.showtimes.map(s => s.screen).filter(Boolean));
-            const singleScreen = screens.size === 1 ? [...screens][0] : null;
 
             return (
               <div key={`${cs.cinema}-${cs.variant || ''}`} className="cinema-showtime-group">
