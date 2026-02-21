@@ -1,21 +1,51 @@
 ## Description
 
-Features:
+Personal portfolio site with a blog and film listings for Amsterdam/Haarlem cinemas.
 
-- Personal Blog.
-- Film listings via Amsterdam/Haarlem cinema RSS feeds:
+## Features
+
+- Personal blog with MDX support
+- Film listings aggregated from local cinema RSS feeds:
   - LAB111
+  - Kriterion
+  - Eye Filmmuseum
+  - Studio K
+  - FilmHallen
   - The Movies
-  - Studio K 
-  - Filmhallen 
   - FilmKoepel
+  - FC Hyena
+- Film filtering by cinema, genre, director, day, and release year
+- Watchlist functionality (stored in local storage)
+- Dark mode support
+- RSS feed and sitemap generation
 
-## Info
+## Tech Stack
 
-- This project was originally bootstrapped with [Create React App](https://github.com/facebook/create-react-app) and uses [react-bootstrap](https://github.com/react-bootstrap/react-bootstrap).
+- [Next.js](https://nextjs.org/) (React framework)
+- [React Bootstrap](https://react-bootstrap.github.io/) (UI components)
+- [MDX](https://mdxjs.com/) (blog posts)
+- TypeScript
 
-- Migrated to [Next.js](https://nextjs.org/) by following [Migrating from create-react-app](https://nextjs.org/docs/app/guides/migrating/from-create-react-app).
+## Getting Started
 
-## Instructions
+```bash
+# Install dependencies
+npm install
 
-In order to run the project, clone the repository and run `npm run dev` from the project directory. This will open the app in development mode.
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Deploy to GitHub Pages
+npm run deploy
+```
+
+## Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Fetch showtimes and build for production
+- `npm run build:only` - Build without fetching showtimes
+- `npm run deploy` - Deploy to GitHub Pages
+- `npm run format` - Format code with Prettier
