@@ -157,6 +157,9 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     return films;
   }, [allFilms, cinemaFilter, dayFilter, filmSearch, genreFilter, directorFilter, today, currentTime, releaseFilter, watchlistFilter, watchlist]);
 
+  // Carousel shows all matching films (ignoring film search) so users can click posters to filter.
+  // Exception: when a day filter is active alongside a film filter, we keep the film filter
+  // so the carousel highlights only films showing on that specific day.
   const carouselFilms = useMemo(() => filterFilms(allFilms, {
     cinemaFilter,
     dayFilter,
