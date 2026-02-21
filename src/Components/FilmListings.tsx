@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -100,15 +100,15 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   useEffect(() => setFilmSearch(filmFilter), [filmFilter]);
   useEffect(() => setDirectorSearch(directorFilter), [directorFilter]);
 
-  const setFilter = (key: string, value: string | string[] | undefined) => {
-    const query = { ...q };
+  const setFilter = useCallback((key: string, value: string | string[] | undefined) => {
+    const query = { ...router.query };
     if (!value || (Array.isArray(value) && !value.length)) {
       delete query[key];
     } else {
       query[key] = Array.isArray(value) ? value.join(',') : value;
     }
     router.push({ pathname: router.pathname, query }, undefined, { shallow: true });
-  };
+  }, [router]);
 
   const today = useMemo(() => getToday(), []);
   const currentTime = useMemo(() => getCurrentTime(), []);
