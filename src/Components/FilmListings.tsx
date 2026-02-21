@@ -217,7 +217,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
       const validDays = dayFilter.filter((d) => validDayValues.has(d));
       setFilter('day', validDays.length > 0 ? validDays : undefined);
     }
-  }, [dayFilter, validDayValues]);
+  }, [dayFilter, validDayValues, setFilter]);
 
   // Group films by genre for carousel view
   const filmsByGenre = useMemo(() => groupFilmsByGenre(filteredFilms), [filteredFilms]);
