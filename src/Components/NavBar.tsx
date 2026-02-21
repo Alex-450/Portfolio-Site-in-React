@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import { Navbar, Container, Col } from 'react-bootstrap';
 import Link from 'next/link';
 import DarkModeToggle from './DarkModeToggle';
@@ -9,6 +10,12 @@ import '../css/index.css';
 const NavBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+
+  // Close menu when route changes
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
 
   // Close menu when clicking outside (for mobile)
   useEffect(() => {
