@@ -181,18 +181,14 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   });
   const allDates = new Set<string>();
   filmsForDayOptions.forEach((film) => {
-    film.cinemaShowtimes
-      .filter((cs) => cinemaFilter.length === 0 || cinemaFilter.includes(cs.cinema))
-      .forEach((cs) => {
-        cs.showtimes.forEach((s) => {
-          if (s.date !== today) allDates.add(s.date);
-        });
+    film.cinemaShowtimes.forEach((cs) => {
+      cs.showtimes.forEach((s) => {
+        if (s.date !== today) allDates.add(s.date);
       });
+    });
   });
   const hasShowtimesToday = filmsForDayOptions.some((film) =>
-    film.cinemaShowtimes
-      .filter((cs) => cinemaFilter.length === 0 || cinemaFilter.includes(cs.cinema))
-      .some((cs) => cs.showtimes.some((s) => s.date === today))
+    film.cinemaShowtimes.some((cs) => cs.showtimes.some((s) => s.date === today))
   );
   const dayOptions = Array.from(allDates)
     .sort()
