@@ -70,8 +70,6 @@ export interface YouTubeEmbedProps {
 // Film listings types
 export interface Showtime {
   date: string;
-  day: string;
-  datetime: string;
   time: string;
   ticketUrl: string;
   screen: string;
