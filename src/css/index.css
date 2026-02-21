@@ -379,7 +379,10 @@ code {
 
 .filter-chip.clear-all {
   background-color: transparent;
-  border-style: dashed;
+}
+
+.filter-chip.clear-all:hover {
+  background-color: var(--hover-bg);
 }
 
 .filter-select {
