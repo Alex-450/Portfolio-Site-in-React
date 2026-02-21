@@ -546,6 +546,7 @@ code {
   gap: 1rem;
   padding: 10px 0;
   border-bottom: 1px solid var(--border-primary);
+  overflow-x: auto;
 }
 
 .film-card:last-child {
@@ -567,7 +568,7 @@ code {
 
 .film-info {
   flex: 1;
-  min-width: 0;
+  min-width: max-content;
 }
 
 .film-title-row {
@@ -667,8 +668,6 @@ code {
   display: flex;
   gap: 1.5rem;
   margin-top: 0.5rem;
-  overflow-x: auto;
-  padding-bottom: 0.5rem;
 }
 
 .cinema-showtime-group {
