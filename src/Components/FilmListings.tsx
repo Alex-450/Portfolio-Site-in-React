@@ -110,50 +110,54 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     router.push({ pathname: router.pathname, query }, undefined, { shallow: true });
   };
 
-  const today = getToday();
-  const currentTime = getCurrentTime();
-  const allFilms = filmsIndexToList(filmsIndex);
-  const cinemaNames = getCinemaNames(filmsIndex);
-  const allGenres = [...new Set(allFilms.flatMap((f) => f.genres || []))].sort();
-  const allDirectors = [...new Map(
+  const today = useMemo(() => getToday(), []);
+  const currentTime = useMemo(() => getCurrentTime(), []);
+  const allFilms = useMemo(() => filmsIndexToList(filmsIndex), [filmsIndex]);
+  const cinemaNames = useMemo(() => getCinemaNames(filmsIndex), [filmsIndex]);
+  const allGenres = useMemo(() => [...new Set(allFilms.flatMap((f) => f.genres || []))].sort(), [allFilms]);
+  const allDirectors = useMemo(() => [...new Map(
     allFilms
       .map((f) => f.director)
       .filter((d): d is string => d !== null)
       .map((d) => [d.toLowerCase(), d])
-  ).values()].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+  ).values()].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())), [allFilms]);
 
-  let filteredFilms = filterFilms(allFilms, {
-    cinemaFilter,
-    dayFilter,
-    filmFilter: filmSearch,
-    genreFilter,
-    directorFilter,
-    today,
-    currentTime,
-    recentlyAdded: releaseFilter === 'recently-added',
-    upcomingRelease: releaseFilter === 'upcoming',
-    recentlyReleased: releaseFilter === 'recently-released',
-  });
+  const filteredFilms = useMemo(() => {
+    let films = filterFilms(allFilms, {
+      cinemaFilter,
+      dayFilter,
+      filmFilter: filmSearch,
+      genreFilter,
+      directorFilter,
+      today,
+      currentTime,
+      recentlyAdded: releaseFilter === 'recently-added',
+      upcomingRelease: releaseFilter === 'upcoming',
+      recentlyReleased: releaseFilter === 'recently-released',
+    });
 
-  // Apply watchlist filter
-  if (watchlistFilter) {
-    filteredFilms = filteredFilms.filter((film) => watchlist.includes(film.slug));
-  }
+    // Apply watchlist filter
+    if (watchlistFilter) {
+      films = films.filter((film) => watchlist.includes(film.slug));
+    }
 
-  // Sort by release date when release filters are active
-  if (releaseFilter === 'recently-released') {
-    // Most recent first (descending)
-    filteredFilms = [...filteredFilms].sort((a, b) =>
-      (b.releaseDate ?? '').localeCompare(a.releaseDate ?? '')
-    );
-  } else if (releaseFilter === 'upcoming') {
-    // Closest to today first (ascending)
-    filteredFilms = [...filteredFilms].sort((a, b) =>
-      (a.releaseDate ?? '').localeCompare(b.releaseDate ?? '')
-    );
-  }
+    // Sort by release date when release filters are active
+    if (releaseFilter === 'recently-released') {
+      // Most recent first (descending)
+      films = [...films].sort((a, b) =>
+        (b.releaseDate ?? '').localeCompare(a.releaseDate ?? '')
+      );
+    } else if (releaseFilter === 'upcoming') {
+      // Closest to today first (ascending)
+      films = [...films].sort((a, b) =>
+        (a.releaseDate ?? '').localeCompare(b.releaseDate ?? '')
+      );
+    }
 
-  const carouselFilms = filterFilms(allFilms, {
+    return films;
+  }, [allFilms, cinemaFilter, dayFilter, filmSearch, genreFilter, directorFilter, today, currentTime, releaseFilter, watchlistFilter, watchlist]);
+
+  const carouselFilms = useMemo(() => filterFilms(allFilms, {
     cinemaFilter,
     dayFilter,
     filmFilter: filmFilter && dayFilter.length > 0 ? filmFilter : '',
@@ -164,35 +168,38 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     recentlyAdded: releaseFilter === 'recently-added',
     upcomingRelease: releaseFilter === 'upcoming',
     recentlyReleased: releaseFilter === 'recently-released',
-  });
+  }), [allFilms, cinemaFilter, dayFilter, filmFilter, genreFilter, directorFilter, today, currentTime, releaseFilter]);
 
   // Films filtered by everything except day - used for computing day options
-  const filmsForDayOptions = filterFilms(allFilms, {
-    cinemaFilter,
-    dayFilter: [],
-    filmFilter,
-    genreFilter,
-    directorFilter,
-    today,
-    currentTime,
-    recentlyAdded: releaseFilter === 'recently-added',
-    upcomingRelease: releaseFilter === 'upcoming',
-    recentlyReleased: releaseFilter === 'recently-released',
-  });
-  const allDates = new Set<string>();
-  filmsForDayOptions.forEach((film) => {
-    film.cinemaShowtimes.forEach((cs) => {
-      cs.showtimes.forEach((s) => {
-        if (s.date !== today) allDates.add(s.date);
+  const { dayOptions, hasShowtimesToday } = useMemo(() => {
+    const filmsForDayOptions = filterFilms(allFilms, {
+      cinemaFilter,
+      dayFilter: [],
+      filmFilter,
+      genreFilter,
+      directorFilter,
+      today,
+      currentTime,
+      recentlyAdded: releaseFilter === 'recently-added',
+      upcomingRelease: releaseFilter === 'upcoming',
+      recentlyReleased: releaseFilter === 'recently-released',
+    });
+    const allDates = new Set<string>();
+    filmsForDayOptions.forEach((film) => {
+      film.cinemaShowtimes.forEach((cs) => {
+        cs.showtimes.forEach((s) => {
+          if (s.date !== today) allDates.add(s.date);
+        });
       });
     });
-  });
-  const hasShowtimesToday = filmsForDayOptions.some((film) =>
-    film.cinemaShowtimes.some((cs) => cs.showtimes.some((s) => s.date === today))
-  );
-  const dayOptions = Array.from(allDates)
-    .sort()
-    .map((date) => ({ value: date, label: formatDate(date) }));
+    const hasShowtimesToday = filmsForDayOptions.some((film) =>
+      film.cinemaShowtimes.some((cs) => cs.showtimes.some((s) => s.date === today))
+    );
+    const dayOptions = Array.from(allDates)
+      .sort()
+      .map((date) => ({ value: date, label: formatDate(date) }));
+    return { dayOptions, hasShowtimesToday };
+  }, [allFilms, cinemaFilter, filmFilter, genreFilter, directorFilter, today, currentTime, releaseFilter]);
 
   // Clear invalid day filters
   const validDayValues = new Set(['today', ...dayOptions.map((d) => d.value)]);
