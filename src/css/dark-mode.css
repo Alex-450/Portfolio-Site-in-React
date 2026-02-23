@@ -373,6 +373,51 @@
     background: var(--dark-bg-tertiary);
   }
 
+  /* Film hero dark mode */
+  .film-hero-director {
+    color: var(--dark-text-secondary);
+  }
+
+  .film-hero-badge {
+    border-color: var(--dark-border);
+    color: var(--dark-text-secondary);
+  }
+
+  .film-hero-genre {
+    border-color: var(--dark-border);
+    color: var(--dark-text-secondary);
+  }
+
+  .film-hero-overview {
+    color: var(--dark-text-body);
+  }
+
+  /* Day-based showtimes dark mode */
+  .day-tabs {
+    border-bottom-color: var(--hover-bg);
+  }
+
+  .day-tab {
+    color: var(--dark-text-secondary);
+  }
+
+  .day-tab:hover {
+    color: var(--dark-text-primary);
+  }
+
+  .day-tab-active {
+    color: var(--dark-text-primary);
+    border-bottom-color: var(--hover-bg);
+  }
+
+  .showtime-row {
+    border-bottom-color: var(--dark-bg-tertiary);
+  }
+
+  .showtime-cinema {
+    color: var(--dark-text-secondary);
+  }
+
   .film-detail-director {
     color: var(--dark-text-secondary);
   }

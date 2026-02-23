@@ -18,6 +18,8 @@ export default function FilmDetailPage({ film }: Props) {
   const year = film.tmdb?.releaseDate?.split('-')[0];
   const { isInWatchlist, toggleWatchlist } = useWatchlist();
 
+  const hasTrailer = !!film.tmdb?.youtubeTrailerId;
+
   return (
     <>
       <Head>
@@ -28,62 +30,91 @@ export default function FilmDetailPage({ film }: Props) {
         />
       </Head>
       <Container className="film-detail-container">
-        <div className="film-detail-header">
-          {film.posterUrl ? (
-            <img
-              className="film-detail-poster"
-              src={film.posterUrl}
-              alt={film.title}
-            />
-          ) : (
-            <div className="film-detail-poster-placeholder" />
-          )}
-          <div className="film-detail-info">
-            <h1>{film.title}</h1>
-            {film.director && (
-              <p className="film-detail-director">
-                Directed by {film.director}
-              </p>
-            )}
-
-            {film.tmdb && (
-              <div className="film-detail-meta">
-                {year && <span className="film-detail-badge">{year}</span>}
-                {(film.tmdb.runtime || film.length) && (
-                  <span className="film-detail-badge">
-                    {film.tmdb.runtime || film.length}
+        {hasTrailer ? (
+          <div className="film-hero">
+            <YouTubeEmbed videoId={film.tmdb!.youtubeTrailerId!} />
+            <div className="film-hero-overlay">
+              <h1 className="film-hero-title">{film.title}</h1>
+              {film.director && (
+                <p className="film-hero-director">
+                  Directed by {film.director}
+                </p>
+              )}
+              <div className="film-hero-meta">
+                {year && <span className="film-hero-badge">{year}</span>}
+                {(film.tmdb?.runtime || film.length) && (
+                  <span className="film-hero-badge">
+                    {film.tmdb?.runtime || film.length}
                   </span>
                 )}
               </div>
-            )}
-
-            {film.tmdb?.genres && film.tmdb.genres.length > 0 && (
-              <div className="film-detail-genres">
-                {film.tmdb.genres.map((genre) => (
-                  <span key={genre} className="film-detail-genre">
-                    {genre}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {film.tmdb?.overview && (
-              <div className="film-detail-overview">
-                <p>{film.tmdb.overview}</p>
-              </div>
-            )}
-
-            <WatchlistButton
-              isInWatchlist={isInWatchlist(film.slug)}
-              onToggle={() => toggleWatchlist(film.slug)}
-              size="large"
-            />
+              {film.tmdb?.genres && film.tmdb.genres.length > 0 && (
+                <div className="film-hero-genres">
+                  {film.tmdb.genres.map((genre) => (
+                    <span key={genre} className="film-hero-genre">
+                      {genre}
+                    </span>
+                  ))}
+                </div>
+              )}
+              {film.tmdb?.overview && (
+                <p className="film-hero-overview">{film.tmdb.overview}</p>
+              )}
+              <WatchlistButton
+                isInWatchlist={isInWatchlist(film.slug)}
+                onToggle={() => toggleWatchlist(film.slug)}
+                size="large"
+              />
+            </div>
           </div>
-        </div>
-
-        {film.tmdb?.youtubeTrailerId && (
-          <div className="film-detail-trailer">
-            <YouTubeEmbed videoId={film.tmdb.youtubeTrailerId} />
+        ) : (
+          <div className="film-detail-header">
+            {film.posterUrl ? (
+              <img
+                className="film-detail-poster"
+                src={film.posterUrl}
+                alt={film.title}
+              />
+            ) : (
+              <div className="film-detail-poster-placeholder" />
+            )}
+            <div className="film-detail-info">
+              <h1>{film.title}</h1>
+              {film.director && (
+                <p className="film-detail-director">
+                  Directed by {film.director}
+                </p>
+              )}
+              {film.tmdb && (
+                <div className="film-detail-meta">
+                  {year && <span className="film-detail-badge">{year}</span>}
+                  {(film.tmdb.runtime || film.length) && (
+                    <span className="film-detail-badge">
+                      {film.tmdb.runtime || film.length}
+                    </span>
+                  )}
+                </div>
+              )}
+              {film.tmdb?.genres && film.tmdb.genres.length > 0 && (
+                <div className="film-detail-genres">
+                  {film.tmdb.genres.map((genre) => (
+                    <span key={genre} className="film-detail-genre">
+                      {genre}
+                    </span>
+                  ))}
+                </div>
+              )}
+              {film.tmdb?.overview && (
+                <div className="film-detail-overview">
+                  <p>{film.tmdb.overview}</p>
+                </div>
+              )}
+              <WatchlistButton
+                isInWatchlist={isInWatchlist(film.slug)}
+                onToggle={() => toggleWatchlist(film.slug)}
+                size="large"
+              />
+            </div>
           </div>
         )}
 

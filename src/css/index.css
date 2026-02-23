@@ -719,8 +719,7 @@ code {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 2px 8px;
-  width: 50px;
+  padding: 6px 12px;
   background-color: var(--bg-primary);
   border: 2px solid var(--border-primary);
   font-size: 0.85rem;
@@ -743,10 +742,9 @@ code {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0 6px;
+  padding: 6px 12px;
   background-color: var(--bg-primary);
   border: 2px solid var(--border-primary);
-  border-left: none;
   font-size: 0.85rem;
   text-decoration: none;
   cursor: pointer;
@@ -929,6 +927,67 @@ code {
   padding-bottom: 40px;
 }
 
+/* Film Hero (trailer with overlay) */
+.film-hero {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.film-hero-overlay {
+  padding: 1.5rem 0;
+}
+
+.film-hero-title {
+  font-size: 1.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.film-hero-director {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.film-hero-meta {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.film-hero-badge {
+  background: transparent;
+  border: 1px solid var(--border-secondary);
+  border-radius: 12px;
+  padding: 2px 10px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.film-hero-genres {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.film-hero-genre {
+  background: transparent;
+  border: 1px solid var(--border-secondary);
+  border-radius: 12px;
+  padding: 2px 10px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.film-hero-overview {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-body);
+  margin-bottom: 0.75rem;
+  max-width: 600px;
+}
+
 .film-detail-header {
   display: flex;
   flex-direction: row-reverse;
@@ -1038,6 +1097,79 @@ code {
 .film-detail-showtimes h2 {
   font-size: 1.25rem;
   margin-bottom: 1rem;
+}
+
+/* Day-based showtimes */
+.film-showtimes-by-day {
+  margin-top: 1rem;
+}
+
+.day-tabs {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  border-bottom: 2px solid var(--border-primary);
+}
+
+.day-tab {
+  padding: 8px 16px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  white-space: nowrap;
+  color: var(--text-secondary);
+}
+
+.day-tab:first-child {
+  padding-left: 0;
+}
+
+.day-tab:hover {
+  color: var(--text-primary);
+}
+
+.day-tab-active {
+  color: var(--text-primary);
+  border-bottom-color: var(--border-primary);
+  font-weight: bold;
+}
+
+.day-showtimes {
+  display: flex;
+  flex-direction: column;
+}
+
+.showtime-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.showtime-row:last-child {
+  border-bottom: none;
+}
+
+.showtime-time {
+  font-size: 1.1rem;
+  font-weight: bold;
+  min-width: 50px;
+}
+
+.showtime-cinema {
+  flex: 1;
+  color: var(--text-secondary);
+}
+
+.showtime-actions {
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
 }
 
 .cinema-showtimes-detail {

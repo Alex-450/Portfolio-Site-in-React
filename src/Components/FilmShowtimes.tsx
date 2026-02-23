@@ -1,16 +1,16 @@
-import { useMemo } from 'react';
-import { useRouter } from 'next/router';
+import { useMemo, useState } from 'react';
 import { CinemaShowtimes } from '../types';
-import { formatDate, getToday, groupShowtimesByDate } from '../utils/date';
+import { formatDate, getToday, getCurrentTime } from '../utils/date';
 import { generateCalendarUrlFromFilm } from '../utils/calendar';
-import DayFilter from './filters/DayFilter';
 
-const toArray = (v: unknown): string[] => {
-  if (Array.isArray(v))
-    return v.filter((x): x is string => typeof x === 'string');
-  if (typeof v === 'string') return [v];
-  return [];
-};
+interface ShowtimeWithCinema {
+  time: string;
+  ticketUrl: string;
+  screen: string;
+  cinema: string;
+  variant?: string | null;
+  subtitles?: string | null;
+}
 
 interface FilmShowtimesProps {
   cinemaShowtimes: CinemaShowtimes[];
@@ -23,155 +23,129 @@ function FilmShowtimes({
   filmTitle,
   filmLength,
 }: FilmShowtimesProps) {
-  const router = useRouter();
   const today = useMemo(getToday, []);
-  const dayFilter = toArray(router.query.day);
+  const currentTime = useMemo(getCurrentTime, []);
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
 
-  const setDayFilter = (value: string[]) => {
-    const query = { ...router.query };
-    if (value.length === 0) {
-      delete query.day;
-    } else {
-      query.day = value;
+  // Group all showtimes by date, filtering out past showtimes
+  const showtimesByDate = useMemo(() => {
+    const byDate = new Map<string, ShowtimeWithCinema[]>();
+
+    for (const cs of cinemaShowtimes) {
+      for (const s of cs.showtimes) {
+        // Skip past dates
+        if (s.date < today) continue;
+        // Skip past times for today
+        if (s.date === today && s.time < currentTime) continue;
+
+        if (!byDate.has(s.date)) {
+          byDate.set(s.date, []);
+        }
+        byDate.get(s.date)!.push({
+          time: s.time,
+          ticketUrl: s.ticketUrl,
+          screen: s.screen,
+          cinema: cs.cinema,
+          variant: cs.variant,
+          subtitles: cs.subtitles,
+        });
+      }
     }
-    router.push({ pathname: router.pathname, query }, undefined, {
-      shallow: true,
-    });
-  };
 
-  // Check if there are showtimes today
-  const hasShowtimesToday = useMemo(() => {
-    return cinemaShowtimes.some((cs) =>
-      cs.showtimes.some((s) => s.date === today)
+    // Sort each day's showtimes by time
+    for (const [, showtimes] of byDate) {
+      showtimes.sort((a, b) => a.time.localeCompare(b.time));
+    }
+
+    // Return sorted by date
+    return new Map(
+      [...byDate.entries()].sort((a, b) => a[0].localeCompare(b[0]))
     );
   }, [cinemaShowtimes, today]);
 
-  // Compute day options from all showtimes (excluding today, which is shown separately)
-  const dayOptions = useMemo(() => {
-    const dates = new Set<string>();
-    cinemaShowtimes.forEach((cs) => {
-      cs.showtimes.forEach((s) => {
-        if (s.date >= today && s.date !== today) dates.add(s.date);
-      });
-    });
-    return Array.from(dates)
-      .sort()
-      .map((date) => ({ value: date, label: formatDate(date) }));
-  }, [cinemaShowtimes, today]);
+  const dates = useMemo(() => [...showtimesByDate.keys()], [showtimesByDate]);
+
+  // Auto-select first day if none selected
+  const activeDay =
+    selectedDay && dates.includes(selectedDay) ? selectedDay : dates[0];
+
+  const activeShowtimes = activeDay
+    ? showtimesByDate.get(activeDay) || []
+    : [];
+
+  if (dates.length === 0) {
+    return <p className="no-results">No upcoming showtimes</p>;
+  }
 
   return (
-    <div className="cinema-showtimes cinema-showtimes-detail">
-      <div className="film-detail-day-filter">
-        <DayFilter
-          selectedDays={dayFilter}
-          onChange={setDayFilter}
-          dayOptions={dayOptions}
-          showToday={hasShowtimesToday}
-        />
-      </div>
-      {cinemaShowtimes.map((cs, idx) => {
-        const grouped = groupShowtimesByDate(cs.showtimes);
-        // Filter out past dates and apply day filter
-        const filtered = grouped.filter(([date]) => {
-          if (date < today) return false;
-          if (dayFilter.length === 0) return true;
-          if (dayFilter.includes('today') && date === today) return true;
-          return dayFilter.includes(date);
-        });
-
-        if (filtered.length === 0) return null;
-
-        const screens = new Set(
-          cs.showtimes.map((s) => s.screen).filter(Boolean)
-        );
-        const singleScreen = screens.size === 1 ? [...screens][0] : null;
-
-        return (
-          <div
-            key={`${cs.cinema}-${cs.variant || ''}-${cs.subtitles || ''}-${idx}`}
-            className="cinema-showtime-group"
+    <div className="film-showtimes-by-day">
+      <div className="day-tabs">
+        {dates.map((date) => (
+          <button
+            key={date}
+            className={`day-tab${date === activeDay ? ' day-tab-active' : ''}`}
+            onClick={() => setSelectedDay(date)}
           >
-            <div className="cinema-name">
-              {cs.cinema}
-              {singleScreen && (
-                <span className="cinema-screen"> ({singleScreen})</span>
+            {formatDate(date)}
+          </button>
+        ))}
+      </div>
+
+      <div className="day-showtimes">
+        {activeShowtimes.map((s, i) => (
+          <div key={i} className="showtime-row">
+            <span className="showtime-time">{s.time}</span>
+            <span className="showtime-cinema">
+              {s.cinema}
+              {s.variant && (
+                <span className="cinema-variant"> ({s.variant})</span>
               )}
-              {cs.variant && (
-                <span className="cinema-variant"> ({cs.variant})</span>
-              )}
-              {cs.subtitles && cs.subtitles !== 'none' && (
+              {s.subtitles && s.subtitles !== 'none' && (
                 <span
                   className="cinema-subtitles"
                   title={
-                    cs.subtitles === 'EN'
+                    s.subtitles === 'EN'
                       ? 'English subtitles'
-                      : cs.subtitles === 'NL'
+                      : s.subtitles === 'NL'
                         ? 'Dutch subtitles'
-                        : `${cs.subtitles} subtitles`
+                        : `${s.subtitles} subtitles`
                   }
                 >
                   {' '}
-                  ({cs.subtitles})
+                  ({s.subtitles})
                 </span>
               )}
-            </div>
-            <div className="showtimes">
-              {filtered.map(([date, times]) => {
-                const timesByScreen: Record<string, typeof times> = {};
-                for (const s of times) {
-                  (timesByScreen[s.screen || ''] ??= []).push(s);
-                }
-
-                return Object.entries(timesByScreen).map(
-                  ([screen, screenTimes]) => (
-                    <div key={`${date}-${screen}`} className="showtime-group">
-                      <div
-                        className={`showtime-date${!singleScreen && screen ? ' with-screen' : ''}`}
-                      >
-                        {formatDate(date)}
-                        {!singleScreen && screen && (
-                          <span className="showtime-screen"> ({screen})</span>
-                        )}
-                      </div>
-                      <div className="showtime-times">
-                        {screenTimes.map((s, i) => (
-                          <span key={i} className="showtime-item">
-                            <a
-                              href={s.ticketUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="showtime-link"
-                              title="Buy tickets"
-                            >
-                              {s.time}
-                            </a>
-                            <a
-                              href={generateCalendarUrlFromFilm(
-                                filmTitle,
-                                filmLength,
-                                cs.cinema,
-                                s.date,
-                                s.time,
-                                cs.variant
-                              )}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="calendar-link"
-                              title="Add to Google Calendar"
-                            >
-                              📅
-                            </a>
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )
-                );
-              })}
-            </div>
+            </span>
+            <span className="showtime-actions">
+              <a
+                href={s.ticketUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="showtime-link"
+                title="Buy tickets"
+              >
+                Tickets
+              </a>
+              <a
+                href={generateCalendarUrlFromFilm(
+                  filmTitle,
+                  filmLength,
+                  s.cinema,
+                  activeDay!,
+                  s.time,
+                  s.variant
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="calendar-link"
+                title="Add to Google Calendar"
+              >
+                📅
+              </a>
+            </span>
           </div>
-        );
-      })}
+        ))}
+      </div>
     </div>
   );
 }
