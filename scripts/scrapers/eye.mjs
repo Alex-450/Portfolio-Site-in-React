@@ -82,7 +82,7 @@ async function fetchEye() {
     const film = filmMap.get(key);
     const startDt = new Date(show.startDateTime);
     const date = startDt.toISOString().split('T')[0];
-    const time = startDt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
+    const time = startDt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Amsterdam' });
 
     film.showtimes.push({
       date,
