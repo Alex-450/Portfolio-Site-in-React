@@ -5,8 +5,10 @@ export function decodeAndTrim(string) {
 }
 
 export function parseFilmLength(filmLength) {
+  if (!filmLength) return null;
   const numberPattern = /\d+/g;
   const numericLength = String(filmLength).match(numberPattern);
+  if (!numericLength) return null;
   return `${numericLength} minutes`;
 }
 
