@@ -1,408 +1,94 @@
-:root {
-  /* Dark mode colors */
-  --dark-bg-primary: #121212;
-  --dark-bg-secondary: #272727;
-  --dark-bg-tertiary: #333;
-  --dark-text-primary: #ffffff;
-  --dark-text-secondary: #aaa;
-  --dark-text-body: #ccc;
-  --dark-border: #666;
-  --dark-code-bg: #0d0d0d;
-  --dark-code-inline-bg: #2d2d2d;
-  --dark-error: #f87171;
+/* Dark mode - swap CSS variables at .dark scope */
+.dark {
+  /* Backgrounds */
+  --bg-primary: #121212;
+  --bg-secondary: #272727;
+  --bg-placeholder: #333;
+  --bg-footer-nav: #1a1a1a;
+
+  /* Text */
+  --text-primary: #ffffff;
+  --text-secondary: #aaa;
+  --text-body: #ccc;
+
+  /* Interactive/hover - dark uses bg-primary as the "inverted" text */
+  --hover-text: #121212;
+
+  /* Borders */
+  --border-primary: #888;
+  --border-secondary: #666;
+
+  /* Code blocks */
+  --code-bg: #0d0d0d;
+  --code-inline-bg: #2d2d2d;
+
+  /* Status colors */
+  --color-error: #f87171;
 }
 
+/* Additional dark mode overrides for elements that need special handling */
 .dark {
-  /* Header Menu dark mode */
-  .header-menu-dropdown {
-    background-color: var(--dark-bg-primary);
-    border-color: var(--hover-bg);
+  /* Elements that need inverted text on hover */
+  .header-menu-link:hover,
+  .blog-pill:hover,
+  .blog-pill-active,
+  .blog-row:hover,
+  .footer-link:hover,
+  .filter-select:hover,
+  .filter-toggle-active,
+  .genre-filter-option:hover,
+  .genre-filter-clear:hover,
+  .filter-chip:hover,
+  .filter-chip.clear-all:hover,
+  .showtime-link:hover,
+  .expand-btn:hover,
+  .watchlist-btn:hover,
+  .watchlist-btn-active,
+  .watchlist-icon-active,
+  .film-search-dropdown li:hover,
+  .view-toggle-button:hover,
+  .view-toggle-button-active,
+  .back-link:hover {
+    color: var(--bg-primary);
   }
 
-  .header-menu-link {
-    color: var(--dark-text-primary);
-    border-bottom-color: var(--hover-bg);
-  }
-
-  .header-menu-link:hover {
-    background-color: var(--hover-bg);
-    color: var(--dark-bg-primary);
-  }
-
-  .header-menu-divider {
-    background-color: var(--hover-bg);
-  }
-
-  .header-menu-dropdown .footer-link {
-    border: none;
-  }
-
-  .blog-container {
-    background-color: var(--dark-bg-primary);
-    color: var(--dark-text-primary);
-  }
-
-  .blog-pill {
-    border: 2px solid var(--hover-bg);
-    background-color: var(--dark-bg-primary);
-    color: var(--dark-text-primary);
-  }
-
-  .blog-pill:hover {
-    color: var(--dark-bg-primary);
-    background-color: var(--hover-bg);
-  }
-
-  .blog-pill-active {
-    background-color: var(--hover-bg);
-    color: var(--dark-bg-primary);
-  }
-
-  .blog-pill-active:hover {
-    background-color: var(--hover-bg);
-  }
-
-  .blog-row {
-    color: var(--dark-text-primary);
-    border-bottom: 1px solid var(--hover-bg);
-  }
-
-  .blog-row:hover {
-    color: var(--dark-bg-primary);
-    background-color: var(--hover-bg);
-  }
-
-  .blog-header {
-    border-bottom: 1px solid var(--hover-bg);
-  }
-
-  .footer-container {
-    background-color: var(--dark-bg-secondary);
-  }
-
-  .footer-explainer {
-    color: var(--dark-text-primary);
-  }
-
-  .footer-link {
-    border: 2px solid var(--hover-bg);
-    color: var(--dark-text-primary);
-    background-color: var(--dark-bg-primary);
-  }
-
-  .footer-link:hover {
-    color: var(--dark-bg-primary);
-    background-color: var(--hover-bg);
-  }
-
-  /* Film Listings dark mode */
-  .film-listings-footer .cinema-sources {
-    color: var(--dark-text-secondary);
-  }
-
-  .film-listings-footer .cinema-sources a {
-    color: var(--dark-text-secondary);
-  }
-
-  .film-listings-footer .cinema-sources a:hover {
-    color: var(--dark-text-primary);
-  }
-
-  .filter-select {
-    background-color: var(--dark-bg-primary);
-    color: var(--dark-text-primary);
-    border-color: var(--hover-bg);
-  }
-
-  .filter-select:hover {
-    background-color: var(--hover-bg);
-    color: var(--dark-bg-primary);
-  }
-
-  .filter-toggle-active {
-    background-color: var(--hover-bg);
-    color: var(--dark-bg-primary);
-  }
-
-  .filter-toggle-active:hover {
-    background-color: var(--dark-text-secondary);
-  }
-
-  .genre-filter-dropdown {
-    background-color: var(--dark-bg-primary);
-    border-color: var(--hover-bg);
-  }
-
-  .genre-filter-option:hover {
-    background-color: var(--hover-bg);
-    color: var(--dark-bg-primary);
-  }
-
-  .genre-filter-clear {
-    background-color: var(--dark-bg-tertiary);
-    border-top-color: var(--hover-bg);
-    color: var(--dark-text-primary);
-  }
-
-  .genre-filter-clear:hover {
-    background-color: var(--hover-bg);
-    color: var(--dark-bg-primary);
-  }
-
-  .genre-filter-option input {
-    accent-color: var(--dark-text-primary);
-  }
-
-  .filter-chip {
-    background-color: var(--dark-bg-secondary);
-    color: var(--dark-text-primary);
-    border-color: var(--hover-bg);
-  }
-
-  .filter-chip:hover {
-    background-color: var(--hover-bg);
-    color: var(--dark-bg-primary);
-  }
-
-  .filter-chip.clear-all {
-    background-color: transparent;
-  }
-
-  .filter-chip.clear-all:hover {
-    background-color: var(--hover-bg);
-    color: var(--dark-bg-primary);
-  }
-
-  .loading-text,
-  .no-results {
-    color: var(--dark-text-secondary);
-  }
-
-  .error-text {
-    color: var(--dark-error);
-  }
-
-  .cinema-section {
-    background-color: var(--dark-bg-primary);
-    border-color: var(--hover-bg);
-  }
-
-  .cinema-section h2 {
-    border-bottom-color: var(--hover-bg);
-  }
-
-  .film-card {
-    border-bottom-color: var(--hover-bg);
-  }
-
-  .film-poster,
-  .film-poster-placeholder {
-    border-color: var(--hover-bg);
-    background: var(--dark-bg-tertiary);
-  }
-
-  .film-director,
-  .film-length,
-  .showtime-date {
-    color: var(--dark-text-secondary);
-  }
-
-  .cinema-name {
-    color: var(--dark-text-primary);
-  }
-
-  .showtime-link {
-    background-color: var(--dark-bg-primary);
-    color: var(--dark-text-primary);
-    border-color: var(--hover-bg);
-  }
-
-  .showtime-link:hover {
-    background-color: var(--hover-bg);
-    color: var(--dark-bg-primary);
-  }
-
-  .calendar-link {
-    background-color: var(--dark-bg-primary);
-    border-color: var(--hover-bg);
-  }
-
-  .calendar-link:hover {
-    background-color: var(--hover-bg);
-  }
-
-  .expand-btn {
-    color: var(--dark-text-primary);
-    border-color: var(--hover-bg);
-  }
-
-  .expand-btn:hover {
-    background-color: var(--hover-bg);
-    color: var(--dark-bg-primary);
-  }
-
-  /* Watchlist Button dark mode */
-  .watchlist-btn {
-    color: var(--dark-text-primary);
-    border-color: var(--hover-bg);
-  }
-
-  .watchlist-btn:hover {
-    background-color: var(--hover-bg);
-    color: var(--dark-bg-primary);
-  }
-
-  .watchlist-btn-active {
-    background-color: var(--hover-bg);
-    color: var(--dark-bg-primary);
-  }
-
-  .watchlist-btn-active:hover {
-    background-color: var(--dark-text-secondary);
-  }
-
-  .watchlist-icon {
-    border-color: var(--dark-border);
-    color: var(--dark-text-secondary);
-  }
-
+  /* Watchlist icon tooltip */
   .watchlist-icon::after {
-    background-color: var(--dark-text-primary);
-    color: var(--dark-bg-primary);
+    background-color: var(--text-primary);
+    color: var(--bg-primary);
   }
 
-  .watchlist-icon:hover {
-    border-color: var(--dark-text-primary);
-    color: var(--dark-text-primary);
-  }
-
-  .watchlist-icon-active {
-    background-color: var(--hover-bg);
-    border-color: var(--hover-bg);
-    color: var(--dark-bg-primary);
+  /* Filter toggle active hover needs different bg */
+  .filter-toggle-active:hover,
+  .watchlist-btn-active:hover,
+  .watchlist-icon-active:hover {
+    background-color: var(--text-secondary);
   }
 
   .watchlist-icon-active:hover {
-    background-color: var(--dark-text-secondary);
-    border-color: var(--dark-text-secondary);
+    border-color: var(--text-secondary);
   }
 
-  .film-search-dropdown {
-    background-color: var(--dark-bg-primary);
-    border-color: var(--hover-bg);
+  /* Genre filter clear has tertiary bg */
+  .genre-filter-clear {
+    background-color: var(--bg-placeholder);
   }
 
-  .film-search-dropdown li:hover {
-    background-color: var(--hover-bg);
-    color: var(--dark-bg-primary);
+  /* Filter chip uses secondary bg */
+  .filter-chip {
+    background-color: var(--bg-secondary);
   }
 
-  .film-search-clear {
-    color: var(--dark-text-primary);
-    background: var(--dark-bg-primary);
-    border: 2px solid var(--hover-bg);
-  }
-
-  .film-search-clear:hover {
-    background-color: var(--hover-bg);
-  }
-
-  /* Poster Carousel dark mode */
+  /* Scrollbar styling */
   .poster-carousel {
-    scrollbar-color: var(--hover-bg) var(--dark-bg-primary);
+    scrollbar-color: var(--hover-bg) var(--bg-primary);
   }
 
   .poster-carousel::-webkit-scrollbar-track {
-    background: var(--dark-bg-primary);
+    background: var(--bg-primary);
   }
 
   .poster-carousel::-webkit-scrollbar-thumb {
     background: var(--hover-bg);
-  }
-
-  .poster-carousel-item {
-    border-color: var(--hover-bg);
-  }
-
-  .poster-carousel-image {
-    background: var(--dark-bg-tertiary);
-  }
-
-  .poster-carousel-title {
-    background: var(--dark-bg-primary);
-    color: var(--dark-text-primary);
-  }
-
-  /* View Toggle dark mode */
-  .view-toggle-button {
-    background-color: var(--dark-bg-primary);
-    color: var(--dark-text-primary);
-    border-color: var(--hover-bg);
-  }
-
-  .view-toggle-button:hover {
-    background-color: var(--hover-bg);
-    color: var(--dark-bg-primary);
-  }
-
-  .view-toggle-button-active {
-    background-color: var(--hover-bg);
-    color: var(--dark-bg-primary);
-  }
-
-  /* Genre Carousel dark mode */
-  .genre-carousel-label {
-    border-bottom-color: var(--hover-bg);
-  }
-
-  /* Code blocks dark mode */
-  pre {
-    background-color: var(--dark-code-bg);
-    border-color: var(--hover-bg);
-  }
-
-  code {
-    background-color: var(--dark-code-inline-bg);
-    color: var(--dark-text-primary);
-  }
-
-  /* Film Detail page dark mode */
-  .film-detail-poster,
-  .film-detail-poster-placeholder {
-    border-color: var(--hover-bg);
-    background: var(--dark-bg-tertiary);
-  }
-
-  .film-detail-director {
-    color: var(--dark-text-secondary);
-  }
-
-  .film-detail-length {
-    color: var(--dark-text-secondary);
-  }
-
-  .film-detail-badge {
-    border-color: var(--dark-border);
-    color: var(--dark-text-secondary);
-  }
-
-  .film-detail-genre {
-    border-color: var(--dark-border);
-    color: var(--dark-text-secondary);
-  }
-
-  .film-detail-overview p {
-    color: var(--dark-text-body);
-  }
-
-  .back-link {
-    background: var(--dark-bg-primary);
-    border-color: var(--hover-bg);
-    color: var(--dark-text-primary);
-  }
-
-  .back-link:hover {
-    background: var(--hover-bg);
-    color: var(--dark-bg-primary);
   }
 }
