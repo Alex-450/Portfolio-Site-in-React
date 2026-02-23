@@ -125,21 +125,7 @@ export interface FilmsIndex {
   [slug: string]: FilmDetail;
 }
 
-// Slimmed-down types for listings page (excludes fields not needed for cards)
-export interface ShowtimeLite {
-  date: string;
-  time: string;
-  ticketUrl: string;
-  screen: string;
-}
-
-export interface CinemaShowtimesLite {
-  cinema: string;
-  showtimes: ShowtimeLite[];
-  variant?: string | null;
-  subtitles?: string | null; // e.g., "NL", "EN", or null if unknown
-}
-
+// Slimmed-down type for listings page (excludes tmdb field not needed for cards)
 export interface FilmWithCinemasLite {
   slug: string;
   title: string;
@@ -147,7 +133,7 @@ export interface FilmWithCinemasLite {
   length: string | null;
   posterUrl: string;
   genres: string[];
-  cinemaShowtimes: CinemaShowtimesLite[];
+  cinemaShowtimes: CinemaShowtimes[];
   dateAdded?: string | null;
   releaseDate?: string | null;
 }

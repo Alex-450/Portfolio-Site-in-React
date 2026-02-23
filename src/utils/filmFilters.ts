@@ -1,7 +1,7 @@
 import {
   FilmWithCinemasLite,
-  CinemaShowtimesLite,
-  ShowtimeLite,
+  CinemaShowtimes,
+  Showtime,
 } from '../types';
 import { filterPastShowtimes } from './date';
 
@@ -23,22 +23,22 @@ function matchesSearch(title: string, search: string): boolean {
 }
 
 function filterShowtimesByDay(
-  showtimes: ShowtimeLite[],
+  showtimes: Showtime[],
   dayFilter: string[],
   today: string
-): ShowtimeLite[] {
+): Showtime[] {
   if (dayFilter.length === 0) return showtimes;
   const targetDates = dayFilter.map((d) => (d === 'today' ? today : d));
   return showtimes.filter((s) => targetDates.includes(s.date));
 }
 
 function filterCinemaShowtimes(
-  cinemaShowtimes: CinemaShowtimesLite[],
+  cinemaShowtimes: CinemaShowtimes[],
   cinemaFilter: string[],
   dayFilter: string[],
   today: string,
   currentTime: string
-): CinemaShowtimesLite[] {
+): CinemaShowtimes[] {
   return cinemaShowtimes
     .filter(
       (cs) => cinemaFilter.length === 0 || cinemaFilter.includes(cs.cinema)
