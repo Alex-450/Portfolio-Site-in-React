@@ -22,7 +22,11 @@ function formatDateTimeForCalendar(date: string, time: string): string {
   return `${year}${month}${day}T${hours}${minutes}00`;
 }
 
-function addMinutes(date: string, time: string, minutes: number): { date: string; time: string } {
+function addMinutes(
+  date: string,
+  time: string,
+  minutes: number
+): { date: string; time: string } {
   const [year, month, day] = date.split('-').map(Number);
   const [hours, mins] = time.split(':').map(Number);
 
@@ -44,7 +48,10 @@ export function generateGoogleCalendarUrl(params: CalendarEventParams): string {
   const endDateTime = addMinutes(params.date, params.time, totalDuration);
 
   const startFormatted = formatDateTimeForCalendar(params.date, params.time);
-  const endFormatted = formatDateTimeForCalendar(endDateTime.date, endDateTime.time);
+  const endFormatted = formatDateTimeForCalendar(
+    endDateTime.date,
+    endDateTime.time
+  );
 
   // Build event title
   let title = params.filmTitle;
@@ -60,7 +67,9 @@ export function generateGoogleCalendarUrl(params: CalendarEventParams): string {
     `Runtime: ${params.filmLengthMinutes} minutes`,
     `Ads/trailers: ~${adsMinutes} minutes`,
     `Expected end: ~${endDateTime.time}`,
-  ].filter(Boolean).join('\n');
+  ]
+    .filter(Boolean)
+    .join('\n');
 
   const location = cinema?.address ?? params.cinemaName;
 

@@ -4,8 +4,16 @@ import { fetchAllRssFeeds } from './scrapers/rss-feeds.mjs';
 import { fetchKriterion } from './scrapers/kriterion.mjs';
 import { fetchFcHyena } from './scrapers/fc-hyena.mjs';
 import { fetchEye } from './scrapers/eye.mjs';
-import { searchTmdbMovieDetails, fetchTmdbMovieDetails } from './scrapers/tmdb.mjs';
-import { cleanTitle, generateSlug, extractVariant, getCleanDisplayTitle } from '../src/utils/filmTitle.mjs';
+import {
+  searchTmdbMovieDetails,
+  fetchTmdbMovieDetails,
+} from './scrapers/tmdb.mjs';
+import {
+  cleanTitle,
+  generateSlug,
+  extractVariant,
+  getCleanDisplayTitle,
+} from '../src/utils/filmTitle.mjs';
 
 // Run async functions with limited concurrency
 async function mapWithConcurrency(items, fn, concurrency = 10) {
@@ -13,7 +21,7 @@ async function mapWithConcurrency(items, fn, concurrency = 10) {
   const executing = new Set();
 
   for (const [index, item] of items.entries()) {
-    const promise = fn(item, index).then(result => {
+    const promise = fn(item, index).then((result) => {
       executing.delete(promise);
       return result;
     });
@@ -30,12 +38,13 @@ async function mapWithConcurrency(items, fn, concurrency = 10) {
 
 async function fetchAllCinemas() {
   // Fetch all sources in parallel
-  const [rssResults, kriterionResult, fcHyenaResult, eyeResult] = await Promise.allSettled([
-    fetchAllRssFeeds(),
-    fetchKriterion(),
-    fetchFcHyena(),
-    fetchEye(),
-  ]);
+  const [rssResults, kriterionResult, fcHyenaResult, eyeResult] =
+    await Promise.allSettled([
+      fetchAllRssFeeds(),
+      fetchKriterion(),
+      fetchFcHyena(),
+      fetchEye(),
+    ]);
 
   const cinemas = [];
   const failures = [];
@@ -89,9 +98,11 @@ function groupFilmsByCinema(cinemas) {
 
       const existing = filmMap.get(key);
       // Keep better data if available
-      if (!existing.director && film.director) existing.director = film.director;
+      if (!existing.director && film.director)
+        existing.director = film.director;
       if (!existing.length && film.length) existing.length = film.length;
-      if (!existing.posterUrl && film.posterUrl) existing.posterUrl = film.posterUrl;
+      if (!existing.posterUrl && film.posterUrl)
+        existing.posterUrl = film.posterUrl;
       if (!existing._tmdbId && film._tmdbId) existing._tmdbId = film._tmdbId;
 
       existing.cinemaShowtimes.push({
@@ -138,25 +149,31 @@ async function generateFilmsJson(cinemas) {
   }
 
   const totalFetches = toFetchById.length + toFetchByTitle.length;
-  console.log(`\nFetching TMDB details for ${totalFetches} unique films (${groupedFilms.length} total)...`);
+  console.log(
+    `\nFetching TMDB details for ${totalFetches} unique films (${groupedFilms.length} total)...`
+  );
 
   // Combine all fetches and run with concurrency limit
   const allToFetch = [
-    ...toFetchById.map(film => ({ film, byId: true })),
-    ...toFetchByTitle.map(film => ({ film, byId: false })),
+    ...toFetchById.map((film) => ({ film, byId: true })),
+    ...toFetchByTitle.map((film) => ({ film, byId: false })),
   ];
 
-  await mapWithConcurrency(allToFetch, async ({ film, byId }) => {
-    if (byId) {
-      const details = await fetchTmdbMovieDetails(film._tmdbId);
-      tmdbCacheById.set(film._tmdbId, details);
-    } else {
-      const details = await searchTmdbMovieDetails(film.title, {
-        director: film.director,
-      });
-      tmdbCacheByTitle.set(cleanTitle(film.title), details);
-    }
-  }, 10);
+  await mapWithConcurrency(
+    allToFetch,
+    async ({ film, byId }) => {
+      if (byId) {
+        const details = await fetchTmdbMovieDetails(film._tmdbId);
+        tmdbCacheById.set(film._tmdbId, details);
+      } else {
+        const details = await searchTmdbMovieDetails(film.title, {
+          director: film.director,
+        });
+        tmdbCacheByTitle.set(cleanTitle(film.title), details);
+      }
+    },
+    10
+  );
 
   // Build results using cached data
   for (const film of groupedFilms) {
@@ -179,14 +196,16 @@ async function generateFilmsJson(cinemas) {
       director: film.director,
       length: film.length,
       posterUrl: film.posterUrl || details?.posterPath || '',
-      tmdb: details ? {
-        id: details.tmdbId,
-        overview: details.overview,
-        releaseDate: details.releaseDate,
-        releaseDateNl: details.releaseDateNl,
-        genres: details.genres,
-        youtubeTrailerId: details.youtubeTrailerId,
-      } : null,
+      tmdb: details
+        ? {
+            id: details.tmdbId,
+            overview: details.overview,
+            releaseDate: details.releaseDate,
+            releaseDateNl: details.releaseDateNl,
+            genres: details.genres,
+            youtubeTrailerId: details.youtubeTrailerId,
+          }
+        : null,
       cinemaShowtimes: film.cinemaShowtimes,
     };
   }
@@ -227,7 +246,9 @@ async function main() {
     writeFileSync(outputPath, JSON.stringify(filmsIndex, null, 2));
 
     const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
-    console.log(`\nWrote ${Object.keys(filmsIndex).length} films to ${outputPath}`);
+    console.log(
+      `\nWrote ${Object.keys(filmsIndex).length} films to ${outputPath}`
+    );
     console.log(`Last updated: ${new Date().toISOString()}`);
     console.log(`Total time: ${elapsed}s`);
   } catch (err) {

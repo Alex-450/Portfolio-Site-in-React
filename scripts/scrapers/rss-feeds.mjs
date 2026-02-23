@@ -18,7 +18,7 @@ export async function fetchFeed(feed) {
   console.log(`Fetching ${feed.name}...`);
   const response = await fetchWithRetry(feed.url, {
     headers: {
-      'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+      Accept: 'application/rss+xml, application/xml, text/xml, */*',
       'User-Agent': 'Mozilla/5.0 (compatible; FilmListingsFetcher/1.0)',
     },
   });
@@ -35,7 +35,9 @@ export async function fetchFeed(feed) {
 
     if (cinema) {
       const showtimeList = cinema.showtime || [];
-      const showtimeArray = Array.isArray(showtimeList) ? showtimeList : [showtimeList];
+      const showtimeArray = Array.isArray(showtimeList)
+        ? showtimeList
+        : [showtimeList];
 
       for (const st of showtimeArray) {
         if (st.day && st.time) {
@@ -53,9 +55,17 @@ export async function fetchFeed(feed) {
       // Normalize subtitle_lang to standard codes
       let subtitles = null;
       const subtitleLang = film.subtitle_lang?.toLowerCase?.() || '';
-      if (subtitleLang.includes('nederland') || subtitleLang === 'nl' || subtitleLang === 'nld') {
+      if (
+        subtitleLang.includes('nederland') ||
+        subtitleLang === 'nl' ||
+        subtitleLang === 'nld'
+      ) {
         subtitles = 'NL';
-      } else if (subtitleLang.includes('english') || subtitleLang === 'en' || subtitleLang === 'eng') {
+      } else if (
+        subtitleLang.includes('english') ||
+        subtitleLang === 'en' ||
+        subtitleLang === 'eng'
+      ) {
         subtitles = 'EN';
       } else if (subtitleLang === 'geen' || subtitleLang === 'none') {
         subtitles = 'none';

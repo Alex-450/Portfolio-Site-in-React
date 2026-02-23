@@ -56,7 +56,10 @@ export interface TechMetadata extends BaseMetadata {
   topic: string;
 }
 
-export type ArticleMetadata = FilmMetadata | CreativeWritingMetadata | TechMetadata;
+export type ArticleMetadata =
+  | FilmMetadata
+  | CreativeWritingMetadata
+  | TechMetadata;
 
 export interface ArticleLayoutProps {
   metadata: ArticleMetadata;

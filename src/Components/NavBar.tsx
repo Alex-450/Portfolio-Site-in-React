@@ -45,7 +45,9 @@ const NavBar = () => {
             >
               a-450
             </span>
-            <div className={`header-menu-dropdown ${menuOpen ? 'menu-open' : ''}`}>
+            <div
+              className={`header-menu-dropdown ${menuOpen ? 'menu-open' : ''}`}
+            >
               <Link
                 href="/"
                 className="header-menu-link"

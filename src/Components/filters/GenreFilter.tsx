@@ -6,7 +6,11 @@ interface GenreFilterProps {
   onChange: (genres: string[]) => void;
 }
 
-const GenreFilter = ({ genres, selectedGenres, onChange }: GenreFilterProps) => {
+const GenreFilter = ({
+  genres,
+  selectedGenres,
+  onChange,
+}: GenreFilterProps) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   if (genres.length === 0) {

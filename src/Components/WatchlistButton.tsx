@@ -4,8 +4,13 @@ interface WatchlistButtonProps {
   size?: 'small' | 'large';
 }
 
-function WatchlistButton({ isInWatchlist, onToggle, size = 'small' }: WatchlistButtonProps) {
-  const className = size === 'large' ? 'watchlist-btn watchlist-btn-large' : 'watchlist-btn';
+function WatchlistButton({
+  isInWatchlist,
+  onToggle,
+  size = 'small',
+}: WatchlistButtonProps) {
+  const className =
+    size === 'large' ? 'watchlist-btn watchlist-btn-large' : 'watchlist-btn';
 
   return (
     <button

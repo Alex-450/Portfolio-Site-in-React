@@ -6,7 +6,7 @@ async function fetchFcHyena() {
   console.log('Fetching FC Hyena...');
   const response = await fetchWithRetry(FC_HYENA_URL, {
     headers: {
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'User-Agent': 'Mozilla/5.0 (compatible; FilmListingsFetcher/1.0)',
     },
   });
@@ -42,7 +42,8 @@ async function fetchFcHyena() {
         const day = mmdd.slice(2, 4);
         // Handle year rollover (if month is less than current month, it's next year)
         const currentMonth = new Date().getMonth() + 1;
-        const year = parseInt(month) < currentMonth ? currentYear + 1 : currentYear;
+        const year =
+          parseInt(month) < currentMonth ? currentYear + 1 : currentYear;
         const date = `${year}-${month}-${day}`;
 
         film.showtimes.push({
@@ -55,7 +56,7 @@ async function fetchFcHyena() {
     }
   }
 
-  const films = [...filmMap.values()].filter(f => f.showtimes.length > 0);
+  const films = [...filmMap.values()].filter((f) => f.showtimes.length > 0);
   console.log(`Found ${films.length} films with showtimes for FC Hyena`);
   return { name: 'FC Hyena', films };
 }

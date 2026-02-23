@@ -1,12 +1,13 @@
 import { fetchWithRetry, decodeAndTrim } from './utils.mjs';
 
-const KRITERION_URL = 'https://storage.googleapis.com/kritsite-buffer/shows.json';
+const KRITERION_URL =
+  'https://storage.googleapis.com/kritsite-buffer/shows.json';
 
 async function fetchKriterion() {
   console.log('Fetching Kriterion...');
   const response = await fetchWithRetry(KRITERION_URL, {
     headers: {
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'User-Agent': 'Mozilla/5.0 (compatible; FilmListingsFetcher/1.0)',
     },
   });
@@ -53,7 +54,7 @@ async function fetchKriterion() {
     }
   }
 
-  const films = [...filmMap.values()].filter(f => f.showtimes.length > 0);
+  const films = [...filmMap.values()].filter((f) => f.showtimes.length > 0);
   console.log(`Found ${films.length} films with showtimes for Kriterion`);
   return { name: 'Kriterion', films };
 }

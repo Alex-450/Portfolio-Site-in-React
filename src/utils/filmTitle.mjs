@@ -40,7 +40,8 @@ export function extractVariant(title) {
 
   const variant = match[1];
   // Skip subtitle-related variants - these are handled by the subtitles field
-  const subtitlePatterns = /^(eng(lish)?\s*subs?|en\s*subs?|nl\s*subs?|dutch\s*subs?|no\s*subs?|ondertitel|subs?)$/i;
+  const subtitlePatterns =
+    /^(eng(lish)?\s*subs?|en\s*subs?|nl\s*subs?|dutch\s*subs?|no\s*subs?|ondertitel|subs?)$/i;
   if (subtitlePatterns.test(variant.trim())) return null;
 
   return variant;

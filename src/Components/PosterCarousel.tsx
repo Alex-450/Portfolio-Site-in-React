@@ -7,7 +7,11 @@ interface PosterCarouselProps {
   linkToDetail?: boolean;
 }
 
-const PosterCarousel = ({ films, onPosterClick, linkToDetail }: PosterCarouselProps) => {
+const PosterCarousel = ({
+  films,
+  onPosterClick,
+  linkToDetail,
+}: PosterCarouselProps) => {
   const filmsWithPosters = films.filter((film) => film.posterUrl);
 
   if (filmsWithPosters.length === 0) return null;
@@ -15,7 +19,7 @@ const PosterCarousel = ({ films, onPosterClick, linkToDetail }: PosterCarouselPr
   return (
     <div className="poster-carousel">
       <div className="poster-carousel-track">
-        {filmsWithPosters.map((film) => (
+        {filmsWithPosters.map((film) =>
           linkToDetail ? (
             <Link
               key={film.slug}
@@ -45,7 +49,7 @@ const PosterCarousel = ({ films, onPosterClick, linkToDetail }: PosterCarouselPr
               <span className="poster-carousel-title">{film.title}</span>
             </button>
           )
-        ))}
+        )}
       </div>
     </div>
   );

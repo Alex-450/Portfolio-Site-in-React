@@ -9,20 +9,27 @@ const CACHE_PATH = 'src/data/tmdb-cache.json';
 const POSTER_BASE = 'https://image.tmdb.org/t/p/w342';
 
 // Load/save cache
-let cache = existsSync(CACHE_PATH) ? JSON.parse(readFileSync(CACHE_PATH, 'utf-8')) : {};
-const saveCache = () => writeFileSync(CACHE_PATH, JSON.stringify(cache, null, 2));
+let cache = existsSync(CACHE_PATH)
+  ? JSON.parse(readFileSync(CACHE_PATH, 'utf-8'))
+  : {};
+const saveCache = () =>
+  writeFileSync(CACHE_PATH, JSON.stringify(cache, null, 2));
 
 function findTrailer(videos) {
-  return videos?.find(v => v.site === 'YouTube' && v.type === 'Trailer' && v.official)
-    || videos?.find(v => v.site === 'YouTube' && v.type === 'Trailer')
-    || videos?.find(v => v.site === 'YouTube');
+  return (
+    videos?.find(
+      (v) => v.site === 'YouTube' && v.type === 'Trailer' && v.official
+    ) ||
+    videos?.find((v) => v.site === 'YouTube' && v.type === 'Trailer') ||
+    videos?.find((v) => v.site === 'YouTube')
+  );
 }
 
 function getNlReleaseDate(releaseDates) {
-  const nl = releaseDates?.find(r => r.iso_3166_1 === 'NL');
+  const nl = releaseDates?.find((r) => r.iso_3166_1 === 'NL');
   if (!nl?.release_dates?.length) return null;
   // Get the earliest theatrical release (type 3) or any release
-  const theatrical = nl.release_dates.find(d => d.type === 3);
+  const theatrical = nl.release_dates.find((d) => d.type === 3);
   const anyRelease = nl.release_dates[0];
   const date = theatrical?.release_date || anyRelease?.release_date;
   return date ? date.split('T')[0] : null;
@@ -34,7 +41,7 @@ function buildResult(movie, details, videos, releaseDates) {
     overview: details?.overview || null,
     releaseDate: details?.release_date || movie.release_date || null,
     releaseDateNl: getNlReleaseDate(releaseDates),
-    genres: (details?.genres || []).map(g => g.name),
+    genres: (details?.genres || []).map((g) => g.name),
     posterPath: movie.poster_path ? `${POSTER_BASE}${movie.poster_path}` : null,
     youtubeTrailerId: findTrailer(videos)?.key || null,
   };
@@ -42,13 +49,21 @@ function buildResult(movie, details, videos, releaseDates) {
 
 async function fetchDetails(movieId) {
   const [detailsRes, videosRes, releaseDatesRes] = await Promise.all([
-    fetch(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_API_KEY}`),
-    fetch(`https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${TMDB_API_KEY}`),
-    fetch(`https://api.themoviedb.org/3/movie/${movieId}/release_dates?api_key=${TMDB_API_KEY}`),
+    fetch(
+      `https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_API_KEY}`
+    ),
+    fetch(
+      `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${TMDB_API_KEY}`
+    ),
+    fetch(
+      `https://api.themoviedb.org/3/movie/${movieId}/release_dates?api_key=${TMDB_API_KEY}`
+    ),
   ]);
   const details = detailsRes.ok ? await detailsRes.json() : null;
   const videos = videosRes.ok ? (await videosRes.json()).results : [];
-  const releaseDates = releaseDatesRes.ok ? (await releaseDatesRes.json()).results : [];
+  const releaseDates = releaseDatesRes.ok
+    ? (await releaseDatesRes.json()).results
+    : [];
   return { details, videos, releaseDates };
 }
 
@@ -66,10 +81,15 @@ export async function fetchTmdbMovieDetails(tmdbId) {
     cache[cacheKey] = result;
     saveCache();
     return result;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
-export async function searchTmdbMovieDetails(title, { director = null, year = null } = {}) {
+export async function searchTmdbMovieDetails(
+  title,
+  { director = null, year = null } = {}
+) {
   if (!TMDB_API_KEY || !title) return null;
 
   const cacheKey = `${cleanTitle(title)}|${director?.toLowerCase() || ''}|${year || ''}`;
@@ -86,9 +106,14 @@ export async function searchTmdbMovieDetails(title, { director = null, year = nu
     if (!results?.length) return null;
 
     // Score results: exact title > partial match > popularity
-    const scored = results.map(r => {
+    const scored = results.map((r) => {
       const t = cleanTitle(r.title || '');
-      let score = t === searchTitle ? 100 : (t.includes(searchTitle) || searchTitle.includes(t)) ? 50 : 0;
+      let score =
+        t === searchTitle
+          ? 100
+          : t.includes(searchTitle) || searchTitle.includes(t)
+            ? 50
+            : 0;
       if (year && r.release_date?.startsWith(String(year))) score += 30;
       score += Math.min(r.popularity || 0, 20);
       return { movie: r, score };
@@ -101,5 +126,7 @@ export async function searchTmdbMovieDetails(title, { director = null, year = nu
     cache[cacheKey] = result;
     saveCache();
     return result;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }

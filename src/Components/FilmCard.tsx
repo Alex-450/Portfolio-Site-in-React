@@ -12,27 +12,39 @@ interface FilmCardProps {
   onToggleWatchlist?: () => void;
 }
 
-function FilmCard({ film, dayFilter, today, isInWatchlist, onToggleWatchlist }: FilmCardProps) {
+function FilmCard({
+  film,
+  dayFilter,
+  today,
+  isInWatchlist,
+  onToggleWatchlist,
+}: FilmCardProps) {
   const [expanded, setExpanded] = useState(false);
   const showExpanded = expanded || dayFilter.length > 0;
 
   // Memoize filtered showtimes to avoid recomputing on every render
   const filteredCinemaShowtimes = useMemo(() => {
-    return film.cinemaShowtimes.map(cs => {
-      const filteredGrouped = filterByDay(
-        groupShowtimesByDate(cs.showtimes),
-        dayFilter,
-        today
-      );
-      const screens = new Set(cs.showtimes.map(s => s.screen).filter(Boolean));
-      const singleScreen = screens.size === 1 ? [...screens][0] : null;
-      return { cs, filteredGrouped, singleScreen };
-    }).filter(({ filteredGrouped }) => filteredGrouped.length > 0);
+    return film.cinemaShowtimes
+      .map((cs) => {
+        const filteredGrouped = filterByDay(
+          groupShowtimesByDate(cs.showtimes),
+          dayFilter,
+          today
+        );
+        const screens = new Set(
+          cs.showtimes.map((s) => s.screen).filter(Boolean)
+        );
+        const singleScreen = screens.size === 1 ? [...screens][0] : null;
+        return { cs, filteredGrouped, singleScreen };
+      })
+      .filter(({ filteredGrouped }) => filteredGrouped.length > 0);
   }, [film.cinemaShowtimes, dayFilter, today]);
 
   const hasHiddenDates = useMemo(() => {
     if (showExpanded) return false;
-    return filteredCinemaShowtimes.some(({ filteredGrouped }) => filteredGrouped.length > 3);
+    return filteredCinemaShowtimes.some(
+      ({ filteredGrouped }) => filteredGrouped.length > 3
+    );
   }, [filteredCinemaShowtimes, showExpanded]);
 
   return (
@@ -53,7 +65,9 @@ function FilmCard({ film, dayFilter, today, isInWatchlist, onToggleWatchlist }: 
             <button
               className={`watchlist-icon${isInWatchlist ? ' watchlist-icon-active' : ''}`}
               onClick={onToggleWatchlist}
-              aria-label={isInWatchlist ? 'Remove from watchlist' : 'Add to watchlist'}
+              aria-label={
+                isInWatchlist ? 'Remove from watchlist' : 'Add to watchlist'
+              }
             >
               {isInWatchlist ? '−' : '+'}
             </button>
@@ -63,76 +77,105 @@ function FilmCard({ film, dayFilter, today, isInWatchlist, onToggleWatchlist }: 
         {film.length && <div className="film-length">{film.length}</div>}
 
         <div className="cinema-showtimes">
-          {filteredCinemaShowtimes.map(({ cs, filteredGrouped, singleScreen }) => {
-            const visibleDates = showExpanded
-              ? filteredGrouped
-              : filteredGrouped.slice(0, 3);
+          {filteredCinemaShowtimes.map(
+            ({ cs, filteredGrouped, singleScreen }) => {
+              const visibleDates = showExpanded
+                ? filteredGrouped
+                : filteredGrouped.slice(0, 3);
 
-            return (
-              <div key={`${cs.cinema}-${cs.variant || ''}`} className="cinema-showtime-group">
-                <div className="cinema-name">
-                  {cs.cinema}
-                  {singleScreen && <span className="cinema-screen"> ({singleScreen})</span>}
-                  {cs.variant && <span className="cinema-variant"> ({cs.variant})</span>}
-                  {cs.subtitles && cs.subtitles !== 'none' && (
-                    <span className="cinema-subtitles" title={cs.subtitles === 'EN' ? 'English subtitles' : cs.subtitles === 'NL' ? 'Dutch subtitles' : `${cs.subtitles} subtitles`}>
-                      {' '}({cs.subtitles})
-                    </span>
-                  )}
-                </div>
-                <div className="showtimes">
-                  {visibleDates.map(([date, times]) => {
-                    const timesByScreen: Record<string, typeof times> = {};
-                    for (const s of times) {
-                      (timesByScreen[s.screen || ''] ??= []).push(s);
-                    }
+              return (
+                <div
+                  key={`${cs.cinema}-${cs.variant || ''}`}
+                  className="cinema-showtime-group"
+                >
+                  <div className="cinema-name">
+                    {cs.cinema}
+                    {singleScreen && (
+                      <span className="cinema-screen"> ({singleScreen})</span>
+                    )}
+                    {cs.variant && (
+                      <span className="cinema-variant"> ({cs.variant})</span>
+                    )}
+                    {cs.subtitles && cs.subtitles !== 'none' && (
+                      <span
+                        className="cinema-subtitles"
+                        title={
+                          cs.subtitles === 'EN'
+                            ? 'English subtitles'
+                            : cs.subtitles === 'NL'
+                              ? 'Dutch subtitles'
+                              : `${cs.subtitles} subtitles`
+                        }
+                      >
+                        {' '}
+                        ({cs.subtitles})
+                      </span>
+                    )}
+                  </div>
+                  <div className="showtimes">
+                    {visibleDates.map(([date, times]) => {
+                      const timesByScreen: Record<string, typeof times> = {};
+                      for (const s of times) {
+                        (timesByScreen[s.screen || ''] ??= []).push(s);
+                      }
 
-                    return Object.entries(timesByScreen).map(([screen, screenTimes]) => (
-                      <div key={`${date}-${screen}`} className="showtime-group">
-                        <div className={`showtime-date${!singleScreen && screen ? ' with-screen' : ''}`}>
-                          {formatDate(date)}
-                          {!singleScreen && screen && (
-                            <span className="showtime-screen"> ({screen})</span>
-                          )}
-                        </div>
-                        <div className="showtime-times">
-                          {screenTimes.map((s, i) => (
-                            <span key={i} className="showtime-item">
-                              <a
-                                href={s.ticketUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="showtime-link"
-                                title="Buy tickets"
-                              >
-                                {s.time}
-                              </a>
-                              <a
-                                href={generateCalendarUrlFromFilm(
-                                  film.title,
-                                  film.length,
-                                  cs.cinema,
-                                  s.date,
-                                  s.time,
-                                  cs.variant
-                                )}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="calendar-link"
-                                title="Add to Google Calendar"
-                              >
-                                📅
-                              </a>
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    ));
-                  })}
+                      return Object.entries(timesByScreen).map(
+                        ([screen, screenTimes]) => (
+                          <div
+                            key={`${date}-${screen}`}
+                            className="showtime-group"
+                          >
+                            <div
+                              className={`showtime-date${!singleScreen && screen ? ' with-screen' : ''}`}
+                            >
+                              {formatDate(date)}
+                              {!singleScreen && screen && (
+                                <span className="showtime-screen">
+                                  {' '}
+                                  ({screen})
+                                </span>
+                              )}
+                            </div>
+                            <div className="showtime-times">
+                              {screenTimes.map((s, i) => (
+                                <span key={i} className="showtime-item">
+                                  <a
+                                    href={s.ticketUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="showtime-link"
+                                    title="Buy tickets"
+                                  >
+                                    {s.time}
+                                  </a>
+                                  <a
+                                    href={generateCalendarUrlFromFilm(
+                                      film.title,
+                                      film.length,
+                                      cs.cinema,
+                                      s.date,
+                                      s.time,
+                                      cs.variant
+                                    )}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="calendar-link"
+                                    title="Add to Google Calendar"
+                                  >
+                                    📅
+                                  </a>
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            }
+          )}
         </div>
         {hasHiddenDates && (
           <button className="expand-btn" onClick={() => setExpanded(true)}>

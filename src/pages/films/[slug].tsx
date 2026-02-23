@@ -30,21 +30,29 @@ export default function FilmDetailPage({ film }: Props) {
       <Container className="film-detail-container">
         <div className="film-detail-header">
           {film.posterUrl ? (
-            <img className="film-detail-poster" src={film.posterUrl} alt={film.title} />
+            <img
+              className="film-detail-poster"
+              src={film.posterUrl}
+              alt={film.title}
+            />
           ) : (
             <div className="film-detail-poster-placeholder" />
           )}
           <div className="film-detail-info">
             <h1>{film.title}</h1>
             {film.director && (
-              <p className="film-detail-director">Directed by {film.director}</p>
+              <p className="film-detail-director">
+                Directed by {film.director}
+              </p>
             )}
 
             {film.tmdb && (
               <div className="film-detail-meta">
                 {year && <span className="film-detail-badge">{year}</span>}
                 {(film.tmdb.runtime || film.length) && (
-                  <span className="film-detail-badge">{film.tmdb.runtime || film.length}</span>
+                  <span className="film-detail-badge">
+                    {film.tmdb.runtime || film.length}
+                  </span>
                 )}
               </div>
             )}
@@ -81,7 +89,11 @@ export default function FilmDetailPage({ film }: Props) {
 
         <div className="film-detail-showtimes">
           <h2>Showtimes</h2>
-          <FilmShowtimes cinemaShowtimes={film.cinemaShowtimes} filmTitle={film.title} filmLength={film.length} />
+          <FilmShowtimes
+            cinemaShowtimes={film.cinemaShowtimes}
+            filmTitle={film.title}
+            filmLength={film.length}
+          />
         </div>
 
         <Link href="/film-listings/" className="back-link">

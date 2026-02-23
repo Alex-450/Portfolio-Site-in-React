@@ -6,7 +6,11 @@ interface CinemaFilterProps {
   cinemaNames: string[];
 }
 
-const CinemaFilter = ({ selectedCinemas, onChange, cinemaNames }: CinemaFilterProps) => {
+const CinemaFilter = ({
+  selectedCinemas,
+  onChange,
+  cinemaNames,
+}: CinemaFilterProps) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   if (cinemaNames.length === 0) {

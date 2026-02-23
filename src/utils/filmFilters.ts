@@ -1,4 +1,8 @@
-import { FilmWithCinemasLite, CinemaShowtimesLite, ShowtimeLite } from '../types';
+import {
+  FilmWithCinemasLite,
+  CinemaShowtimesLite,
+  ShowtimeLite,
+} from '../types';
 import { filterPastShowtimes } from './date';
 
 interface FilterOptions {
@@ -36,7 +40,9 @@ function filterCinemaShowtimes(
   currentTime: string
 ): CinemaShowtimesLite[] {
   return cinemaShowtimes
-    .filter((cs) => cinemaFilter.length === 0 || cinemaFilter.includes(cs.cinema))
+    .filter(
+      (cs) => cinemaFilter.length === 0 || cinemaFilter.includes(cs.cinema)
+    )
     .map((cs) => ({
       ...cs,
       showtimes: filterPastShowtimes(
@@ -48,25 +54,38 @@ function filterCinemaShowtimes(
     .filter((cs) => cs.showtimes.length > 0);
 }
 
-function isRecentlyAdded(dateAdded: string | null | undefined, today: string): boolean {
+function isRecentlyAdded(
+  dateAdded: string | null | undefined,
+  today: string
+): boolean {
   if (!dateAdded) return false;
   const addedDate = new Date(dateAdded);
   const todayDate = new Date(today);
-  const diffDays = Math.floor((todayDate.getTime() - addedDate.getTime()) / (1000 * 60 * 60 * 24));
+  const diffDays = Math.floor(
+    (todayDate.getTime() - addedDate.getTime()) / (1000 * 60 * 60 * 24)
+  );
   return diffDays <= 7;
 }
 
-function isUpcomingRelease(releaseDate: string | null | undefined, today: string): boolean {
+function isUpcomingRelease(
+  releaseDate: string | null | undefined,
+  today: string
+): boolean {
   if (!releaseDate) return false;
   return releaseDate > today;
 }
 
-function isRecentlyReleased(releaseDate: string | null | undefined, today: string): boolean {
+function isRecentlyReleased(
+  releaseDate: string | null | undefined,
+  today: string
+): boolean {
   if (!releaseDate) return false;
   if (releaseDate > today) return false;
   const release = new Date(releaseDate);
   const todayDate = new Date(today);
-  const diffDays = Math.floor((todayDate.getTime() - release.getTime()) / (1000 * 60 * 60 * 24));
+  const diffDays = Math.floor(
+    (todayDate.getTime() - release.getTime()) / (1000 * 60 * 60 * 24)
+  );
   return diffDays <= 90; // Last 3 months
 }
 
@@ -74,18 +93,38 @@ export function filterFilms(
   films: FilmWithCinemasLite[],
   options: FilterOptions
 ): FilmWithCinemasLite[] {
-  const { cinemaFilter, dayFilter, filmFilter, genreFilter, directorFilter, today, currentTime, recentlyAdded, upcomingRelease, recentlyReleased } = options;
+  const {
+    cinemaFilter,
+    dayFilter,
+    filmFilter,
+    genreFilter,
+    directorFilter,
+    today,
+    currentTime,
+    recentlyAdded,
+    upcomingRelease,
+    recentlyReleased,
+  } = options;
 
   return films
     .filter((film) => !recentlyAdded || isRecentlyAdded(film.dateAdded, today))
-    .filter((film) => !upcomingRelease || isUpcomingRelease(film.releaseDate, today))
-    .filter((film) => !recentlyReleased || isRecentlyReleased(film.releaseDate, today))
-    .filter((film) => matchesSearch(film.title, filmFilter))
-    .filter((film) =>
-      genreFilter.length === 0 ||
-      film.genres?.some((g) => genreFilter.includes(g))
+    .filter(
+      (film) => !upcomingRelease || isUpcomingRelease(film.releaseDate, today)
     )
-    .filter((film) => !directorFilter || film.director?.toLowerCase() === directorFilter.toLowerCase())
+    .filter(
+      (film) => !recentlyReleased || isRecentlyReleased(film.releaseDate, today)
+    )
+    .filter((film) => matchesSearch(film.title, filmFilter))
+    .filter(
+      (film) =>
+        genreFilter.length === 0 ||
+        film.genres?.some((g) => genreFilter.includes(g))
+    )
+    .filter(
+      (film) =>
+        !directorFilter ||
+        film.director?.toLowerCase() === directorFilter.toLowerCase()
+    )
     .map((film) => ({
       ...film,
       cinemaShowtimes: filterCinemaShowtimes(

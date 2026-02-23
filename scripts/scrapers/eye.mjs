@@ -29,10 +29,10 @@ async function fetchEye() {
   const response = await fetchWithRetry(EYE_URL, {
     method: 'POST',
     headers: {
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'Content-Type': 'application/json',
       'User-Agent': 'Mozilla/5.0 (compatible; FilmListingsFetcher/1.0)',
-      'Origin': 'https://www.eyefilm.nl',
+      Origin: 'https://www.eyefilm.nl',
     },
     body: JSON.stringify({
       query,
@@ -82,7 +82,12 @@ async function fetchEye() {
     const film = filmMap.get(key);
     const startDt = new Date(show.startDateTime);
     const date = startDt.toISOString().split('T')[0];
-    const time = startDt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Amsterdam' });
+    const time = startDt.toLocaleTimeString('en-GB', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'Europe/Amsterdam',
+    });
 
     film.showtimes.push({
       date,
@@ -92,7 +97,7 @@ async function fetchEye() {
     });
   }
 
-  const films = [...filmMap.values()].filter(f => f.showtimes.length > 0);
+  const films = [...filmMap.values()].filter((f) => f.showtimes.length > 0);
   console.log(`Found ${films.length} films with showtimes for Eye`);
   return { name: 'Eye', films };
 }

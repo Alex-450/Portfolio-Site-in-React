@@ -4,7 +4,11 @@ interface WatchlistFilterProps {
   watchlistCount: number;
 }
 
-const WatchlistFilter = ({ enabled, onChange, watchlistCount }: WatchlistFilterProps) => {
+const WatchlistFilter = ({
+  enabled,
+  onChange,
+  watchlistCount,
+}: WatchlistFilterProps) => {
   return (
     <button
       className={`filter-select${enabled ? ' filter-toggle-active' : ''}`}

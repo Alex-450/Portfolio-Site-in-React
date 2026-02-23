@@ -34,7 +34,10 @@ export function getStaticProps() {
           cinema: cs.cinema,
           variant: cs.variant,
           showtimes: cs.showtimes
-            .filter((s) => s.date > today || (s.date === today && s.time >= currentTime))
+            .filter(
+              (s) =>
+                s.date > today || (s.date === today && s.time >= currentTime)
+            )
             .map((s) => ({
               date: s.date,
               time: s.time,
@@ -55,7 +58,8 @@ export function getStaticProps() {
           genres: film.tmdb?.genres ?? [],
           cinemaShowtimes,
           dateAdded: film.dateAdded,
-          releaseDate: film.tmdb?.releaseDateNl ?? film.tmdb?.releaseDate ?? null,
+          releaseDate:
+            film.tmdb?.releaseDateNl ?? film.tmdb?.releaseDate ?? null,
         };
       }
     }

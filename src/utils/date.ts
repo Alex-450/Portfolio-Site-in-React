@@ -12,8 +12,14 @@ export function getCurrentTime(): string {
   return new Date().toTimeString().slice(0, 5);
 }
 
-export function filterPastShowtimes(showtimes: ShowtimeLite[], today: string, currentTime: string): ShowtimeLite[] {
-  return showtimes.filter((s) => s.date > today || (s.date === today && s.time >= currentTime));
+export function filterPastShowtimes(
+  showtimes: ShowtimeLite[],
+  today: string,
+  currentTime: string
+): ShowtimeLite[] {
+  return showtimes.filter(
+    (s) => s.date > today || (s.date === today && s.time >= currentTime)
+  );
 }
 
 export function formatDate(dateStr: string): string {
@@ -25,7 +31,9 @@ export function formatDate(dateStr: string): string {
   });
 }
 
-export function groupShowtimesByDate(showtimes: ShowtimeLite[]): [string, ShowtimeLite[]][] {
+export function groupShowtimesByDate(
+  showtimes: ShowtimeLite[]
+): [string, ShowtimeLite[]][] {
   const grouped: Record<string, ShowtimeLite[]> = {};
   for (const s of showtimes) {
     (grouped[s.date] ??= []).push(s);

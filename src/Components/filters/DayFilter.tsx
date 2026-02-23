@@ -12,11 +12,17 @@ interface DayFilterProps {
   showToday?: boolean;
 }
 
-const DayFilter = ({ selectedDays, onChange, dayOptions, showToday = true }: DayFilterProps) => {
+const DayFilter = ({
+  selectedDays,
+  onChange,
+  dayOptions,
+  showToday = true,
+}: DayFilterProps) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const getDisplayLabel = () => {
-    if (selectedDays === undefined || selectedDays.length === 0) return 'All Days';
+    if (selectedDays === undefined || selectedDays.length === 0)
+      return 'All Days';
     return `${selectedDays.length} Day${selectedDays.length > 1 ? 's' : ''}`;
   };
 

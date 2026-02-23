@@ -36,7 +36,9 @@ export async function GET() {
   const sortedPosts = [...posts]
     .filter((post) => post.link && post.description)
     .sort((a, b) => {
-      return parseDate(b.dateAdded).getTime() - parseDate(a.dateAdded).getTime();
+      return (
+        parseDate(b.dateAdded).getTime() - parseDate(a.dateAdded).getTime()
+      );
     });
 
   const items = sortedPosts

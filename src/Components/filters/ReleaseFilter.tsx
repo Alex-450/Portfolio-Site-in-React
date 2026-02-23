@@ -1,6 +1,10 @@
 import { useState } from 'react';
 
-type ReleaseFilterValue = 'recently-added' | 'upcoming' | 'recently-released' | null;
+type ReleaseFilterValue =
+  | 'recently-added'
+  | 'upcoming'
+  | 'recently-released'
+  | null;
 
 interface ReleaseFilterProps {
   value: ReleaseFilterValue;
