@@ -405,4 +405,9 @@
     background: var(--hover-bg);
     color: var(--dark-bg-primary);
   }
+
+  .archive-toggle:hover {
+    color: var(--dark-text-body);
+  }
 }
+
