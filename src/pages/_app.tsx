@@ -1,6 +1,6 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/index.css';
 import '../css/dark-mode.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import NavBar from '../Components/NavBar';
 import Footer from '../Components/Footer';
 import { ThemeProvider } from 'next-themes';
