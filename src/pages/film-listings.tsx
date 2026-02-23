@@ -33,6 +33,7 @@ export function getStaticProps() {
         .map((cs) => ({
           cinema: cs.cinema,
           variant: cs.variant,
+          subtitles: cs.subtitles,
           showtimes: cs.showtimes
             .filter(
               (s) =>

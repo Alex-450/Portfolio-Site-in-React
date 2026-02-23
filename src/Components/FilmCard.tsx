@@ -85,7 +85,7 @@ function FilmCard({
 
               return (
                 <div
-                  key={`${cs.cinema}-${cs.variant || ''}`}
+                  key={`${cs.cinema}-${film.slug}-${cs.variant || ''}-${cs.subtitles || ''}`}
                   className="cinema-showtime-group"
                 >
                   <div className="cinema-name">

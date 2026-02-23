@@ -69,7 +69,7 @@ function FilmShowtimes({
           showToday={hasShowtimesToday}
         />
       </div>
-      {cinemaShowtimes.map((cs) => {
+      {cinemaShowtimes.map((cs, idx) => {
         const grouped = groupShowtimesByDate(cs.showtimes);
         // Filter out past dates and apply day filter
         const filtered = grouped.filter(([date]) => {
@@ -88,7 +88,7 @@ function FilmShowtimes({
 
         return (
           <div
-            key={`${cs.cinema}-${cs.variant || ''}`}
+            key={`${cs.cinema}-${cs.variant || ''}-${cs.subtitles || ''}-${idx}`}
             className="cinema-showtime-group"
           >
             <div className="cinema-name">
