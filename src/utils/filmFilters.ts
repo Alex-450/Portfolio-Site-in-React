@@ -97,7 +97,8 @@ function isReRelease(
   if (!releaseDate) return false;
   const currentYear = new Date(today).getFullYear();
   const releaseYear = new Date(releaseDate).getFullYear();
-  return releaseYear < currentYear;
+  // Exclude current year and previous year (films may just be delayed releases)
+  return releaseYear < currentYear - 1;
 }
 
 export function filterFilms(
