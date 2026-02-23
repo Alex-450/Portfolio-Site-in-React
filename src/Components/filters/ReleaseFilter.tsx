@@ -4,6 +4,7 @@ type ReleaseFilterValue =
   | 'recently-added'
   | 'upcoming'
   | 'recently-released'
+  | 're-releases'
   | null;
 
 interface ReleaseFilterProps {
@@ -15,6 +16,7 @@ const OPTIONS: { value: ReleaseFilterValue; label: string }[] = [
   { value: 'recently-added', label: 'Recently Added' },
   { value: 'upcoming', label: 'Upcoming Releases' },
   { value: 'recently-released', label: 'Recently Released' },
+  { value: 're-releases', label: 'Re-releases' },
 ];
 
 const ReleaseFilter = ({ value, onChange }: ReleaseFilterProps) => {

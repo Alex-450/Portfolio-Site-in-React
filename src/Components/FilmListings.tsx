@@ -156,6 +156,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
       recentlyAdded: releaseFilter === 'recently-added',
       upcomingRelease: releaseFilter === 'upcoming',
       recentlyReleased: releaseFilter === 'recently-released',
+      reRelease: releaseFilter === 're-releases',
     });
 
     // Apply watchlist filter
@@ -171,6 +172,11 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
       );
     } else if (releaseFilter === 'upcoming') {
       // Closest to today first (ascending)
+      films = [...films].sort((a, b) =>
+        (a.releaseDate ?? '').localeCompare(b.releaseDate ?? '')
+      );
+    } else if (releaseFilter === 're-releases') {
+      // Oldest first (ascending by release date)
       films = [...films].sort((a, b) =>
         (a.releaseDate ?? '').localeCompare(b.releaseDate ?? '')
       );
@@ -207,6 +213,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
         recentlyAdded: releaseFilter === 'recently-added',
         upcomingRelease: releaseFilter === 'upcoming',
         recentlyReleased: releaseFilter === 'recently-released',
+        reRelease: releaseFilter === 're-releases',
       }),
     [
       allFilms,
@@ -234,6 +241,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
       recentlyAdded: releaseFilter === 'recently-added',
       upcomingRelease: releaseFilter === 'upcoming',
       recentlyReleased: releaseFilter === 'recently-released',
+      reRelease: releaseFilter === 're-releases',
     });
     const allDates = new Set<string>();
     filmsForDayOptions.forEach((film) => {

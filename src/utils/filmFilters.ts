@@ -16,6 +16,7 @@ interface FilterOptions {
   recentlyAdded?: boolean;
   upcomingRelease?: boolean;
   recentlyReleased?: boolean;
+  reRelease?: boolean;
 }
 
 function matchesSearch(title: string, search: string): boolean {
@@ -89,6 +90,16 @@ function isRecentlyReleased(
   return diffDays <= 90; // Last 3 months
 }
 
+function isReRelease(
+  releaseDate: string | null | undefined,
+  today: string
+): boolean {
+  if (!releaseDate) return false;
+  const currentYear = new Date(today).getFullYear();
+  const releaseYear = new Date(releaseDate).getFullYear();
+  return releaseYear < currentYear;
+}
+
 export function filterFilms(
   films: FilmWithCinemasLite[],
   options: FilterOptions
@@ -104,6 +115,7 @@ export function filterFilms(
     recentlyAdded,
     upcomingRelease,
     recentlyReleased,
+    reRelease,
   } = options;
 
   return films
@@ -114,6 +126,7 @@ export function filterFilms(
     .filter(
       (film) => !recentlyReleased || isRecentlyReleased(film.releaseDate, today)
     )
+    .filter((film) => !reRelease || isReRelease(film.releaseDate, today))
     .filter((film) => matchesSearch(film.title, filmFilter))
     .filter(
       (film) =>
