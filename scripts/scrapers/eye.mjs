@@ -58,9 +58,8 @@ async function fetchEye() {
     const production = show.production?.[0];
     if (!production?.title) continue;
 
-    // Get subtitle language and add suffix
+    // Get subtitle language
     const subtitleLang = SUBTITLE_MAP[show.singleSubtitle];
-    const suffix = subtitleLang === 'EN' ? ' (ENG SUBS)' : subtitleLang === 'NL' ? ' (NL SUBS)' : '';
     const key = `${production.id}-${show.singleSubtitle || 'none'}`;
 
     if (!filmMap.has(key)) {
@@ -70,11 +69,12 @@ async function fetchEye() {
       const durationMinutes = Math.round((end - start) / 60000);
 
       filmMap.set(key, {
-        title: decodeAndTrim(production.title) + suffix,
+        title: decodeAndTrim(production.title),
         director: null,
         length: durationMinutes > 0 ? `${durationMinutes} minutes` : null,
         posterUrl: '',
         showtimes: [],
+        subtitles: subtitleLang || null,
         _needsTmdbSearch: true,
       });
     }

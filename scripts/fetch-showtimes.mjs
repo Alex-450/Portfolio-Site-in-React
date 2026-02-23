@@ -98,6 +98,7 @@ function groupFilmsByCinema(cinemas) {
         cinema: cinema.name,
         showtimes: film.showtimes,
         variant: variant,
+        subtitles: film.subtitles ?? null,
       });
     }
   }

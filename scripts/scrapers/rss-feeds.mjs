@@ -50,12 +50,34 @@ export async function fetchFeed(feed) {
     }
 
     if (film.title && showtimes.length > 0) {
+      // Normalize subtitle_lang to standard codes
+      let subtitles = null;
+      const subtitleLang = film.subtitle_lang?.toLowerCase?.() || '';
+      if (subtitleLang.includes('nederland') || subtitleLang === 'nl' || subtitleLang === 'nld') {
+        subtitles = 'NL';
+      } else if (subtitleLang.includes('english') || subtitleLang === 'en' || subtitleLang === 'eng') {
+        subtitles = 'EN';
+      } else if (subtitleLang === 'geen' || subtitleLang === 'none') {
+        subtitles = 'none';
+      }
+
+      // If no subtitle_lang field, try to extract from title
+      if (!subtitles) {
+        const titleLower = film.title.toLowerCase();
+        if (/\(eng(lish)?\s*subs?\)/.test(titleLower)) {
+          subtitles = 'EN';
+        } else if (/\((nl|dutch)\s*subs?\)/.test(titleLower)) {
+          subtitles = 'NL';
+        }
+      }
+
       films.push({
         title: decodeAndTrim(film.title),
         director: film.director || null,
         length: parseFilmLength(film.length) || null,
         posterUrl: film.posterlink || '',
         showtimes,
+        subtitles,
         _tmdbId: film.tmdb || null,
       });
     }

@@ -78,6 +78,11 @@ function FilmShowtimes({ cinemaShowtimes, filmTitle, filmLength }: FilmShowtimes
               {cs.cinema}
               {singleScreen && <span className="cinema-screen"> ({singleScreen})</span>}
               {cs.variant && <span className="cinema-variant"> ({cs.variant})</span>}
+              {cs.subtitles && cs.subtitles !== 'none' && (
+                <span className="cinema-subtitles" title={cs.subtitles === 'EN' ? 'English subtitles' : cs.subtitles === 'NL' ? 'Dutch subtitles' : `${cs.subtitles} subtitles`}>
+                  {' '}({cs.subtitles})
+                </span>
+              )}
             </div>
             <div className="showtimes">
               {filtered.map(([date, times]) => {

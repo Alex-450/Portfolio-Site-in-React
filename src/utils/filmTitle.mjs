@@ -28,14 +28,22 @@ export function cleanTitle(title) {
 }
 
 /**
- * Extract variant info from title (e.g., "50th Anniversary", "ENG SUBS").
+ * Extract variant info from title (e.g., "50th Anniversary").
  * Handles both "Film (variant)" and "Film (variant) | Event" formats.
+ * Excludes subtitle-related variants since those are handled by the subtitles field.
  */
 export function extractVariant(title) {
   // First strip any "| suffix" part
   const baseTitle = title.split(/[|•]/)[0].trim();
   const match = baseTitle.match(/\s*\(([^)]+)\)\s*$/);
-  return match ? match[1] : null;
+  if (!match) return null;
+
+  const variant = match[1];
+  // Skip subtitle-related variants - these are handled by the subtitles field
+  const subtitlePatterns = /^(eng(lish)?\s*subs?|en\s*subs?|nl\s*subs?|dutch\s*subs?|no\s*subs?|ondertitel|subs?)$/i;
+  if (subtitlePatterns.test(variant.trim())) return null;
+
+  return variant;
 }
 
 /**

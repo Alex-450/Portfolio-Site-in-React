@@ -80,6 +80,7 @@ export interface CinemaShowtimes {
   cinema: string;
   showtimes: Showtime[];
   variant?: string | null; // e.g., "50th Anniversary", "ENG SUBS"
+  subtitles?: string | null; // e.g., "NL", "EN", or null if unknown
 }
 
 export interface FilmWithCinemas {
@@ -133,6 +134,7 @@ export interface CinemaShowtimesLite {
   cinema: string;
   showtimes: ShowtimeLite[];
   variant?: string | null;
+  subtitles?: string | null; // e.g., "NL", "EN", or null if unknown
 }
 
 export interface FilmWithCinemasLite {
