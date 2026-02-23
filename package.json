@@ -37,9 +37,6 @@
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
   "browserslist": {
     "production": [
       ">0.2%",
