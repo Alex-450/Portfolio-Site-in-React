@@ -113,7 +113,7 @@ function FilmShowtimes({
                   }
                 >
                   {' '}
-                  ({s.subtitles})
+                  ({s.subtitles} SUBS)
                 </span>
               )}
             </span>

@@ -109,7 +109,7 @@ function FilmCard({
                         }
                       >
                         {' '}
-                        ({cs.subtitles})
+                        ({cs.subtitles} SUBS)
                       </span>
                     )}
                   </div>
