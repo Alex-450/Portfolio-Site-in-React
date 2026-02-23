@@ -4,9 +4,8 @@
   --dark-bg-secondary: #272727;
   --dark-bg-tertiary: #333;
   --dark-text-primary: #ffffff;
-  --dark-text-muted: #aaa;
-  --dark-text-subtle: #ccc;
-  --dark-text-secondary: #888;
+  --dark-text-secondary: #aaa;
+  --dark-text-body: #ccc;
   --dark-border: #666;
   --dark-code-bg: #0d0d0d;
   --dark-code-inline-bg: #2d2d2d;
@@ -98,11 +97,11 @@
 
   /* Film Listings dark mode */
   .film-listings-footer .cinema-sources {
-    color: var(--dark-text-muted);
+    color: var(--dark-text-secondary);
   }
 
   .film-listings-footer .cinema-sources a {
-    color: var(--dark-text-muted);
+    color: var(--dark-text-secondary);
   }
 
   .film-listings-footer .cinema-sources a:hover {
@@ -126,7 +125,7 @@
   }
 
   .filter-toggle-active:hover {
-    background-color: var(--dark-text-muted);
+    background-color: var(--dark-text-secondary);
   }
 
   .genre-filter-dropdown {
@@ -176,7 +175,7 @@
 
   .loading-text,
   .no-results {
-    color: var(--dark-text-muted);
+    color: var(--dark-text-secondary);
   }
 
   .error-text {
@@ -205,7 +204,7 @@
   .film-director,
   .film-length,
   .showtime-date {
-    color: var(--dark-text-muted);
+    color: var(--dark-text-secondary);
   }
 
   .cinema-name {
@@ -259,12 +258,12 @@
   }
 
   .watchlist-btn-active:hover {
-    background-color: var(--dark-text-muted);
+    background-color: var(--dark-text-secondary);
   }
 
   .watchlist-icon {
     border-color: var(--dark-border);
-    color: var(--dark-text-muted);
+    color: var(--dark-text-secondary);
   }
 
   .watchlist-icon::after {
@@ -284,8 +283,8 @@
   }
 
   .watchlist-icon-active:hover {
-    background-color: var(--dark-text-muted);
-    border-color: var(--dark-text-muted);
+    background-color: var(--dark-text-secondary);
+    border-color: var(--dark-text-secondary);
   }
 
   .film-search-dropdown {
@@ -375,7 +374,7 @@
   }
 
   .film-detail-director {
-    color: var(--dark-text-muted);
+    color: var(--dark-text-secondary);
   }
 
   .film-detail-length {
@@ -384,16 +383,16 @@
 
   .film-detail-badge {
     border-color: var(--dark-border);
-    color: var(--dark-text-muted);
+    color: var(--dark-text-secondary);
   }
 
   .film-detail-genre {
     border-color: var(--dark-border);
-    color: var(--dark-text-muted);
+    color: var(--dark-text-secondary);
   }
 
   .film-detail-overview p {
-    color: var(--dark-text-subtle);
+    color: var(--dark-text-body);
   }
 
   .back-link {

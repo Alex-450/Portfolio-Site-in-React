@@ -13,9 +13,7 @@
 
   /* Text */
   --text-primary: #000000;
-  --text-secondary: #444;
-  --text-muted: #666;
-  --text-subtle: #555;
+  --text-secondary: #555;
   --text-body: #333;
 
   /* Interactive/hover */
@@ -315,13 +313,13 @@ code {
 }
 
 .film-listings-footer .cinema-sources {
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
 
 .film-listings-footer .cinema-sources a {
-  color: var(--text-muted);
+  color: var(--text-secondary);
   text-decoration: underline;
 }
 
@@ -524,7 +522,7 @@ code {
 .no-results {
   text-align: center;
   padding: 2rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
 .error-text {
@@ -598,7 +596,7 @@ code {
   padding: 0;
   background: transparent;
   border: 1px solid var(--border-secondary);
-  color: var(--text-muted);
+  color: var(--text-secondary);
   cursor: pointer;
   line-height: 1;
   flex-shrink: 0;
@@ -664,7 +662,7 @@ code {
 }
 
 .film-length {
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-size: 0.85rem;
   margin-bottom: 0.5rem;
 }
@@ -814,7 +812,7 @@ code {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
-  scrollbar-color: var(--text-muted) var(--bg-primary);
+  scrollbar-color: var(--text-secondary) var(--bg-primary);
 }
 
 .poster-carousel::-webkit-scrollbar {
@@ -826,7 +824,7 @@ code {
 }
 
 .poster-carousel::-webkit-scrollbar-thumb {
-  background: var(--text-muted);
+  background: var(--text-secondary);
   border-radius: 4px;
 }
 
@@ -973,7 +971,7 @@ code {
 
 .film-detail-length {
   font-size: 0.95rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   margin-bottom: 1rem;
 }
 
@@ -989,7 +987,7 @@ code {
   background: transparent;
   border: 1px solid var(--border-secondary);
   border-radius: 12px;
-  color: var(--text-subtle);
+  color: var(--text-secondary);
 }
 
 .film-detail-badge {
