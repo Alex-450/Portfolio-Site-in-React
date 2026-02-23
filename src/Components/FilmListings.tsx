@@ -518,35 +518,35 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
         <footer className="film-listings-footer">
           <p className="cinema-sources">
             Showtimes from{' '}
-            <a href="https://www.lab111.nl/" target="_blank">
+            <a href="https://www.lab111.nl/" target="_blank" rel="noopener noreferrer">
               LAB111
             </a>
             ,{' '}
-            <a href="https://studio-k.nu/" target="_blank">
+            <a href="https://studio-k.nu/" target="_blank" rel="noopener noreferrer">
               Studio K
             </a>
             ,{' '}
-            <a href="https://filmhallen.nl/" target="_blank">
+            <a href="https://filmhallen.nl/" target="_blank" rel="noopener noreferrer">
               Filmhallen
             </a>
             ,{' '}
-            <a href="https://filmkoepel.nl/" target="_blank">
+            <a href="https://filmkoepel.nl/" target="_blank" rel="noopener noreferrer">
               Filmkoepel
             </a>
             ,{' '}
-            <a href="https://themovies.nl/" target="_blank">
+            <a href="https://themovies.nl/" target="_blank" rel="noopener noreferrer">
               The Movies
             </a>
             ,{' '}
-            <a href="https://www.kriterion.nl/" target="_blank">
+            <a href="https://www.kriterion.nl/" target="_blank" rel="noopener noreferrer">
               Kriterion
             </a>
             ,{' '}
-            <a href="https://www.eyefilm.nl/en" target="_blank">
+            <a href="https://www.eyefilm.nl/en" target="_blank" rel="noopener noreferrer">
               Eye
             </a>{' '}
             &{' '}
-            <a href="https://fchyena.nl/" target="_blank">
+            <a href="https://fchyena.nl/" target="_blank" rel="noopener noreferrer">
               FC Hyena
             </a>
           </p>
