@@ -225,6 +225,7 @@
   .calendar-link {
     background-color: var(--dark-bg-primary);
     border-color: var(--hover-bg);
+    color: var(--dark-text-primary);
   }
 
   .calendar-link:hover {

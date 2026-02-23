@@ -745,9 +745,11 @@ code {
   padding: 6px 12px;
   background-color: var(--bg-primary);
   border: 2px solid var(--border-primary);
+  border-left: none;
   font-size: 0.85rem;
   text-decoration: none;
   cursor: pointer;
+  color: var(--text-primary);
 }
 
 .calendar-link:hover {
@@ -1169,7 +1171,6 @@ code {
 .showtime-actions {
   display: flex;
   align-items: stretch;
-  gap: 0.5rem;
 }
 
 .cinema-showtimes-detail {

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Calendar } from 'lucide-react';
 import { CinemaShowtimes } from '../types';
 import { formatDate, getToday, getCurrentTime } from '../utils/date';
 import { generateCalendarUrlFromFilm } from '../utils/calendar';
@@ -140,7 +141,7 @@ function FilmShowtimes({
                 className="calendar-link"
                 title="Add to Google Calendar"
               >
-                📅
+                <Calendar size={16} />
               </a>
             </span>
           </div>
