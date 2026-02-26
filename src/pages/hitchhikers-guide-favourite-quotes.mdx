@@ -1,0 +1,23 @@
+import ArticleLayout from '../Components/ArticleLayout';
+import { findBlogPost } from '../utils/blog';
+
+export const blog = findBlogPost(
+  (b) => b.type === 'book' && b.topic.toLowerCase() === "the hitchhiker's guide to the galaxy"
+);
+export const metadata = {
+  ...blog,
+  bookAuthor: blog.type === 'book' ? blog.author : '',
+  keywords: "The Hitchhiker's Guide to the galaxy favourite quotes",
+};
+
+"... one man had been nailed to a tree for saying how great it would be
+to be nice to each other for a change..." - p.1
+
+"Time is an illusion. Lunchtime doubly so." - p.25 
+
+---
+
+
+export default function Layout({ children }) {
+  return <ArticleLayout metadata={metadata}>{children}</ArticleLayout>;
+}
