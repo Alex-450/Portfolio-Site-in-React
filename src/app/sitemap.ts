@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import blogPostArchive from '../blogPostArchive.json';
+import filmsData from '../data/films.json';
 
 export const dynamic = 'force-static';
 
@@ -16,8 +17,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     };
   });
 
+  const filmPages = Object.values(filmsData).map((film) => ({
+    url: `${baseUrl}/films/${film.slug}`,
+    lastModified: new Date(film.dateAdded).toISOString(),
+  }));
+
   return [
     { url: baseUrl, lastModified: new Date().toISOString() }, // homepage
+    { url: `${baseUrl}/film-listings`, lastModified: new Date().toISOString() },
     ...blogPages,
+    ...filmPages,
   ];
 }
