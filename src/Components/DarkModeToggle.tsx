@@ -3,17 +3,15 @@
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 
-const DarkModeToggle = () => {
+const DarkModeToggle = ({ className }: { className?: string }) => {
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // Make sure component is mounted before accessing `theme` to avoid hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
 
   if (!mounted) {
-    // Avoid rendering until mounted
     return null;
   }
 
@@ -21,7 +19,7 @@ const DarkModeToggle = () => {
 
   return (
     <button
-      className="footer-link"
+      className={className}
       onClick={() => setTheme(darkMode ? 'light' : 'dark')}
     >
       {darkMode ? 'Light mode ›' : 'Dark mode ›'}

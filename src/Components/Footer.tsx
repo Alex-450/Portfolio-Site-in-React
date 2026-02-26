@@ -53,7 +53,7 @@ const Footer = () => (
 
       <Row>
         <Col xs={12} md={{ span: 4, offset: 4 }}>
-          <DarkModeToggle />
+          <DarkModeToggle className="footer-link" />
         </Col>
       </Row>
 

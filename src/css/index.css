@@ -40,6 +40,16 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.nav-link {
+  color: var(--color-white);
+  text-decoration: none;
+  padding: 10px;
+}
+
+.nav-link:hover {
+  color: var(--text-secondary)
+}
+
 .skip-link {
   position: absolute;
   top: -40px;
@@ -82,11 +92,6 @@
   z-index: 100;
   display: none;
   flex-direction: column;
-}
-
-.header-menu-wrapper:hover .header-menu-dropdown,
-.header-menu-dropdown.menu-open {
-  display: flex;
 }
 
 .header-menu-link {

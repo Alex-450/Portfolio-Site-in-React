@@ -19,6 +19,14 @@
     border-color: var(--hover-bg);
   }
 
+  .nav-link {
+    color: var(--dark-text-primary);
+  }
+
+  .nav-link:active {
+    color: var(--dark-text-secondary);
+  }
+
   .header-menu-link {
     color: var(--dark-text-primary);
     border-bottom-color: var(--hover-bg);
