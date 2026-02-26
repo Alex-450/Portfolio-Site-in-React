@@ -245,6 +245,7 @@ button.footer-link {
 .blog-pills {
   display: flex;
   gap: 10px;
+  overflow-x: auto;
 }
 
 .blog-pill {
@@ -252,6 +253,7 @@ button.footer-link {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   padding: 2px 8px;
+  white-space: nowrap;
 }
 
 .blog-pill:hover {
