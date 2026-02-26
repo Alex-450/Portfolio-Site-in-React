@@ -23,7 +23,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   return [
-    { url: baseUrl, lastModified: new Date().toISOString() }, // homepage
+    { url: baseUrl, lastModified: new Date().toISOString() },
+    { url: `${baseUrl}/blog`, lastModified: new Date().toISOString() },
     { url: `${baseUrl}/film-listings`, lastModified: new Date().toISOString() },
     ...blogPages,
     ...filmPages,

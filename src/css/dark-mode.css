@@ -15,34 +15,11 @@
 .dark {
   /* Header Menu dark mode */
   .header-menu-dropdown {
-    background-color: var(--dark-bg-primary);
-    border-color: var(--hover-bg);
-  }
-
-  .nav-link {
-    color: var(--dark-text-primary);
-  }
-
-  .nav-link:active {
-    color: var(--dark-text-secondary);
-  }
-
-  .header-menu-link {
-    color: var(--dark-text-primary);
     border-bottom-color: var(--hover-bg);
-  }
-
-  .header-menu-link:hover {
-    background-color: var(--hover-bg);
-    color: var(--dark-bg-primary);
   }
 
   .header-menu-divider {
     background-color: var(--hover-bg);
-  }
-
-  .header-menu-dropdown .footer-link {
-    border: none;
   }
 
   .blog-container {
@@ -99,6 +76,28 @@
   }
 
   .footer-link:hover {
+    color: var(--dark-bg-primary);
+    background-color: var(--hover-bg);
+  }
+
+  /* Home page dark mode */
+  .home-intro-line a,
+  .home-intro-line a:visited,
+  .home-intro-line a:link {
+    color: var(--dark-text-primary) !important;
+  }
+
+  .home-intro-line a:hover {
+    color: var(--hover-bg) !important;
+  }
+
+  .home-nav-link {
+    border-color: var(--hover-bg);
+    color: var(--dark-text-primary);
+    background-color: var(--dark-bg-primary);
+  }
+
+  .home-nav-link:hover {
     color: var(--dark-bg-primary);
     background-color: var(--hover-bg);
   }

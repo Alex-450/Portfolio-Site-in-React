@@ -1,108 +1,59 @@
-import { useState } from 'react';
 import Link from 'next/link';
-import blogPostArchive from '../blogPostArchive.json';
-import { Container, Col, Row } from 'react-bootstrap';
-import { BlogPost, FilmBlogPost, CreativeWritingBlogPost } from '../types';
+import { Container, Row, Col } from 'react-bootstrap';
+import { ArrowRight } from 'lucide-react';
 
-type CategoryFilter = 'film' | 'creative-writing' | 'tech';
-
-const Page = () => {
-  const [activeCategory, setActiveCategory] = useState<CategoryFilter>('film');
-  const [showArchive, setShowArchive] = useState(false);
-  const posts: BlogPost[] = blogPostArchive as BlogPost[];
-
-  const hasFilmPosts = posts.some((p) => p.type === 'film' && !p.archived);
-  const hasCreativeWritingPosts = posts.some(
-    (p) => p.type === 'creative-writing' && !p.archived
-  );
-  const hasTechPosts = posts.some((p) => p.type === 'tech' && !p.archived);
-
-  const filteredPosts = posts.filter(
-    (post) => post.type === activeCategory && !post.archived
-  );
-  const archivedPosts = posts.filter(
-    (post) => post.type === activeCategory && post.archived
-  );
-
-  const getSubtitle = (blog: BlogPost) => {
-    if (blog.type === 'film') return blog.topic;
-    if (blog.type === 'creative-writing') return blog.location;
-    if (blog.type === 'tech') return blog.topic;
-    return '';
-  };
-
+const HomePage = () => {
   return (
-    <Container className="title-container flex-grow-1">
-      <h1>Blog</h1>
-      <div className="blog-pills">
-        {hasFilmPosts && (
-          <button
-            className={`blog-pill ${activeCategory === 'film' ? 'blog-pill-active' : ''}`}
-            onClick={() => setActiveCategory('film')}
-          >
-            Film
-          </button>
-        )}
-        {hasCreativeWritingPosts && (
-          <button
-            className={`blog-pill ${activeCategory === 'creative-writing' ? 'blog-pill-active' : ''}`}
-            onClick={() => setActiveCategory('creative-writing')}
-          >
-            Creative Writing
-          </button>
-        )}
-        {hasTechPosts && (
-          <button
-            className={`blog-pill ${activeCategory === 'tech' ? 'blog-pill-active' : ''}`}
-            onClick={() => setActiveCategory('tech')}
-          >
-            Tech
-          </button>
-        )}
-      </div>
-      <Row className="blog-header">
-        <Col md={2}>Date</Col>
-        <Col>Title</Col>
+    <Container className="home-container flex-grow-1">
+      <Row className="slide-in">
+        <Col xs={{ span: 10, offset: 1 }} md={{ span: 6, offset: 0 }} className="home-intro-line">
+          <p>My name is Alex.</p>
+        </Col>
       </Row>
-      {filteredPosts.map((blog, index) => (
-        <Link href={blog.link} className="blog-link" key={blog.title}>
-          <Row
-            className="blog-row slide-in"
-            style={{ animationDelay: `${index / 10 + 0.1}s` }}
-          >
-            <Col md={2}>{blog.dateAdded}</Col>
-            <Col>
-              {getSubtitle(blog)} | {blog.title} ›
-            </Col>
-          </Row>
+      <Row className="slide-in" style={{ animationDelay: '0.3s' }}>
+        <Col xs={{ span: 10, offset: 1 }} md={{ span: 6, offset: 1 }} className="home-intro-line">
+          <p>I studied History and German.</p>
+        </Col>
+      </Row>
+      <Row className="slide-in" style={{ animationDelay: '0.6s' }}>
+        <Col xs={{ span: 10, offset: 1 }} md={{ span: 6, offset: 2 }} className="home-intro-line">
+          <p>I did some teaching.</p>
+        </Col>
+      </Row>
+      <Row className="slide-in" style={{ animationDelay: '0.9s' }}>
+        <Col xs={{ span: 10, offset: 1 }} md={{ span: 6, offset: 3 }} className="home-intro-line">
+          <p>I worked in a load of bars and restaurants.</p>
+        </Col>
+      </Row>
+      <Row className="slide-in" style={{ animationDelay: '1.2s' }}>
+        <Col xs={{ span: 10, offset: 1 }} md={{ span: 6, offset: 1 }} className="home-intro-line">
+          <p>I did QA at <a href="https://rekki.com" target="_blank" rel="noopener noreferrer">REKKI</a>.</p>
+        </Col>
+      </Row>
+      <Row className="slide-in" style={{ animationDelay: '1.5s' }}>
+        <Col xs={{ span: 10, offset: 1 }} md={{ span: 6, offset: 2 }} className="home-intro-line">
+          <p>Now I'm a software developer at <a href="https://fuga.com" target="_blank" rel="noopener noreferrer">FUGA</a>.</p>
+        </Col>
+      </Row>
+
+      <section className="home-nav">
+        <Link href="/blog" className="home-nav-link slide-in" style={{ animationDelay: '1.9s' }}>
+          <div className="home-nav-content">
+            <span className="home-nav-title">Blog</span>
+            <span className="home-nav-desc">Writing about film, tech, and other things</span>
+          </div>
+          <ArrowRight className="home-nav-arrow" size={24} />
         </Link>
-      ))}
-      {archivedPosts.length > 0 && (
-        <>
-          <button
-            className="archive-toggle"
-            onClick={() => setShowArchive(!showArchive)}
-          >
-            {showArchive ? 'Hide archive' : 'Show archive'}
-          </button>
-          {showArchive &&
-            archivedPosts.map((blog, index) => (
-              <Link href={blog.link} className="blog-link" key={blog.title}>
-                <Row
-                  className="blog-row slide-in"
-                  style={{ animationDelay: `${index / 10 + 0.1}s` }}
-                >
-                  <Col md={2}>{blog.dateAdded}</Col>
-                  <Col>
-                    {getSubtitle(blog)} | {blog.title} ›
-                  </Col>
-                </Row>
-              </Link>
-            ))}
-        </>
-      )}
+        <Link href="/film-listings" className="home-nav-link slide-in" style={{ animationDelay: '2.1s' }}>
+          <div className="home-nav-content">
+            <span className="home-nav-title">Film Listings</span>
+            <span className="home-nav-desc">What's showing at independent cinemas in Amsterdam and Haarlem</span>
+          </div>
+          <ArrowRight className="home-nav-arrow" size={24} />
+        </Link>
+      </section>
     </Container>
   );
 };
 
-export default Page;
+export default HomePage;

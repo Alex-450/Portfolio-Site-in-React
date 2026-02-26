@@ -66,6 +66,13 @@ const Footer = () => (
       <Row>
         <Col xs={12} md={{ span: 4, offset: 8 }}>
           <Link className="footer-link" href="/">
+            Home ›
+          </Link>
+        </Col>
+      </Row>
+      <Row>
+        <Col xs={12} md={{ span: 4, offset: 8 }}>
+          <Link className="footer-link" href="/blog">
             Blog ›
           </Link>
         </Col>
