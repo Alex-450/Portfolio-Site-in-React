@@ -1,5 +1,14 @@
 [
   {
+    "type": "book",
+    "title": "Favourite quotes",
+    "topic": "Hitchhiker's Guide to the Galaxy",
+    "author": "Douglas Adams",
+    "link": "/hitchhikers-guide-favourite-quotes",
+    "dateAdded": "26/02/2026",
+    "description": "List of favourite quotes from a classic book"
+  },
+  {
     "type": "tech",
     "title": "pg_size_pretty()",
     "topic": "PostgreSQL",

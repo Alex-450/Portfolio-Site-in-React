@@ -32,6 +32,12 @@ function renderMetadataSubtitle(meta: ArticleMetadata & { author: string }) {
       );
     case 'tech':
       return <p>{meta.topic}</p>;
+    case 'book':
+      return (
+        <p>
+          {meta.topic} - {meta.bookAuthor}
+        </p>
+      );
   }
 }
 
@@ -39,7 +45,7 @@ const ArticleLayout = ({ metadata, children }: ArticleLayoutProps) => {
   const meta = { ...defaultMetadata, ...metadata };
 
   const pageTitle =
-    meta.type === 'film' || meta.type === 'tech'
+    meta.type === 'film' || meta.type === 'tech' || meta.type === 'book'
       ? `${meta.topic}: ${meta.title}`
       : meta.title;
 

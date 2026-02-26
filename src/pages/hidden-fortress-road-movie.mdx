@@ -1,8 +1,8 @@
 import ArticleLayout from '../Components/ArticleLayout';
-import { findFilmPost } from '../utils/blog';
+import { findBlogPost } from '../utils/blog';
 
-export const blog = findFilmPost(
-  (b) => b.topic.toLowerCase() === 'the hidden fortress'
+export const blog = findBlogPost(
+  (b) => b.type === 'film' && b.topic.toLowerCase() === 'the hidden fortress'
 );
 export const metadata = {
   ...blog,

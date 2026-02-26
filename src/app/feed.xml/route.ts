@@ -22,7 +22,7 @@ function formatRFC822(date: Date): string {
 }
 
 function getItemTitle(post: BlogPost): string {
-  if (post.type === 'film' || post.type === 'tech') {
+  if (post.type === 'film' || post.type === 'tech' || post.type === 'book') {
     return `${post.title} - ${post.topic}`;
   }
   return `${post.title} - ${post.location}`;

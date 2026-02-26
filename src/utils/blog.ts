@@ -1,46 +1,13 @@
 import blogPostArchive from '../blogPostArchive.json';
-import {
-  BlogPost,
-  FilmBlogPost,
-  CreativeWritingBlogPost,
-  TechBlogPost,
-} from '../types';
+import { BlogPost } from '../types';
 
-type BlogPostType = BlogPost['type'];
-
-type BlogPostByType = {
-  film: FilmBlogPost;
-  'creative-writing': CreativeWritingBlogPost;
-  tech: TechBlogPost;
-};
-
-function findPost<T extends BlogPostType>(
-  type: T,
-  matcher: (blog: BlogPostByType[T]) => boolean
-): BlogPostByType[T] {
+export function findBlogPost(
+  matcher: (blog: BlogPost) => boolean
+): BlogPost {
   const posts = blogPostArchive as BlogPost[];
-  const filtered = posts.filter((p): p is BlogPostByType[T] => p.type === type);
-  const blog = filtered.find(matcher);
+  const blog = posts.find(matcher);
   if (!blog) {
-    throw new Error(`${type} post not found`);
+    throw new Error('Blog post not found');
   }
   return blog;
-}
-
-export function findFilmPost(
-  matcher: (blog: FilmBlogPost) => boolean
-): FilmBlogPost {
-  return findPost('film', matcher);
-}
-
-export function findCreativeWritingPost(
-  matcher: (blog: CreativeWritingBlogPost) => boolean
-): CreativeWritingBlogPost {
-  return findPost('creative-writing', matcher);
-}
-
-export function findTechPost(
-  matcher: (blog: TechBlogPost) => boolean
-): TechBlogPost {
-  return findPost('tech', matcher);
 }

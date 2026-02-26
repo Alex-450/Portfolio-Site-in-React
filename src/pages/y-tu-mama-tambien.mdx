@@ -1,9 +1,9 @@
 import ArticleLayout from '../Components/ArticleLayout';
 import YouTubeEmbed from '../Components/YouTubeEmbed';
-import { findFilmPost } from '../utils/blog';
+import { findBlogPost } from '../utils/blog';
 
-export const blog = findFilmPost(
-  (b) => b.topic.toLowerCase() === 'y tu mamá tambien'
+export const blog = findBlogPost(
+  (b) => b.type === 'film' && b.topic.toLowerCase() === 'y tu mamá tambien'
 );
 export const metadata = {
   ...blog,

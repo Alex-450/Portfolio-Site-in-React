@@ -1,8 +1,8 @@
 import ArticleLayout from '../Components/ArticleLayout';
-import { findTechPost } from '../utils/blog';
+import { findBlogPost } from '../utils/blog';
 
-export const blog = findTechPost(
-  (b) => b.title.toLowerCase() === 'comparison with null'
+export const blog = findBlogPost(
+  (b) => b.type === 'tech' && b.title.toLowerCase() === 'comparison with null'
 );
 export const metadata = {
   ...blog,

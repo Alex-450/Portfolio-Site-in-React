@@ -1,8 +1,8 @@
 import ArticleLayout from '../Components/ArticleLayout';
-import { findCreativeWritingPost } from '../utils/blog';
+import { findBlogPost } from '../utils/blog';
 
-export const blog = findCreativeWritingPost(
-  (b) => b.title.toLowerCase() === 'parc longchamps'
+export const blog = findBlogPost(
+  (b) => b.type === 'creative-writing' && b.title.toLowerCase() === 'parc longchamps'
 );
 export const metadata = {
   ...blog,

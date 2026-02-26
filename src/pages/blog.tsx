@@ -2,9 +2,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import blogPostArchive from '../blogPostArchive.json';
 import { Container, Col, Row } from 'react-bootstrap';
-import { BlogPost, FilmBlogPost, CreativeWritingBlogPost } from '../types';
+import { BlogPost } from '../types';
 
-type CategoryFilter = 'film' | 'creative-writing' | 'tech';
+type CategoryFilter = 'film' | 'creative-writing' | 'tech' | 'book';
 
 const Page = () => {
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>('film');
@@ -16,6 +16,7 @@ const Page = () => {
     (p) => p.type === 'creative-writing' && !p.archived
   );
   const hasTechPosts = posts.some((p) => p.type === 'tech' && !p.archived);
+  const hasBookPosts = posts.some((p) => p.type === 'book' && !p.archived);
 
   const filteredPosts = posts.filter(
     (post) => post.type === activeCategory && !post.archived
@@ -28,6 +29,7 @@ const Page = () => {
     if (blog.type === 'film') return blog.topic;
     if (blog.type === 'creative-writing') return blog.location;
     if (blog.type === 'tech') return blog.topic;
+    if (blog.type === 'book') return blog.topic;
     return '';
   };
 
@@ -57,6 +59,14 @@ const Page = () => {
             onClick={() => setActiveCategory('tech')}
           >
             Tech
+          </button>
+        )}
+        {hasBookPosts && (
+          <button
+            className={`blog-pill ${activeCategory === 'book' ? 'blog-pill-active' : ''}`}
+            onClick={() => setActiveCategory('book')}
+          >
+            Books
           </button>
         )}
       </div>
