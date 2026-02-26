@@ -2,6 +2,7 @@
 
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
+import { ArrowRight } from 'lucide-react';
 
 const DarkModeToggle = ({ className }: { className?: string }) => {
   const { setTheme, resolvedTheme } = useTheme();
@@ -22,7 +23,7 @@ const DarkModeToggle = ({ className }: { className?: string }) => {
       className={className}
       onClick={() => setTheme(darkMode ? 'light' : 'dark')}
     >
-      {darkMode ? 'Light mode ›' : 'Dark mode ›'}
+      {darkMode ? 'Light mode' : 'Dark mode'} <ArrowRight size={16} />
     </button>
   );
 };

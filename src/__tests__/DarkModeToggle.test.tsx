@@ -19,13 +19,13 @@ describe('DarkModeToggle', () => {
 
   it('renders dark mode button when in light mode', () => {
     render(<DarkModeToggle />);
-    expect(screen.getByRole('button')).toHaveTextContent('Dark mode ›');
+    expect(screen.getByRole('button')).toHaveTextContent('Dark mode');
   });
 
   it('renders light mode button when in dark mode', () => {
     mockResolvedTheme = 'dark';
     render(<DarkModeToggle />);
-    expect(screen.getByRole('button')).toHaveTextContent('Light mode ›');
+    expect(screen.getByRole('button')).toHaveTextContent('Light mode');
   });
 
   it('calls setTheme with dark when clicking in light mode', () => {

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import blogPostArchive from '../blogPostArchive.json';
 import { Container, Col, Row } from 'react-bootstrap';
 import { BlogPost } from '../types';
+import { ArrowRight } from 'lucide-react';
 
 type CategoryFilter = 'film' | 'creative-writing' | 'tech' | 'book';
 
@@ -82,7 +83,7 @@ const Page = () => {
           >
             <Col md={2}>{blog.dateAdded}</Col>
             <Col>
-              {getSubtitle(blog)} | {blog.title} ›
+              {getSubtitle(blog)} | {blog.title} <ArrowRight size={16} />
             </Col>
           </Row>
         </Link>
@@ -104,7 +105,7 @@ const Page = () => {
                 >
                   <Col md={2}>{blog.dateAdded}</Col>
                   <Col>
-                    {getSubtitle(blog)} | {blog.title} ›
+                    {getSubtitle(blog)} | {blog.title} <ArrowRight size={16} />
                   </Col>
                 </Row>
               </Link>
