@@ -118,7 +118,37 @@ export async function searchTmdbMovieDetails(
       score += Math.min(r.popularity || 0, 20);
       return { movie: r, score };
     });
-    const bestMatch = scored.sort((a, b) => b.score - a.score)[0].movie;
+    const candidates = scored.sort((a, b) => b.score - a.score);
+
+    // If we have a director, validate against TMDB credits — director must match.
+    let bestMatch;
+    if (director) {
+      const normalizeDirector = (s) =>
+        s
+          .normalize('NFD')
+          .replace(/\p{Diacritic}/gu, '')
+          .toLowerCase()
+          .replace(/[^a-z0-9]/g, '');
+      const targetDirector = normalizeDirector(director);
+
+      for (const { movie } of candidates.slice(0, 5)) {
+        const creditsRes = await fetch(
+          `https://api.themoviedb.org/3/movie/${movie.id}/credits?api_key=${TMDB_API_KEY}`
+        );
+        if (!creditsRes.ok) continue;
+        const { crew } = await creditsRes.json();
+        const directors = (crew || [])
+          .filter((c) => c.job === 'Director')
+          .map((c) => normalizeDirector(c.name));
+        if (directors.some((d) => d === targetDirector)) {
+          bestMatch = movie;
+          break;
+        }
+      }
+      if (!bestMatch) return null;
+    } else {
+      bestMatch = candidates[0].movie;
+    }
 
     const { details, videos, releaseDates } = await fetchDetails(bestMatch.id);
     const result = buildResult(bestMatch, details, videos, releaseDates);

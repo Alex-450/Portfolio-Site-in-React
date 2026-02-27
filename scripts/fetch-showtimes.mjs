@@ -98,6 +98,11 @@ function groupFilmsByCinema(cinemas) {
 
       const existing = filmMap.get(key);
       // Keep better data if available
+      const incomingTitle = getCleanDisplayTitle(film.title);
+      // Prefer the title with more accented/non-ASCII characters (e.g. L'Étranger > L'Etranger)
+      const countAccents = (s) => [...s].filter((c) => c !== c.normalize('NFD').replace(/\p{Diacritic}/gu, '')).length;
+      if (countAccents(incomingTitle) > countAccents(existing.title))
+        existing.title = incomingTitle;
       if (!existing.director && film.director)
         existing.director = film.director;
       if (!existing.length && film.length) existing.length = film.length;

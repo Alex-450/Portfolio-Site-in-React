@@ -5,9 +5,14 @@
 
 /**
  * Generate a URL-safe slug from a title.
+ * Normalizes apostrophes and strips diacritics so that e.g.
+ * "L'Étranger" and "L'Etranger" produce the same slug.
  */
 export function generateSlug(title) {
   return title
+    .replace(/[\u00B4\u2018\u2019\u0027]/g, ' ')
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '');
@@ -16,13 +21,18 @@ export function generateSlug(title) {
 /**
  * Clean title for matching/grouping purposes.
  * Removes pipe/bullet separators and parenthetical content.
+ * Normalizes apostrophe variants and strips diacritics so that e.g.
+ * "L'Étranger", "L'Etranger", and "L\u2019Etranger" all map to the same key.
+ * NOTE: used only for grouping/cache keys, not for display.
  * e.g., "Film (ENG subs) | Event" -> "film"
  */
 export function cleanTitle(title) {
   return title
     .split(/[|•]/)[0]
     .replace(/\s*\([^)]*\)\s*/g, ' ')
-    .replace(/´/g, "'")
+    .replace(/[\u00B4\u2018\u2019\u0027]/g, "'")
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
     .trim()
     .toLowerCase();
 }
