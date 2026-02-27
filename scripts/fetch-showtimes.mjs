@@ -200,7 +200,7 @@ async function generateFilmsJson(cinemas) {
       title: film.title,
       director: film.director,
       length: film.length,
-      posterUrl: film.posterUrl || details?.posterPath || '',
+      posterUrl: details?.posterPath || film.posterUrl || '',
       tmdb: details
         ? {
             id: details.tmdbId,

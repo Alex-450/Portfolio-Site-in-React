@@ -81,11 +81,29 @@ export async function fetchFeed(feed) {
         }
       }
 
+      // posterlink is often empty; fall back to images section (poster_tile_groot = 400x600)
+      let posterUrl = film.posterlink || '';
+      if (!posterUrl && film.images) {
+        const imageSizes = Array.isArray(film.images.image_size)
+          ? film.images.image_size
+          : film.images.image_size
+            ? [film.images.image_size]
+            : [];
+        const preferred = ['poster_tile_groot', 'poster_caroussel'];
+        for (const id of preferred) {
+          const img = imageSizes.find((i) => i['@_id'] === id);
+          if (img?.['#text']?.trim()) {
+            posterUrl = img['#text'].trim();
+            break;
+          }
+        }
+      }
+
       films.push({
         title: decodeAndTrim(film.title),
         director: film.director || null,
         length: parseFilmLength(film.length) || null,
-        posterUrl: film.posterlink || '',
+        posterUrl,
         showtimes,
         subtitles,
         _tmdbId: film.tmdb || null,
