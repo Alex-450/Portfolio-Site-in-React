@@ -168,6 +168,7 @@ export async function searchTmdbMovieDetails(
     saveCache();
     return cache[cacheKey];
   }
+  console.log(`TMDB cache miss: "${cacheKey}"`);
 
   try {
     const searchTitle = cleanTitle(title);
