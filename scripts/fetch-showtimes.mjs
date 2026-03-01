@@ -188,6 +188,7 @@ async function generateFilmsJson(cinemas) {
           year: film.year,
           originalTitle: film._originalTitle,
         });
+        if (film.title.toLowerCase().includes('new leaf')) console.log(`[debug] storing tmdb: key="${cleanTitle(film.title)}" details=${details ? 'found' : 'null'}`);
         tmdbCacheByTitle.set(cleanTitle(film.title), details);
       }
     },
@@ -199,6 +200,7 @@ async function generateFilmsJson(cinemas) {
     const details = film._tmdbId
       ? tmdbCacheById.get(film._tmdbId)
       : tmdbCacheByTitle.get(cleanTitle(film.title));
+    if (film.title.toLowerCase().includes('new leaf')) console.log(`[debug] lookup tmdb: key="${cleanTitle(film.title)}" details=${details ? 'found' : 'null'}`);
 
     // Generate unique slug
     let slug = generateSlug(film.title);
