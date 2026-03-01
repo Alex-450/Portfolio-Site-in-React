@@ -56,7 +56,10 @@ export default function FilmDetailPage({ film }: Props) {
               </div>
               {film.director && (
                 <p className="film-hero-director">
-                  Directed by {film.director}
+                  Directed by{' '}
+                  <Link href={`/film-listings?director=${encodeURIComponent(film.director)}`}>
+                    {film.director}
+                  </Link>
                 </p>
               )}
               <div className="film-hero-meta">
@@ -116,7 +119,10 @@ export default function FilmDetailPage({ film }: Props) {
               </div>
               {film.director && (
                 <p className="film-detail-director">
-                  Directed by {film.director}
+                  Directed by{' '}
+                  <Link href={`/film-listings?director=${encodeURIComponent(film.director)}`}>
+                    {film.director}
+                  </Link>
                 </p>
               )}
               {film.tmdb && (

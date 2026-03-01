@@ -755,6 +755,15 @@ code {
   margin-bottom: 0.25rem;
 }
 
+.film-director a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.film-director a:hover {
+  text-decoration: underline;
+}
+
 .film-meta {
   display: flex;
   gap: 0.5rem;
@@ -1057,6 +1066,15 @@ code {
   margin-bottom: 0.5rem;
 }
 
+.film-hero-director a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.film-hero-director a:hover {
+  text-decoration: underline;
+}
+
 .film-hero-meta {
   display: flex;
   gap: 0.5rem;
@@ -1135,6 +1153,15 @@ code {
   font-size: 1.1rem;
   color: var(--text-secondary);
   margin-bottom: 0.25rem;
+}
+
+.film-detail-director a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.film-detail-director a:hover {
+  text-decoration: underline;
 }
 
 .film-detail-length {

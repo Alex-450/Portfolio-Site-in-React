@@ -74,7 +74,13 @@ function FilmCard({
             </button>
           )}
         </div>
-        {film.director && <div className="film-director">{film.director}</div>}
+        {film.director && (
+          <div className="film-director">
+            <Link href={`/film-listings?director=${encodeURIComponent(film.director)}`}>
+              {film.director}
+            </Link>
+          </div>
+        )}
         <div className="film-meta">
           {film.runtime && <span className="film-length">{film.runtime} minutes</span>}
           {film.releaseYear && <span className="film-year">({film.releaseYear})</span>}
