@@ -176,7 +176,10 @@ export async function searchTmdbMovieDetails(
     if (year) url += `&year=${year}`;
 
     const searchRes = await fetch(url);
-    if (!searchRes.ok) return null;
+    if (!searchRes.ok) {
+      console.warn(`TMDB: search request failed for "${title}": HTTP ${searchRes.status}`);
+      return null;
+    }
     const { results } = await searchRes.json();
     if (!results?.length) return null;
 
