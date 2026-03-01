@@ -61,9 +61,14 @@ function buildResult(movie, details, videos, releaseDates, director, imdbId, rtI
 async function fetchWikidataIds(wikidataId) {
   if (!wikidataId) return {};
   try {
-    const res = await fetch(
-      `https://www.wikidata.org/wiki/Special:EntityData/${wikidataId}.json`
-    );
+    let res;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      if (attempt > 0) await new Promise((r) => setTimeout(r, attempt * 2000));
+      res = await fetch(
+        `https://www.wikidata.org/wiki/Special:EntityData/${wikidataId}.json`
+      );
+      if (res.status !== 429) break;
+    }
     if (!res.ok) {
       console.warn(`Wikidata fetch failed for ${wikidataId}: HTTP ${res.status}`);
       return {};
