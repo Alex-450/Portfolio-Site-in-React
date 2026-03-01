@@ -7,6 +7,7 @@ const SUBTITLE_MAP = {
   '42c27a5b-2d4e-4195-b547-cb6fbe9fcd49': 'EN', // English subtitles
   '41ad8fc8-2c17-46fd-9094-fb3d4a2884fa': 'NL', // Dutch subtitles
   '6e5a13f9-22d0-401c-a5e9-7d3b14578eaf': null, // No subtitles (silent/English films)
+  '85c205e1-8eb2-4ae3-8062-9c36ddf9a780': null, // UND — subtitles undetermined
 };
 
 const PAGE_SIZE = 200;
