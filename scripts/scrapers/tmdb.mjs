@@ -247,7 +247,7 @@ export async function searchTmdbMovieDetails(
             const tmdbLastNames = tmdbDirectors.map((d) => d.split(/\s+/).at(-1));
             if (
               targetDirectors.some((td) => tmdbDirectors.includes(td)) ||
-              targetLastNames.some((ln) => tmdbLastNames.includes(ln))
+              targetWords.some((w) => tmdbLastNames.includes(w))
             ) {
               bestMatch = movie;
               fetchedDetails = fetched;
