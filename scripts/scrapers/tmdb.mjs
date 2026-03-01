@@ -202,6 +202,15 @@ export async function searchTmdbMovieDetails(
     } else {
       const top = candidates[0];
       if (top.score < 50) return null;
+      // If multiple results share an exact title match and we have no year/director to
+      // disambiguate, bail out rather than silently pick the wrong one.
+      if (!year) {
+        const exactMatches = candidates.filter((c) => c.score >= 100);
+        if (exactMatches.length > 1) {
+          console.warn(`TMDB: ambiguous title "${title}" (${exactMatches.length} exact matches, no year/director) — skipping`);
+          return null;
+        }
+      }
       bestMatch = top.movie;
     }
 
