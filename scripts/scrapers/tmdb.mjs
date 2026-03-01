@@ -5,6 +5,9 @@ import { cleanTitle } from '../../src/utils/filmTitle.mjs';
 dotenv.config({ path: '.env.local' });
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
+if (!TMDB_API_KEY) {
+  throw new Error('TMDB_API_KEY is not set. Add it to .env.local before running the scraper.');
+}
 const CACHE_PATH = 'src/data/tmdb-cache.json';
 const POSTER_BASE = 'https://image.tmdb.org/t/p/w342';
 
@@ -113,7 +116,8 @@ export async function fetchTmdbMovieDetails(tmdbId) {
     cache[cacheKey] = result;
     saveCache();
     return result;
-  } catch {
+  } catch (err) {
+    console.warn(`TMDB fetch by ID ${tmdbId} failed (not cached):`, err.message);
     return null;
   }
 }
@@ -201,7 +205,8 @@ export async function searchTmdbMovieDetails(
     cache[cacheKey] = result;
     saveCache();
     return result;
-  } catch {
+  } catch (err) {
+    console.warn(`TMDB search for "${title}" failed (not cached):`, err.message);
     return null;
   }
 }

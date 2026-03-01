@@ -71,7 +71,11 @@ async function fetchAllCinemas() {
   }
 
   if (failures.length > 0) {
-    throw new Error(`Failed to fetch cinemas: ${failures.join(', ')}`);
+    console.warn(`\nWarning: failed to fetch data from: ${failures.join(', ')}. Continuing with partial data.`);
+  }
+
+  if (cinemas.length === 0) {
+    throw new Error('All cinema sources failed — cannot build films.json');
   }
 
   return cinemas;

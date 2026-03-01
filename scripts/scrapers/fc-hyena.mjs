@@ -37,13 +37,17 @@ async function fetchFcHyena() {
       const film = filmMap.get(key);
       // date_start is MMDD format, need to add year
       const mmdd = show.date_start;
-      if (mmdd && show.time_start) {
+      if (mmdd && mmdd.length === 4 && show.time_start) {
         const month = mmdd.slice(0, 2);
         const day = mmdd.slice(2, 4);
-        // Handle year rollover (if month is less than current month, it's next year)
-        const currentMonth = new Date().getMonth() + 1;
-        const year =
-          parseInt(month) < currentMonth ? currentYear + 1 : currentYear;
+        // Try current year first; if that date is in the past, use next year
+        let year = currentYear;
+        const candidate = new Date(`${currentYear}-${month}-${day}`);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (isNaN(candidate.getTime()) || candidate < today) {
+          year = currentYear + 1;
+        }
         const date = `${year}-${month}-${day}`;
 
         film.showtimes.push({
