@@ -173,9 +173,9 @@ export async function searchTmdbMovieDetails(
   try {
     const searchTitle = cleanTitle(title);
     let url = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(searchTitle)}`;
-    if (year) url += `&year=${year}`;
 
     const searchRes = await fetch(url);
+
     if (!searchRes.ok) {
       console.warn(`TMDB: search request failed for "${title}": HTTP ${searchRes.status}`);
       return null;
