@@ -161,6 +161,13 @@ export async function searchTmdbMovieDetails(
 
   const cacheKey = `${cleanTitle(title)}|${director?.toLowerCase() || ''}|${year || ''}`;
   if (cache[cacheKey]) return cache[cacheKey];
+  // Also check without year — result may have been cached before year was known
+  const cacheKeyNoYear = `${cleanTitle(title)}|${director?.toLowerCase() || ''}|`;
+  if (year && cache[cacheKeyNoYear]) {
+    cache[cacheKey] = cache[cacheKeyNoYear];
+    saveCache();
+    return cache[cacheKey];
+  }
 
   try {
     const searchTitle = cleanTitle(title);
@@ -265,7 +272,10 @@ export async function searchTmdbMovieDetails(
       }
     } else {
       const top = candidates[0];
-      if (top.score < 50) return null;
+      if (top.score < 50) {
+        console.warn(`TMDB: no match for "${title}" (top score ${top.score}) — skipping`);
+        return null;
+      }
 
       // Count exact title matches (raw title only, before year/popularity bonuses)
       const exactMatches = candidates.filter((c) => {
