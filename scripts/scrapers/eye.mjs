@@ -1,4 +1,4 @@
-import { fetchWithRetry, decodeAndTrim } from './utils.mjs';
+import { fetchWithRetry, decodeAndTrim, parseFilmLength } from './utils.mjs';
 
 const EYE_URL = 'https://service.eyefilm.nl/graphql';
 
@@ -50,6 +50,35 @@ async function fetchEyePage(today) {
   return data.data?.shows || [];
 }
 
+async function fetchProductionMetadata(productionId) {
+  const url = `https://www.eyefilm.nl/en/whats-on/${productionId}`;
+  try {
+    const res = await fetchWithRetry(url, {
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        Accept: 'text/html,application/xhtml+xml',
+        'Accept-Language': 'en-US,en;q=0.9',
+      },
+    });
+    const html = await res.text();
+    const pairs = {};
+    for (const [, label, value] of html.matchAll(
+      /<h2[^>]*>([^<]+)<\/h2><p[^>]*>([^<]*)<\/p>/g
+    )) {
+      pairs[label.trim()] = value.trim();
+    }
+    return {
+      director: pairs['Director'] || null,
+      year: pairs['Production year'] ? parseInt(pairs['Production year'], 10) : null,
+      runtime: pairs['Length'] ? parseFilmLength(pairs['Length']) : null,
+      originalTitle: pairs['Original title'] || null,
+    };
+  } catch {
+    return { director: null, year: null, runtime: null };
+  }
+}
+
 async function fetchEye() {
   console.log('Fetching Eye...');
 
@@ -87,6 +116,7 @@ async function fetchEye() {
         showtimes: [],
         subtitles: subtitleLang ?? null,
         _needsTmdbSearch: true,
+        _eyeProductionId: production.id, // used below to fetch production page metadata
       });
     }
 
@@ -111,6 +141,25 @@ async function fetchEye() {
   if (unknownSubtitleUuids.size > 0) {
     console.warn(`Eye: unknown subtitle UUIDs (subtitles will be null): ${[...unknownSubtitleUuids].join(', ')}`);
   }
+
+  // Fetch director/year/runtime from production pages for unique productions
+  const uniqueProductions = new Map();
+  for (const film of filmMap.values()) {
+    if (!uniqueProductions.has(film._eyeProductionId)) {
+      uniqueProductions.set(film._eyeProductionId, film);
+    }
+  }
+
+  console.log(`Fetching Eye production metadata for ${uniqueProductions.size} unique films...`);
+  await Promise.all(
+    [...uniqueProductions.entries()].map(async ([productionId, film]) => {
+      const meta = await fetchProductionMetadata(productionId);
+      film.director = meta.director;
+      film.runtime = meta.runtime;
+      film.year = meta.year;
+      film._originalTitle = meta.originalTitle;
+    })
+  );
 
   const films = [...filmMap.values()].filter((f) => f.showtimes.length > 0);
   console.log(`Found ${films.length} films with showtimes for Eye (${allShows.length} total shows fetched)`);

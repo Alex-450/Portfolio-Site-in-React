@@ -154,7 +154,7 @@ export async function fetchTmdbMovieDetails(tmdbId) {
 
 export async function searchTmdbMovieDetails(
   title,
-  { director = null, year = null } = {}
+  { director = null, year = null, originalTitle = null } = {}
 ) {
   if (!TMDB_API_KEY) return null;
   if (!title) return null;
@@ -199,24 +199,51 @@ export async function searchTmdbMovieDetails(
           .replace(/\p{Diacritic}/gu, '')
           .toLowerCase()
           .replace(/[^a-z0-9]/g, '');
-      const targetDirector = normalizeDirector(director);
+      // Support multiple directors separated by commas, "&", or "and"
+      const targetDirectors = director
+        .split(/,|\s+&\s+|\s+and\s+/i)
+        .map((d) => normalizeDirector(d.trim()))
+        .filter(Boolean);
+      const targetLastNames = targetDirectors.map((d) => d.split(/\s+/).at(-1));
 
-      // Also match on last name only, to handle "J. Smith" vs "John Smith"
-      const targetLastName = targetDirector.split(/\s+/).at(-1);
-
-      for (const { movie } of candidates.slice(0, 5)) {
+      for (const { movie } of candidates.slice(0, 10)) {
         const fetched = await fetchDetails(movie.id);
         const tmdbDirectors = (fetched.details?.credits?.crew || [])
           .filter((c) => c.job === 'Director')
           .map((c) => normalizeDirector(c.name));
         const tmdbLastNames = tmdbDirectors.map((d) => d.split(/\s+/).at(-1));
         if (
-          tmdbDirectors.some((d) => d === targetDirector) ||
-          tmdbLastNames.some((ln) => ln === targetLastName)
+          targetDirectors.some((td) => tmdbDirectors.includes(td)) ||
+          targetLastNames.some((ln) => tmdbLastNames.includes(ln))
         ) {
           bestMatch = movie;
           fetchedDetails = fetched;
           break;
+        }
+      }
+      // If still no match, try searching by original title (e.g. non-English films)
+      if (!bestMatch && originalTitle) {
+        const origSearchTitle = cleanTitle(originalTitle);
+        const origRes = await fetch(
+          `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(origSearchTitle)}`
+        );
+        if (origRes.ok) {
+          const { results: origResults } = await origRes.json();
+          for (const movie of (origResults || []).slice(0, 5)) {
+            const fetched = await fetchDetails(movie.id);
+            const tmdbDirectors = (fetched.details?.credits?.crew || [])
+              .filter((c) => c.job === 'Director')
+              .map((c) => normalizeDirector(c.name));
+            const tmdbLastNames = tmdbDirectors.map((d) => d.split(/\s+/).at(-1));
+            if (
+              targetDirectors.some((td) => tmdbDirectors.includes(td)) ||
+              targetLastNames.some((ln) => tmdbLastNames.includes(ln))
+            ) {
+              bestMatch = movie;
+              fetchedDetails = fetched;
+              break;
+            }
+          }
         }
       }
       // Director validation failed — fall back to year-constrained search if available

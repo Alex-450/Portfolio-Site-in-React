@@ -100,6 +100,7 @@ function groupFilmsByCinema(cinemas) {
           runtime: film.runtime,
           posterUrl: film.posterUrl,
           _tmdbId: film._tmdbId,
+          _originalTitle: film._originalTitle ?? null,
           cinemaShowtimes: [],
         });
       }
@@ -118,6 +119,8 @@ function groupFilmsByCinema(cinemas) {
       if (!existing.posterUrl && film.posterUrl)
         existing.posterUrl = film.posterUrl;
       if (!existing._tmdbId && film._tmdbId) existing._tmdbId = film._tmdbId;
+      if (!existing._originalTitle && film._originalTitle)
+        existing._originalTitle = film._originalTitle;
 
       existing.cinemaShowtimes.push({
         cinema: cinema.name,
@@ -183,6 +186,7 @@ async function generateFilmsJson(cinemas) {
         const details = await searchTmdbMovieDetails(film.title, {
           director: film.director,
           year: film.year,
+          originalTitle: film._originalTitle,
         });
         tmdbCacheByTitle.set(cleanTitle(film.title), details);
       }
