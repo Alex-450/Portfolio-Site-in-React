@@ -84,7 +84,6 @@ async function fetchWikidataIds(wikidataId) {
       if (byId === 'Q150248') metacriticScore = score;
     }
 
-    console.log(`Wikidata ${wikidataId}: rtId=${rtId ?? 'null'}, metacriticId=${metacriticId ?? 'null'}, rtScore=${rtScore ?? 'null'}`);
     return { rtId, metacriticId, rtScore, metacriticScore };
   } catch (err) {
     console.warn(`Wikidata fetch error for ${wikidataId}:`, err.message);
@@ -103,7 +102,6 @@ async function fetchDetails(movieId) {
   const director = data.credits?.crew?.find((c) => c.job === 'Director')?.name || null;
   const imdbId = data.imdb_id || data.external_ids?.imdb_id || null;
   const wikidataId = data.external_ids?.wikidata_id || null;
-  if (!wikidataId) console.log(`TMDB ${movieId} (${data.title}): no wikidataId`);
   const wikidata = await fetchWikidataIds(wikidataId);
   return { details: data, videos, releaseDates, director, imdbId, ...wikidata };
 }
