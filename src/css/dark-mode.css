@@ -209,6 +209,7 @@
   }
 
   .film-director,
+  .film-year,
   .film-length,
   .showtime-date {
     color: var(--dark-text-secondary);

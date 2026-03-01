@@ -75,7 +75,10 @@ function FilmCard({
           )}
         </div>
         {film.director && <div className="film-director">{film.director}</div>}
-        {film.runtime && <div className="film-length">{film.runtime} minutes</div>}
+        <div className="film-meta">
+          {film.runtime && <span className="film-length">{film.runtime} minutes</span>}
+          {film.releaseYear && <span className="film-year">({film.releaseYear})</span>}
+        </div>
 
         <div className="cinema-showtimes">
           {filteredCinemaShowtimes.map(

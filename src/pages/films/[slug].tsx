@@ -16,8 +16,19 @@ interface Props {
   film: FilmDetail;
 }
 
+function getLanguageName(code: string): string {
+  try {
+    return new Intl.DisplayNames(['en'], { type: 'language' }).of(code) ?? code;
+  } catch {
+    return code;
+  }
+}
+
 export default function FilmDetailPage({ film }: Props) {
   const year = film.tmdb?.releaseDate?.split('-')[0];
+  const language = film.tmdb?.originalLanguage
+    ? getLanguageName(film.tmdb.originalLanguage)
+    : null;
   const { isInWatchlist, toggleWatchlist } = useWatchlist();
 
   const hasTrailer = !!film.tmdb?.youtubeTrailerId;
@@ -53,6 +64,7 @@ export default function FilmDetailPage({ film }: Props) {
                 {film.runtime && (
                   <span className="film-hero-badge">{film.runtime} minutes</span>
                 )}
+                {language && <span className="film-hero-badge">{language}</span>}
               </div>
               {film.tmdb?.genres && film.tmdb.genres.length > 0 && (
                 <div className="film-hero-genres">
@@ -113,6 +125,7 @@ export default function FilmDetailPage({ film }: Props) {
                   {film.runtime && (
                     <span className="film-detail-badge">{film.runtime} minutes</span>
                   )}
+                  {language && <span className="film-detail-badge">{language}</span>}
                 </div>
               )}
               {film.tmdb?.genres && film.tmdb.genres.length > 0 && (

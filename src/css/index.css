@@ -755,10 +755,17 @@ code {
   margin-bottom: 0.25rem;
 }
 
+.film-meta {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.film-year,
 .film-length {
   color: var(--text-secondary);
   font-size: 0.85rem;
-  margin-bottom: 0.5rem;
 }
 
 .cinema-showtimes {

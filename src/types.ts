@@ -159,6 +159,7 @@ export interface FilmWithCinemasLite {
   cinemaShowtimes: CinemaShowtimes[];
   dateAdded?: string | null;
   releaseDate?: string | null;
+  releaseYear?: string | null;
 }
 
 export interface FilmsIndexLite {
