@@ -43,10 +43,6 @@
     color: var(--dark-bg-primary);
   }
 
-  .blog-pill-active:hover {
-    background-color: var(--hover-bg);
-  }
-
   .blog-row {
     color: var(--dark-text-primary);
     border-bottom: 1px solid var(--hover-bg);
@@ -387,16 +383,6 @@
     color: var(--dark-text-secondary);
   }
 
-  .film-hero-badge {
-    border-color: var(--dark-border);
-    color: var(--dark-text-secondary);
-  }
-
-  .film-hero-genre {
-    border-color: var(--dark-border);
-    color: var(--dark-text-secondary);
-  }
-
   .film-hero-overview {
     color: var(--dark-text-body);
   }
@@ -427,20 +413,15 @@
     color: var(--dark-text-secondary);
   }
 
-  .film-detail-director {
-    color: var(--dark-text-secondary);
-  }
-
+  .film-detail-director,
   .film-detail-length {
     color: var(--dark-text-secondary);
   }
 
-  .film-detail-badge {
-    border-color: var(--dark-border);
-    color: var(--dark-text-secondary);
-  }
-
-  .film-detail-genre {
+  .film-detail-badge,
+  .film-detail-genre,
+  .film-hero-badge,
+  .film-hero-genre {
     border-color: var(--dark-border);
     color: var(--dark-text-secondary);
   }
