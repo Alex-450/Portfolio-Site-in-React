@@ -1,6 +1,14 @@
+import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { fetchWithRetry, decodeAndTrim, parseFilmLength } from './utils.mjs';
 
 const EYE_URL = 'https://service.eyefilm.nl/graphql';
+
+const EYE_CACHE_PATH = 'src/data/eye-cache.json';
+let eyeCache = existsSync(EYE_CACHE_PATH)
+  ? JSON.parse(readFileSync(EYE_CACHE_PATH, 'utf-8'))
+  : {};
+const saveEyeCache = () =>
+  writeFileSync(EYE_CACHE_PATH, JSON.stringify(eyeCache, null, 2));
 
 // Eye uses UUIDs for subtitle languages - map known ones
 const SUBTITLE_MAP = {
@@ -51,6 +59,8 @@ async function fetchEyePage(today) {
 }
 
 async function fetchProductionMetadata(productionId) {
+  if (eyeCache[productionId]) return eyeCache[productionId];
+
   const url = `https://www.eyefilm.nl/en/whats-on/${productionId}`;
   try {
     const res = await fetchWithRetry(url, {
@@ -68,14 +78,17 @@ async function fetchProductionMetadata(productionId) {
     )) {
       pairs[label.trim()] = value.trim();
     }
-    return {
+    const result = {
       director: pairs['Director'] || null,
       year: pairs['Production year'] ? parseInt(pairs['Production year'], 10) : null,
       runtime: pairs['Length'] ? parseFilmLength(pairs['Length']) : null,
       originalTitle: pairs['Original title'] || null,
     };
+    eyeCache[productionId] = result;
+    saveEyeCache();
+    return result;
   } catch {
-    return { director: null, year: null, runtime: null };
+    return { director: null, year: null, runtime: null, originalTitle: null };
   }
 }
 

@@ -40,6 +40,12 @@ jobs:
           path: src/data/tmdb-cache.json
           key: tmdb-cache-${{ hashFiles('scripts/scrapers/tmdb.mjs') }}
 
+      - name: Cache Eye data
+        uses: actions/cache@v5
+        with:
+          path: src/data/eye-cache.json
+          key: eye-cache-${{ hashFiles('scripts/scrapers/eye.mjs') }}
+
       - name: Restore films.json cache
         id: cache-films
         uses: actions/cache/restore@v5

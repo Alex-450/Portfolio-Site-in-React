@@ -28,4 +28,5 @@ next-env.d.ts
 # generated data
 src/data/films.json
 src/data/tmdb-cache.json
+src/data/eye-cache.json
 

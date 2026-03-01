@@ -193,28 +193,31 @@ export async function searchTmdbMovieDetails(
     let bestMatch;
     let fetchedDetails = null;
     if (director) {
+      // Normalize a name: strip diacritics and punctuation but preserve spaces for last-name splitting
       const normalizeDirector = (s) =>
         s
           .normalize('NFD')
           .replace(/\p{Diacritic}/gu, '')
           .toLowerCase()
-          .replace(/[^a-z0-9]/g, '');
+          .replace(/[^a-z0-9 ]/g, '')
+          .trim();
       // Support multiple directors separated by commas, "&", or "and"
       const targetDirectors = director
         .split(/,|\s+&\s+|\s+and\s+/i)
         .map((d) => normalizeDirector(d.trim()))
         .filter(Boolean);
-      const targetLastNames = targetDirectors.map((d) => d.split(/\s+/).at(-1));
+      // Words in target names longer than 1 char (skip initials like "j.")
+      const targetWords = targetDirectors.flatMap((d) => d.split(/\s+/).filter((w) => w.length > 1));
 
       for (const { movie } of candidates.slice(0, 10)) {
         const fetched = await fetchDetails(movie.id);
         const tmdbDirectors = (fetched.details?.credits?.crew || [])
           .filter((c) => c.job === 'Director')
           .map((c) => normalizeDirector(c.name));
-        const tmdbLastNames = tmdbDirectors.map((d) => d.split(/\s+/).at(-1));
+        const tmdbWords = tmdbDirectors.flatMap((d) => d.split(/\s+/).filter((w) => w.length > 1));
         if (
           targetDirectors.some((td) => tmdbDirectors.includes(td)) ||
-          targetLastNames.some((ln) => tmdbLastNames.includes(ln))
+          targetWords.some((w) => tmdbWords.includes(w))
         ) {
           bestMatch = movie;
           fetchedDetails = fetched;
@@ -256,7 +259,10 @@ export async function searchTmdbMovieDetails(
           if (yearResults?.length) bestMatch = yearResults[0];
         }
       }
-      if (!bestMatch) return null;
+      if (!bestMatch) {
+        console.warn(`TMDB: no director match for "${title}" (director: "${director}") — skipping`);
+        return null;
+      }
     } else {
       const top = candidates[0];
       if (top.score < 50) return null;
@@ -272,12 +278,40 @@ export async function searchTmdbMovieDetails(
         // Unambiguous — exactly one title match, use it
         bestMatch = exactMatches[0].movie;
       } else if (exactMatches.length > 1 && !year) {
-        // Multiple exact matches with no year or director to differentiate — skip
-        console.warn(`TMDB: ambiguous title "${title}" (${exactMatches.length} exact matches, no year/director) — skipping`);
-        return null;
+        // Multiple exact matches with no year or director to differentiate —
+        // try searching by original title without year constraint first
+        if (originalTitle) {
+          const origSearchTitle = cleanTitle(originalTitle);
+          const origRes = await fetch(
+            `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(origSearchTitle)}`
+          );
+          if (origRes.ok) {
+            const { results: origResults } = await origRes.json();
+            if (origResults?.length === 1) {
+              bestMatch = origResults[0];
+            }
+          }
+        }
+        if (!bestMatch) {
+          console.warn(`TMDB: ambiguous title "${title}" (${exactMatches.length} exact matches, no year/director) — skipping`);
+          return null;
+        }
       } else {
-        // Either no exact match (partial only) or multiple exact matches with year to help
-        bestMatch = top.movie;
+        // Either no exact match (partial only) or multiple exact matches with year to help —
+        // if original title search yields a single unambiguous result, prefer it over title+year
+        if (originalTitle && !year) {
+          const origSearchTitle = cleanTitle(originalTitle);
+          const origRes = await fetch(
+            `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(origSearchTitle)}`
+          );
+          if (origRes.ok) {
+            const { results: origResults } = await origRes.json();
+            if (origResults?.length === 1) {
+              bestMatch = origResults[0];
+            }
+          }
+        }
+        if (!bestMatch) bestMatch = top.movie;
       }
     }
 

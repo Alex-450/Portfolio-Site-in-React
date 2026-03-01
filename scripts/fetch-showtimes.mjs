@@ -90,7 +90,7 @@ function groupFilmsByCinema(cinemas) {
       const variant = extractVariant(film.title);
 
       const yearMatch = variant?.match(/\b\d{4}\b/);
-      const year = yearMatch ? parseInt(yearMatch[0]) : null;
+      const year = yearMatch ? parseInt(yearMatch[0]) : (film.year ?? null);
 
       if (!filmMap.has(key)) {
         filmMap.set(key, {
