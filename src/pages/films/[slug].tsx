@@ -87,12 +87,17 @@ export default function FilmDetailPage({ film }: Props) {
                 )}
                 {film.tmdb?.rtId && (
                   <a href={`https://www.rottentomatoes.com/${film.tmdb.rtId}`} target="_blank" rel="noopener noreferrer" className="film-external-link">
-                    Rotten Tomatoes<ArrowUpRight size={14} />
+                    Rotten Tomatoes{film.tmdb.rtScore ? ` ${film.tmdb.rtScore}` : ''}<ArrowUpRight size={14} />
                   </a>
                 )}
                 {film.tmdb?.metacriticId && (
                   <a href={`https://www.metacritic.com/${film.tmdb.metacriticId}`} target="_blank" rel="noopener noreferrer" className="film-external-link">
-                    Metacritic<ArrowUpRight size={14} />
+                    Metacritic{film.tmdb.metacriticScore ? ` ${film.tmdb.metacriticScore}` : ''}<ArrowUpRight size={14} />
+                  </a>
+                )}
+                {film.tmdb?.letterboxdId && (
+                  <a href={`https://letterboxd.com/film/${film.tmdb.letterboxdId}/`} target="_blank" rel="noopener noreferrer" className="film-external-link">
+                    Letterboxd<ArrowUpRight size={14} />
                   </a>
                 )}
               </div>
@@ -154,12 +159,17 @@ export default function FilmDetailPage({ film }: Props) {
                 )}
                 {film.tmdb?.rtId && (
                   <a href={`https://www.rottentomatoes.com/${film.tmdb.rtId}`} target="_blank" rel="noopener noreferrer" className="film-external-link">
-                    Rotten Tomatoes<ArrowUpRight size={14} />
+                    Rotten Tomatoes{film.tmdb.rtScore ? ` ${film.tmdb.rtScore}` : ''}<ArrowUpRight size={14} />
                   </a>
                 )}
                 {film.tmdb?.metacriticId && (
                   <a href={`https://www.metacritic.com/${film.tmdb.metacriticId}`} target="_blank" rel="noopener noreferrer" className="film-external-link">
-                    Metacritic<ArrowUpRight size={14} />
+                    Metacritic{film.tmdb.metacriticScore ? ` ${film.tmdb.metacriticScore}` : ''}<ArrowUpRight size={14} />
+                  </a>
+                )}
+                {film.tmdb?.letterboxdId && (
+                  <a href={`https://letterboxd.com/film/${film.tmdb.letterboxdId}/`} target="_blank" rel="noopener noreferrer" className="film-external-link">
+                    Letterboxd<ArrowUpRight size={14} />
                   </a>
                 )}
               </div>

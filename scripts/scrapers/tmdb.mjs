@@ -38,7 +38,7 @@ function getNlReleaseDate(releaseDates) {
   return date ? date.split('T')[0] : null;
 }
 
-function buildResult(movie, details, videos, releaseDates, director, imdbId, rtId, metacriticId, rtScore, metacriticScore) {
+function buildResult(movie, details, videos, releaseDates, director, imdbId, rtId, metacriticId, rtScore, metacriticScore, letterboxdId) {
   return {
     tmdbId: movie.id,
     director: director || null,
@@ -55,29 +55,50 @@ function buildResult(movie, details, videos, releaseDates, director, imdbId, rtI
     metacriticId: metacriticId || null,
     rtScore: rtScore || null,
     metacriticScore: metacriticScore || null,
+    letterboxdId: letterboxdId || null,
   };
 }
 
+// Serialize all Wikidata requests to avoid triggering rate limits
+let wikidataQueue = Promise.resolve();
+const WIKIDATA_DELAY_MS = 200;
+
 async function fetchWikidataIds(wikidataId) {
   if (!wikidataId) return {};
-  try {
-    let res;
-    for (let attempt = 0; attempt < 3; attempt++) {
-      if (attempt > 0) await new Promise((r) => setTimeout(r, attempt * 2000));
-      res = await fetch(
-        `https://www.wikidata.org/wiki/Special:EntityData/${wikidataId}.json`
-      );
-      if (res.status !== 429) break;
-    }
-    if (!res.ok) {
-      console.warn(`Wikidata fetch failed for ${wikidataId}: HTTP ${res.status}`);
+  const result = await (wikidataQueue = wikidataQueue.then(async () => {
+    try {
+      let res;
+      for (let attempt = 0; attempt < 5; attempt++) {
+        if (attempt > 0) {
+          const retryAfter = res?.headers?.get('Retry-After');
+          const delay = retryAfter ? parseInt(retryAfter, 10) * 1000 : attempt * 5000;
+          await new Promise((r) => setTimeout(r, delay));
+        }
+        res = await fetch(
+          `https://www.wikidata.org/wiki/Special:EntityData/${wikidataId}.json`
+        );
+        if (res.status !== 429) break;
+      }
+      if (!res.ok) {
+        console.warn(`Wikidata fetch failed for ${wikidataId}: HTTP ${res.status}`);
+        return {};
+      }
+      const data = await res.json();
+      // Proactive delay before the next request
+      await new Promise((r) => setTimeout(r, WIKIDATA_DELAY_MS));
+      return data;
+    } catch (err) {
+      console.warn(`Wikidata fetch error for ${wikidataId}:`, err.message);
       return {};
     }
-    const data = await res.json();
-    const claims = data.entities[wikidataId]?.claims || {};
+  }));
+  if (!result?.entities) return {};
+  try {
+    const claims = result.entities[wikidataId]?.claims || {};
 
     const rtId = claims['P1258']?.[0]?.mainsnak?.datavalue?.value || null;
     const metacriticId = claims['P1712']?.[0]?.mainsnak?.datavalue?.value || null;
+    const letterboxdId = claims['P6127']?.[0]?.mainsnak?.datavalue?.value || null;
 
     // Extract scores by source (Q105584 = Rotten Tomatoes, Q150248 = Metacritic)
     let rtScore = null;
@@ -89,7 +110,7 @@ async function fetchWikidataIds(wikidataId) {
       if (byId === 'Q150248') metacriticScore = score;
     }
 
-    return { rtId, metacriticId, rtScore, metacriticScore };
+    return { rtId, metacriticId, rtScore, metacriticScore, letterboxdId };
   } catch (err) {
     console.warn(`Wikidata fetch error for ${wikidataId}:`, err.message);
     return {};
@@ -118,10 +139,10 @@ export async function fetchTmdbMovieDetails(tmdbId) {
   if (cache[cacheKey]) return cache[cacheKey];
 
   try {
-    const { details, videos, releaseDates, director: tmdbDirector, imdbId, rtId, metacriticId, rtScore, metacriticScore } = await fetchDetails(tmdbId);
+    const { details, videos, releaseDates, director: tmdbDirector, imdbId, rtId, metacriticId, rtScore, metacriticScore, letterboxdId } = await fetchDetails(tmdbId);
     if (!details) return null;
 
-    const result = buildResult(details, details, videos, releaseDates, tmdbDirector, imdbId, rtId, metacriticId, rtScore, metacriticScore);
+    const result = buildResult(details, details, videos, releaseDates, tmdbDirector, imdbId, rtId, metacriticId, rtScore, metacriticScore, letterboxdId);
     cache[cacheKey] = result;
     saveCache();
     return result;
@@ -226,9 +247,9 @@ export async function searchTmdbMovieDetails(
       bestMatch = top.movie;
     }
 
-    const { details, videos, releaseDates, director: tmdbDirector, imdbId, rtId, metacriticId, rtScore, metacriticScore } =
+    const { details, videos, releaseDates, director: tmdbDirector, imdbId, rtId, metacriticId, rtScore, metacriticScore, letterboxdId } =
       fetchedDetails || (await fetchDetails(bestMatch.id));
-    const result = buildResult(bestMatch, details, videos, releaseDates, tmdbDirector, imdbId, rtId, metacriticId, rtScore, metacriticScore);
+    const result = buildResult(bestMatch, details, videos, releaseDates, tmdbDirector, imdbId, rtId, metacriticId, rtScore, metacriticScore, letterboxdId);
 
     cache[cacheKey] = result;
     saveCache();

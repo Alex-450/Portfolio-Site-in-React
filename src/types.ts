@@ -129,6 +129,7 @@ export interface TmdbData {
   metacriticId: string | null;
   rtScore: string | null;
   metacriticScore: string | null;
+  letterboxdId: string | null;
 }
 
 // Full film data for detail pages

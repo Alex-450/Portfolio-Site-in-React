@@ -228,6 +228,7 @@ async function generateFilmsJson(cinemas) {
             metacriticId: details.metacriticId,
             rtScore: details.rtScore,
             metacriticScore: details.metacriticScore,
+            letterboxdId: details.letterboxdId,
           }
         : null,
       cinemaShowtimes: film.cinemaShowtimes,
