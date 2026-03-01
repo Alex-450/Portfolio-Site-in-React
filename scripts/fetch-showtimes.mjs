@@ -85,10 +85,14 @@ function groupFilmsByCinema(cinemas) {
       const key = cleanTitle(film.title);
       const variant = extractVariant(film.title);
 
+      const yearMatch = variant?.match(/\b\d{4}\b/);
+      const year = yearMatch ? parseInt(yearMatch[0]) : null;
+
       if (!filmMap.has(key)) {
         filmMap.set(key, {
           title: getCleanDisplayTitle(film.title),
           director: film.director,
+          year,
           length: film.length,
           posterUrl: film.posterUrl,
           _tmdbId: film._tmdbId,
@@ -105,6 +109,7 @@ function groupFilmsByCinema(cinemas) {
         existing.title = incomingTitle;
       if (!existing.director && film.director)
         existing.director = film.director;
+      if (!existing.year && year) existing.year = year;
       if (!existing.length && film.length) existing.length = film.length;
       if (!existing.posterUrl && film.posterUrl)
         existing.posterUrl = film.posterUrl;
@@ -173,6 +178,7 @@ async function generateFilmsJson(cinemas) {
       } else {
         const details = await searchTmdbMovieDetails(film.title, {
           director: film.director,
+          year: film.year,
         });
         tmdbCacheByTitle.set(cleanTitle(film.title), details);
       }
@@ -198,7 +204,7 @@ async function generateFilmsJson(cinemas) {
     filmsIndex[slug] = {
       slug,
       title: film.title,
-      director: film.director,
+      director: film.director || details?.director || null,
       length: film.length,
       posterUrl: details?.posterPath || film.posterUrl || '',
       tmdb: details

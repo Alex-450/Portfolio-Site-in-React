@@ -35,9 +35,10 @@ function getNlReleaseDate(releaseDates) {
   return date ? date.split('T')[0] : null;
 }
 
-function buildResult(movie, details, videos, releaseDates) {
+function buildResult(movie, details, videos, releaseDates, director) {
   return {
     tmdbId: movie.id,
+    director: director || null,
     overview: details?.overview || null,
     releaseDate: details?.release_date || movie.release_date || null,
     releaseDateNl: getNlReleaseDate(releaseDates),
@@ -48,23 +49,15 @@ function buildResult(movie, details, videos, releaseDates) {
 }
 
 async function fetchDetails(movieId) {
-  const [detailsRes, videosRes, releaseDatesRes] = await Promise.all([
-    fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_API_KEY}`
-    ),
-    fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${TMDB_API_KEY}`
-    ),
-    fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}/release_dates?api_key=${TMDB_API_KEY}`
-    ),
-  ]);
-  const details = detailsRes.ok ? await detailsRes.json() : null;
-  const videos = videosRes.ok ? (await videosRes.json()).results : [];
-  const releaseDates = releaseDatesRes.ok
-    ? (await releaseDatesRes.json()).results
-    : [];
-  return { details, videos, releaseDates };
+  const res = await fetch(
+    `https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_API_KEY}&append_to_response=videos,release_dates,credits`
+  );
+  if (!res.ok) return { details: null, videos: [], releaseDates: [], director: null };
+  const data = await res.json();
+  const videos = data.videos?.results || [];
+  const releaseDates = data.release_dates?.results || [];
+  const director = data.credits?.crew?.find((c) => c.job === 'Director')?.name || null;
+  return { details: data, videos, releaseDates, director };
 }
 
 export async function fetchTmdbMovieDetails(tmdbId) {
@@ -74,10 +67,10 @@ export async function fetchTmdbMovieDetails(tmdbId) {
   if (cache[cacheKey]) return cache[cacheKey];
 
   try {
-    const { details, videos, releaseDates } = await fetchDetails(tmdbId);
+    const { details, videos, releaseDates, director: tmdbDirector } = await fetchDetails(tmdbId);
     if (!details) return null;
 
-    const result = buildResult(details, details, videos, releaseDates);
+    const result = buildResult(details, details, videos, releaseDates, tmdbDirector);
     cache[cacheKey] = result;
     saveCache();
     return result;
@@ -108,10 +101,12 @@ export async function searchTmdbMovieDetails(
     // Score results: exact title > partial match > popularity
     const scored = results.map((r) => {
       const t = cleanTitle(r.title || '');
+      const ot = cleanTitle(r.original_title || '');
       let score =
-        t === searchTitle
+        t === searchTitle || ot === searchTitle
           ? 100
-          : t.includes(searchTitle) || searchTitle.includes(t)
+          : t.includes(searchTitle) || searchTitle.includes(t) ||
+              ot.includes(searchTitle) || searchTitle.includes(ot)
             ? 50
             : 0;
       if (year && r.release_date?.startsWith(String(year))) score += 30;
@@ -122,6 +117,7 @@ export async function searchTmdbMovieDetails(
 
     // If we have a director, validate against TMDB credits — director must match.
     let bestMatch;
+    let fetchedDetails = null;
     if (director) {
       const normalizeDirector = (s) =>
         s
@@ -132,26 +128,36 @@ export async function searchTmdbMovieDetails(
       const targetDirector = normalizeDirector(director);
 
       for (const { movie } of candidates.slice(0, 5)) {
-        const creditsRes = await fetch(
-          `https://api.themoviedb.org/3/movie/${movie.id}/credits?api_key=${TMDB_API_KEY}`
-        );
-        if (!creditsRes.ok) continue;
-        const { crew } = await creditsRes.json();
-        const directors = (crew || [])
+        const fetched = await fetchDetails(movie.id);
+        const tmdbDirectors = (fetched.details?.credits?.crew || [])
           .filter((c) => c.job === 'Director')
           .map((c) => normalizeDirector(c.name));
-        if (directors.some((d) => d === targetDirector)) {
+        if (tmdbDirectors.some((d) => d === targetDirector)) {
           bestMatch = movie;
+          fetchedDetails = fetched;
           break;
+        }
+      }
+      // Director validation failed — fall back to year-constrained search if available
+      if (!bestMatch && year) {
+        const yearRes = await fetch(
+          `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(searchTitle)}&year=${year}`
+        );
+        if (yearRes.ok) {
+          const { results: yearResults } = await yearRes.json();
+          if (yearResults?.length) bestMatch = yearResults[0];
         }
       }
       if (!bestMatch) return null;
     } else {
-      bestMatch = candidates[0].movie;
+      const top = candidates[0];
+      if (top.score < 50) return null;
+      bestMatch = top.movie;
     }
 
-    const { details, videos, releaseDates } = await fetchDetails(bestMatch.id);
-    const result = buildResult(bestMatch, details, videos, releaseDates);
+    const { details, videos, releaseDates, director: tmdbDirector } =
+      fetchedDetails || (await fetchDetails(bestMatch.id));
+    const result = buildResult(bestMatch, details, videos, releaseDates, tmdbDirector);
 
     cache[cacheKey] = result;
     saveCache();
