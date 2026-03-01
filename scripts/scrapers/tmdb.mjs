@@ -126,7 +126,10 @@ export async function searchTmdbMovieDetails(
   title,
   { director = null, year = null } = {}
 ) {
-  if (!TMDB_API_KEY || !title) return null;
+  if (!TMDB_API_KEY) return null;
+  // NOTE: If there is no title, or we have only title but no director or
+  // year, we cannot be sure enough about tmdb results
+  if (!title || !director && !year) return null;
 
   const cacheKey = `${cleanTitle(title)}|${director?.toLowerCase() || ''}|${year || ''}`;
   if (cache[cacheKey]) return cache[cacheKey];
