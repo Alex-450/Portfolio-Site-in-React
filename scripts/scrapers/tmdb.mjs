@@ -157,9 +157,7 @@ export async function searchTmdbMovieDetails(
   { director = null, year = null } = {}
 ) {
   if (!TMDB_API_KEY) return null;
-  // NOTE: If there is no title, or we have only title but no director or
-  // year, we cannot be sure enough about tmdb results
-  if (!title || !director && !year) return null;
+  if (!title) return null;
 
   const cacheKey = `${cleanTitle(title)}|${director?.toLowerCase() || ''}|${year || ''}`;
   if (cache[cacheKey]) return cache[cacheKey];
@@ -235,16 +233,25 @@ export async function searchTmdbMovieDetails(
     } else {
       const top = candidates[0];
       if (top.score < 50) return null;
-      // If multiple results share an exact title match and we have no year/director to
-      // disambiguate, bail out rather than silently pick the wrong one.
-      if (!year) {
-        const exactMatches = candidates.filter((c) => c.score >= 100);
-        if (exactMatches.length > 1) {
-          console.warn(`TMDB: ambiguous title "${title}" (${exactMatches.length} exact matches, no year/director) — skipping`);
-          return null;
-        }
+
+      // Count exact title matches (raw title only, before year/popularity bonuses)
+      const exactMatches = candidates.filter((c) => {
+        const t = cleanTitle(c.movie.title || '');
+        const ot = cleanTitle(c.movie.original_title || '');
+        return t === searchTitle || ot === searchTitle;
+      });
+
+      if (exactMatches.length === 1) {
+        // Unambiguous — exactly one title match, use it
+        bestMatch = exactMatches[0].movie;
+      } else if (exactMatches.length > 1 && !year) {
+        // Multiple exact matches with no year or director to differentiate — skip
+        console.warn(`TMDB: ambiguous title "${title}" (${exactMatches.length} exact matches, no year/director) — skipping`);
+        return null;
+      } else {
+        // Either no exact match (partial only) or multiple exact matches with year to help
+        bestMatch = top.movie;
       }
-      bestMatch = top.movie;
     }
 
     const { details, videos, releaseDates, director: tmdbDirector, imdbId, rtId, metacriticId, rtScore, metacriticScore, letterboxdId } =
