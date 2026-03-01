@@ -64,7 +64,10 @@ async function fetchWikidataIds(wikidataId) {
     const res = await fetch(
       `https://www.wikidata.org/wiki/Special:EntityData/${wikidataId}.json`
     );
-    if (!res.ok) return {};
+    if (!res.ok) {
+      console.warn(`Wikidata fetch failed for ${wikidataId}: HTTP ${res.status}`);
+      return {};
+    }
     const data = await res.json();
     const claims = data.entities[wikidataId]?.claims || {};
 
@@ -81,8 +84,10 @@ async function fetchWikidataIds(wikidataId) {
       if (byId === 'Q150248') metacriticScore = score;
     }
 
+    if (rtId) console.log(`Wikidata ${wikidataId}: rtId=${rtId}`);
     return { rtId, metacriticId, rtScore, metacriticScore };
-  } catch {
+  } catch (err) {
+    console.warn(`Wikidata fetch error for ${wikidataId}:`, err.message);
     return {};
   }
 }
