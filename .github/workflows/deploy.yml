@@ -39,8 +39,6 @@ jobs:
         with:
           path: src/data/tmdb-cache.json
           key: tmdb-cache-${{ hashFiles('scripts/scrapers/tmdb.mjs') }}
-          restore-keys: |
-            tmdb-cache-
 
       - name: Restore films.json cache
         id: cache-films
