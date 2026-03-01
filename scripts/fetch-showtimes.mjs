@@ -198,10 +198,12 @@ async function generateFilmsJson(cinemas) {
 
     // Generate unique slug
     let slug = generateSlug(film.title);
-    let counter = 1;
-    while (usedSlugs.has(slug)) {
-      slug = `${generateSlug(film.title)}-${counter}`;
-      counter++;
+    if (usedSlugs.has(slug)) {
+      let counter = 1;
+      while (usedSlugs.has(`${slug}-${counter}`)) counter++;
+      const newSlug = `${slug}-${counter}`;
+      console.warn(`Slug collision: "${slug}" already used — assigning "${newSlug}" to "${film.title}"`);
+      slug = newSlug;
     }
     usedSlugs.add(slug);
 
