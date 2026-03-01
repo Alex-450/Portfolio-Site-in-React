@@ -93,7 +93,7 @@ function groupFilmsByCinema(cinemas) {
           title: getCleanDisplayTitle(film.title),
           director: film.director,
           year,
-          length: film.length,
+          runtime: film.runtime,
           posterUrl: film.posterUrl,
           _tmdbId: film._tmdbId,
           cinemaShowtimes: [],
@@ -110,7 +110,7 @@ function groupFilmsByCinema(cinemas) {
       if (!existing.director && film.director)
         existing.director = film.director;
       if (!existing.year && year) existing.year = year;
-      if (!existing.length && film.length) existing.length = film.length;
+      if (!existing.runtime && film.runtime) existing.runtime = film.runtime;
       if (!existing.posterUrl && film.posterUrl)
         existing.posterUrl = film.posterUrl;
       if (!existing._tmdbId && film._tmdbId) existing._tmdbId = film._tmdbId;
@@ -205,7 +205,7 @@ async function generateFilmsJson(cinemas) {
       slug,
       title: film.title,
       director: film.director || details?.director || null,
-      length: film.length,
+      runtime: details?.runtime || film.runtime || null,
       posterUrl: details?.posterPath || film.posterUrl || '',
       tmdb: details
         ? {
@@ -214,7 +214,14 @@ async function generateFilmsJson(cinemas) {
             releaseDate: details.releaseDate,
             releaseDateNl: details.releaseDateNl,
             genres: details.genres,
+            originalLanguage: details.originalLanguage,
+            runtime: details.runtime,
             youtubeTrailerId: details.youtubeTrailerId,
+            imdbId: details.imdbId,
+            rtId: details.rtId,
+            metacriticId: details.metacriticId,
+            rtScore: details.rtScore,
+            metacriticScore: details.metacriticScore,
           }
         : null,
       cinemaShowtimes: film.cinemaShowtimes,

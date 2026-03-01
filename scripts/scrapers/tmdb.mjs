@@ -35,7 +35,7 @@ function getNlReleaseDate(releaseDates) {
   return date ? date.split('T')[0] : null;
 }
 
-function buildResult(movie, details, videos, releaseDates, director) {
+function buildResult(movie, details, videos, releaseDates, director, imdbId, rtId, metacriticId, rtScore, metacriticScore) {
   return {
     tmdbId: movie.id,
     director: director || null,
@@ -43,21 +43,60 @@ function buildResult(movie, details, videos, releaseDates, director) {
     releaseDate: details?.release_date || movie.release_date || null,
     releaseDateNl: getNlReleaseDate(releaseDates),
     genres: (details?.genres || []).map((g) => g.name),
+    originalLanguage: details?.original_language || null,
+    runtime: details?.runtime || null,
     posterPath: movie.poster_path ? `${POSTER_BASE}${movie.poster_path}` : null,
     youtubeTrailerId: findTrailer(videos)?.key || null,
+    imdbId: imdbId || null,
+    rtId: rtId || null,
+    metacriticId: metacriticId || null,
+    rtScore: rtScore || null,
+    metacriticScore: metacriticScore || null,
   };
+}
+
+async function fetchWikidataIds(wikidataId) {
+  if (!wikidataId) return {};
+  try {
+    const res = await fetch(
+      `https://www.wikidata.org/wiki/Special:EntityData/${wikidataId}.json`
+    );
+    if (!res.ok) return {};
+    const data = await res.json();
+    const claims = data.entities[wikidataId]?.claims || {};
+
+    const rtId = claims['P1258']?.[0]?.mainsnak?.datavalue?.value || null;
+    const metacriticId = claims['P1712']?.[0]?.mainsnak?.datavalue?.value || null;
+
+    // Extract scores by source (Q105584 = Rotten Tomatoes, Q150248 = Metacritic)
+    let rtScore = null;
+    let metacriticScore = null;
+    for (const s of claims['P444'] || []) {
+      const score = s.mainsnak?.datavalue?.value;
+      const byId = s.qualifiers?.P447?.[0]?.datavalue?.value?.id;
+      if (byId === 'Q105584' && score?.endsWith('%')) rtScore = score;
+      if (byId === 'Q150248') metacriticScore = score;
+    }
+
+    return { rtId, metacriticId, rtScore, metacriticScore };
+  } catch {
+    return {};
+  }
 }
 
 async function fetchDetails(movieId) {
   const res = await fetch(
-    `https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_API_KEY}&append_to_response=videos,release_dates,credits`
+    `https://api.themoviedb.org/3/movie/${movieId}?api_key=${TMDB_API_KEY}&append_to_response=videos,release_dates,credits,external_ids`
   );
   if (!res.ok) return { details: null, videos: [], releaseDates: [], director: null };
   const data = await res.json();
   const videos = data.videos?.results || [];
   const releaseDates = data.release_dates?.results || [];
   const director = data.credits?.crew?.find((c) => c.job === 'Director')?.name || null;
-  return { details: data, videos, releaseDates, director };
+  const imdbId = data.imdb_id || data.external_ids?.imdb_id || null;
+  const wikidataId = data.external_ids?.wikidata_id || null;
+  const wikidata = await fetchWikidataIds(wikidataId);
+  return { details: data, videos, releaseDates, director, imdbId, ...wikidata };
 }
 
 export async function fetchTmdbMovieDetails(tmdbId) {
@@ -67,10 +106,10 @@ export async function fetchTmdbMovieDetails(tmdbId) {
   if (cache[cacheKey]) return cache[cacheKey];
 
   try {
-    const { details, videos, releaseDates, director: tmdbDirector } = await fetchDetails(tmdbId);
+    const { details, videos, releaseDates, director: tmdbDirector, imdbId, rtId, metacriticId, rtScore, metacriticScore } = await fetchDetails(tmdbId);
     if (!details) return null;
 
-    const result = buildResult(details, details, videos, releaseDates, tmdbDirector);
+    const result = buildResult(details, details, videos, releaseDates, tmdbDirector, imdbId, rtId, metacriticId, rtScore, metacriticScore);
     cache[cacheKey] = result;
     saveCache();
     return result;
@@ -155,9 +194,9 @@ export async function searchTmdbMovieDetails(
       bestMatch = top.movie;
     }
 
-    const { details, videos, releaseDates, director: tmdbDirector } =
+    const { details, videos, releaseDates, director: tmdbDirector, imdbId, rtId, metacriticId, rtScore, metacriticScore } =
       fetchedDetails || (await fetchDetails(bestMatch.id));
-    const result = buildResult(bestMatch, details, videos, releaseDates, tmdbDirector);
+    const result = buildResult(bestMatch, details, videos, releaseDates, tmdbDirector, imdbId, rtId, metacriticId, rtScore, metacriticScore);
 
     cache[cacheKey] = result;
     saveCache();

@@ -16,7 +16,7 @@ interface ShowtimeWithCinema {
 interface FilmShowtimesProps {
   cinemaShowtimes: CinemaShowtimes[];
   filmTitle: string;
-  filmLength: string | null;
+  filmLength: number | null;
 }
 
 function FilmShowtimes({

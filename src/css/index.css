@@ -416,6 +416,20 @@ code {
   opacity: 1;
 }
 
+.film-detail-tmdb {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.film-detail-tmdb .tmdb-link img {
+  height: 20px;
+  opacity: 0.7;
+}
+
+.film-detail-tmdb .tmdb-link img:hover {
+  opacity: 1;
+}
+
 .film-filters {
   display: flex;
   gap: 10px;
@@ -855,19 +869,25 @@ code {
 
 /* Watchlist Button */
 .watchlist-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-family: inherit;
-  font-size: 0.8rem;
-  padding: 2px 8px;
+  font-size: 0.85rem;
+  padding: 4px 12px;
   background-color: transparent;
-  border: 2px solid var(--border-primary);
+  border: 1px solid var(--border-secondary);
   color: var(--text-primary);
   cursor: pointer;
-  margin-top: 0.5rem;
+  border-radius: 2px;
+  white-space: nowrap;
+  align-self: center;
 }
 
 .watchlist-btn:hover {
   background-color: var(--hover-bg);
   color: var(--color-white);
+  border-color: var(--hover-bg);
 }
 
 .watchlist-btn-active {
@@ -879,11 +899,11 @@ code {
   background-color: var(--hover-bg);
 }
 
-.watchlist-btn-large {
-  font-size: 1rem;
-  padding: 6px 16px;
-  margin-top: 0.75rem;
-  margin-bottom: 0.5rem;
+.film-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
 /* Poster Carousel */
@@ -1172,6 +1192,31 @@ code {
   color: var(--text-body);
 }
 
+.film-external-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+.film-external-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border: 1px solid var(--border-secondary);
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.85rem;
+  border-radius: 2px;
+}
+
+.film-external-link:hover {
+  background: var(--hover-bg);
+  color: var(--color-white);
+  border-color: var(--hover-bg);
+}
+
 .film-detail-showtimes {
   margin: 2rem 0;
 }
@@ -1261,18 +1306,23 @@ code {
 }
 
 .back-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   margin-top: 2rem;
-  padding: 8px 16px;
+  padding: 4px 12px;
   background: var(--bg-primary);
-  border: 2px solid var(--border-primary);
+  border: 1px solid var(--border-secondary);
   color: var(--text-primary);
   text-decoration: none;
+  font-size: 0.85rem;
+  border-radius: 2px;
 }
 
 .back-link:hover {
   background: var(--hover-bg);
   color: var(--color-white);
+  border-color: var(--hover-bg);
 }
 
 @media (max-width: 600px) {
@@ -1342,7 +1392,8 @@ code {
   }
 
   .film-detail-meta,
-  .film-detail-genres {
+  .film-detail-genres,
+  .film-external-links {
     justify-content: center;
   }
 }

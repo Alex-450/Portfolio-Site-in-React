@@ -9,11 +9,6 @@ interface CalendarEventParams {
   variant?: string | null;
 }
 
-function parseFilmLength(length: string | null): number {
-  if (!length) return 120; // Default to 2 hours if unknown
-  const match = length.match(/(\d+)/);
-  return match ? parseInt(match[1], 10) : 120;
-}
 
 function formatDateTimeForCalendar(date: string, time: string): string {
   // Convert YYYY-MM-DD and HH:MM to YYYYMMDDTHHmmSS format
@@ -89,7 +84,7 @@ export function generateGoogleCalendarUrl(params: CalendarEventParams): string {
 
 export function generateCalendarUrlFromFilm(
   filmTitle: string,
-  filmLength: string | null,
+  runtime: number | null,
   cinemaName: string,
   date: string,
   time: string,
@@ -100,7 +95,7 @@ export function generateCalendarUrlFromFilm(
     cinemaName,
     date,
     time,
-    filmLengthMinutes: parseFilmLength(filmLength),
+    filmLengthMinutes: runtime ?? 120,
     variant,
   });
 }

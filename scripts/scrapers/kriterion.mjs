@@ -31,7 +31,7 @@ async function fetchKriterion() {
       filmMap.set(key, {
         title: decodeAndTrim(show.display_name) || decodeAndTrim(show.name),
         director: show.director || null,
-        length: show.duration ? `${show.duration} minutes` : null,
+        runtime: show.duration ? parseInt(show.duration, 10) : null,
         posterUrl: '',
         showtimes: [],
         subtitles,

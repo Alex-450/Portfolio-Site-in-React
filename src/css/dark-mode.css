@@ -448,6 +448,17 @@
     color: var(--dark-text-body);
   }
 
+  .film-external-link {
+    border-color: var(--dark-border);
+    color: var(--dark-text-primary);
+  }
+
+  .film-external-link:hover {
+    background: var(--hover-bg);
+    color: var(--dark-bg-primary);
+    border-color: var(--hover-bg);
+  }
+
   .back-link {
     background: var(--dark-bg-primary);
     border-color: var(--hover-bg);

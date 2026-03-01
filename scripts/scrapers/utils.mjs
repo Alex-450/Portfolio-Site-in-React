@@ -6,10 +6,9 @@ export function decodeAndTrim(string) {
 
 export function parseFilmLength(filmLength) {
   if (!filmLength) return null;
-  const numberPattern = /\d+/g;
-  const numericLength = String(filmLength).match(numberPattern);
-  if (!numericLength) return null;
-  return `${numericLength} minutes`;
+  const match = String(filmLength).match(/\d+/);
+  if (!match) return null;
+  return parseInt(match[0], 10);
 }
 
 export async function fetchWithRetry(url, options, retries = 3) {

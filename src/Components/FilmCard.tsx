@@ -75,7 +75,7 @@ function FilmCard({
           )}
         </div>
         {film.director && <div className="film-director">{film.director}</div>}
-        {film.length && <div className="film-length">{film.length}</div>}
+        {film.runtime && <div className="film-length">{film.runtime} minutes</div>}
 
         <div className="cinema-showtimes">
           {filteredCinemaShowtimes.map(
@@ -152,7 +152,7 @@ function FilmCard({
                                   <a
                                     href={generateCalendarUrlFromFilm(
                                       film.title,
-                                      film.length,
+                                      film.runtime,
                                       cs.cinema,
                                       s.date,
                                       s.time,

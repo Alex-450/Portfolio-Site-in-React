@@ -102,7 +102,7 @@ export async function fetchFeed(feed) {
       films.push({
         title: decodeAndTrim(film.title),
         director: film.director || null,
-        length: parseFilmLength(film.length) || null,
+        runtime: parseFilmLength(film.length) || null,
         posterUrl,
         showtimes,
         subtitles,

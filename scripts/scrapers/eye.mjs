@@ -63,15 +63,10 @@ async function fetchEye() {
     const key = `${production.id}-${show.singleSubtitle || 'none'}`;
 
     if (!filmMap.has(key)) {
-      // Calculate duration from start/end times
-      const start = new Date(show.startDateTime);
-      const end = new Date(show.endDateTime);
-      const durationMinutes = Math.round((end - start) / 60000);
-
       filmMap.set(key, {
         title: decodeAndTrim(production.title),
         director: null,
-        length: durationMinutes > 0 ? `${durationMinutes} minutes` : null,
+        runtime: null,
         posterUrl: '',
         showtimes: [],
         subtitles: subtitleLang || null,

@@ -54,7 +54,7 @@ export function getStaticProps() {
           slug: film.slug,
           title: film.title,
           director: film.director,
-          length: film.length,
+          runtime: film.runtime,
           posterUrl: film.posterUrl,
           genres: film.tmdb?.genres ?? [],
           cinemaShowtimes,

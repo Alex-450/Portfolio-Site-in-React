@@ -107,7 +107,7 @@ export interface FilmWithCinemas {
   slug: string;
   title: string;
   director: string | null;
-  length: string | null;
+  runtime: number | null;
   posterUrl: string;
   genres?: string[];
   cinemaShowtimes: CinemaShowtimes[];
@@ -122,7 +122,13 @@ export interface TmdbData {
   releaseDateNl: string | null;
   runtime: number | null;
   genres: string[];
+  originalLanguage: string | null;
   youtubeTrailerId: string | null;
+  imdbId: string | null;
+  rtId: string | null;
+  metacriticId: string | null;
+  rtScore: string | null;
+  metacriticScore: string | null;
 }
 
 // Full film data for detail pages
@@ -130,7 +136,7 @@ export interface FilmDetail {
   slug: string;
   title: string;
   director: string | null;
-  length: string | null;
+  runtime: number | null;
   posterUrl: string;
   tmdb: TmdbData | null;
   cinemaShowtimes: CinemaShowtimes[];
@@ -147,7 +153,7 @@ export interface FilmWithCinemasLite {
   slug: string;
   title: string;
   director: string | null;
-  length: string | null;
+  runtime: number | null;
   posterUrl: string;
   genres: string[];
   cinemaShowtimes: CinemaShowtimes[];

@@ -4,11 +4,13 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { Container } from 'react-bootstrap';
+import { ArrowLeft } from 'lucide-react';
 import { FilmDetail, FilmsIndex } from '../../types';
 import YouTubeEmbed from '../../Components/YouTubeEmbed';
 import FilmShowtimes from '../../Components/FilmShowtimes';
 import WatchlistButton from '../../Components/WatchlistButton';
 import { useWatchlist } from '../../hooks/useWatchlist';
+import { ArrowUpRight } from 'lucide-react';
 
 interface Props {
   film: FilmDetail;
@@ -34,7 +36,13 @@ export default function FilmDetailPage({ film }: Props) {
           <div className="film-hero">
             <YouTubeEmbed videoId={film.tmdb!.youtubeTrailerId!} />
             <div className="film-hero-overlay">
-              <h1 className="film-hero-title">{film.title}</h1>
+              <div className="film-title-row">
+                <h1 className="film-hero-title">{film.title}</h1>
+                <WatchlistButton
+                  isInWatchlist={isInWatchlist(film.slug)}
+                  onToggle={() => toggleWatchlist(film.slug)}
+                />
+              </div>
               {film.director && (
                 <p className="film-hero-director">
                   Directed by {film.director}
@@ -42,10 +50,8 @@ export default function FilmDetailPage({ film }: Props) {
               )}
               <div className="film-hero-meta">
                 {year && <span className="film-hero-badge">{year}</span>}
-                {(film.tmdb?.runtime || film.length) && (
-                  <span className="film-hero-badge">
-                    {film.tmdb?.runtime || film.length}
-                  </span>
+                {film.runtime && (
+                  <span className="film-hero-badge">{film.runtime} minutes</span>
                 )}
               </div>
               {film.tmdb?.genres && film.tmdb.genres.length > 0 && (
@@ -60,11 +66,21 @@ export default function FilmDetailPage({ film }: Props) {
               {film.tmdb?.overview && (
                 <p className="film-hero-overview">{film.tmdb.overview}</p>
               )}
-              <WatchlistButton
-                isInWatchlist={isInWatchlist(film.slug)}
-                onToggle={() => toggleWatchlist(film.slug)}
-                size="large"
-              />
+              <div className="film-external-links">
+                {film.tmdb?.imdbId && (
+                  <a href={`https://www.imdb.com/title/${film.tmdb.imdbId}/`} target="_blank" rel="noopener noreferrer" className="film-external-link">IMDb<ArrowUpRight size={14} /></a>
+                )}
+                {film.tmdb?.rtId && (
+                  <a href={`https://www.rottentomatoes.com/${film.tmdb.rtId}`} target="_blank" rel="noopener noreferrer" className="film-external-link">
+                    Rotten Tomatoes<ArrowUpRight size={14} />
+                  </a>
+                )}
+                {film.tmdb?.metacriticId && (
+                  <a href={`https://www.metacritic.com/${film.tmdb.metacriticId}`} target="_blank" rel="noopener noreferrer" className="film-external-link">
+                    Metacritic<ArrowUpRight size={14} />
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         ) : (
@@ -79,7 +95,13 @@ export default function FilmDetailPage({ film }: Props) {
               <div className="film-detail-poster-placeholder" />
             )}
             <div className="film-detail-info">
-              <h1>{film.title}</h1>
+              <div className="film-title-row">
+                <h1>{film.title}</h1>
+                <WatchlistButton
+                  isInWatchlist={isInWatchlist(film.slug)}
+                  onToggle={() => toggleWatchlist(film.slug)}
+                />
+              </div>
               {film.director && (
                 <p className="film-detail-director">
                   Directed by {film.director}
@@ -88,10 +110,8 @@ export default function FilmDetailPage({ film }: Props) {
               {film.tmdb && (
                 <div className="film-detail-meta">
                   {year && <span className="film-detail-badge">{year}</span>}
-                  {(film.tmdb.runtime || film.length) && (
-                    <span className="film-detail-badge">
-                      {film.tmdb.runtime || film.length}
-                    </span>
+                  {film.runtime && (
+                    <span className="film-detail-badge">{film.runtime} minutes</span>
                   )}
                 </div>
               )}
@@ -109,11 +129,21 @@ export default function FilmDetailPage({ film }: Props) {
                   <p>{film.tmdb.overview}</p>
                 </div>
               )}
-              <WatchlistButton
-                isInWatchlist={isInWatchlist(film.slug)}
-                onToggle={() => toggleWatchlist(film.slug)}
-                size="large"
-              />
+              <div className="film-external-links">
+                {film.tmdb?.imdbId && (
+                  <a href={`https://www.imdb.com/title/${film.tmdb.imdbId}/`} target="_blank" rel="noopener noreferrer" className="film-external-link">IMDb<ArrowUpRight size={14} /></a>
+                )}
+                {film.tmdb?.rtId && (
+                  <a href={`https://www.rottentomatoes.com/${film.tmdb.rtId}`} target="_blank" rel="noopener noreferrer" className="film-external-link">
+                    Rotten Tomatoes<ArrowUpRight size={14} />
+                  </a>
+                )}
+                {film.tmdb?.metacriticId && (
+                  <a href={`https://www.metacritic.com/${film.tmdb.metacriticId}`} target="_blank" rel="noopener noreferrer" className="film-external-link">
+                    Metacritic<ArrowUpRight size={14} />
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -123,13 +153,26 @@ export default function FilmDetailPage({ film }: Props) {
           <FilmShowtimes
             cinemaShowtimes={film.cinemaShowtimes}
             filmTitle={film.title}
-            filmLength={film.length}
+            filmLength={film.runtime}
           />
         </div>
 
         <Link href="/film-listings/" className="back-link">
-          &larr; Back to Film Listings
+          <ArrowLeft size={16} /> Back to Film Listings
         </Link>
+
+        {film.tmdb && (
+          <div className="film-detail-tmdb">
+            <a
+              href="https://www.themoviedb.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="tmdb-link"
+            >
+              <img src="/tmdb-logo.svg" alt="TMDB" />
+            </a>
+          </div>
+        )}
       </Container>
     </>
   );
