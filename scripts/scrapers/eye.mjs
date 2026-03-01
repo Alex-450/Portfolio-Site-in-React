@@ -12,9 +12,9 @@ const SUBTITLE_MAP = {
 
 const PAGE_SIZE = 200;
 
-async function fetchEyePage(today, offset) {
-  const query = `query shows($site: String!, $startDateTime: String, $offset: Int, $limit: Int, $sort: ShowSortEnum) {
-    shows: show(site: $site, startDateTime: $startDateTime, offset: $offset, limit: $limit, sort: $sort) {
+async function fetchEyePage(today) {
+  const query = `query shows($site: String!, $startDateTime: String, $limit: Int, $sort: ShowSortEnum) {
+    shows: show(site: $site, startDateTime: $startDateTime, limit: $limit, sort: $sort) {
       id
       startDateTime
       endDateTime
@@ -39,7 +39,6 @@ async function fetchEyePage(today, offset) {
       variables: {
         site: 'eyeNederlands',
         startDateTime: `> ${today}`,
-        offset,
         limit: PAGE_SIZE,
         sort: 'DATE',
       },
@@ -56,15 +55,9 @@ async function fetchEye() {
 
   const today = new Date().toISOString().split('T')[0];
 
-  // Paginate until we get fewer results than PAGE_SIZE
   const allShows = [];
-  let offset = 0;
-  while (true) {
-    const page = await fetchEyePage(today, offset);
-    allShows.push(...page);
-    if (page.length < PAGE_SIZE) break;
-    offset += PAGE_SIZE;
-  }
+  const page = await fetchEyePage(today);
+  allShows.push(...page);
 
   // Group by production ID + subtitle language to create separate entries for different subtitle versions
   const filmMap = new Map();
