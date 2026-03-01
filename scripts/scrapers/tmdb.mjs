@@ -170,12 +170,19 @@ export async function searchTmdbMovieDetails(
           .replace(/[^a-z0-9]/g, '');
       const targetDirector = normalizeDirector(director);
 
+      // Also match on last name only, to handle "J. Smith" vs "John Smith"
+      const targetLastName = targetDirector.split(/\s+/).at(-1);
+
       for (const { movie } of candidates.slice(0, 5)) {
         const fetched = await fetchDetails(movie.id);
         const tmdbDirectors = (fetched.details?.credits?.crew || [])
           .filter((c) => c.job === 'Director')
           .map((c) => normalizeDirector(c.name));
-        if (tmdbDirectors.some((d) => d === targetDirector)) {
+        const tmdbLastNames = tmdbDirectors.map((d) => d.split(/\s+/).at(-1));
+        if (
+          tmdbDirectors.some((d) => d === targetDirector) ||
+          tmdbLastNames.some((ln) => ln === targetLastName)
+        ) {
           bestMatch = movie;
           fetchedDetails = fetched;
           break;
