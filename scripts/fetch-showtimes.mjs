@@ -36,9 +36,10 @@ async function mapWithConcurrency(items, fn, concurrency = 10) {
   return Promise.all(results);
 }
 
+// Returns { cinemas, failedCinemaNames }
 async function fetchAllCinemas() {
   // Fetch all sources in parallel
-  const [rssResults, kriterionResult, fcHyenaResult, eyeResult] =
+  const [rssResult, kriterionResult, fcHyenaResult, eyeResult] =
     await Promise.allSettled([
       fetchAllRssFeeds(),
       fetchKriterion(),
@@ -47,17 +48,17 @@ async function fetchAllCinemas() {
     ]);
 
   const cinemas = [];
-  const failures = [];
+  const failedCinemaNames = [];
 
   // Process results
   const namedResults = [
-    { name: 'RSS feeds', result: rssResults, isArray: true },
-    { name: 'Kriterion', result: kriterionResult },
-    { name: 'FC Hyena', result: fcHyenaResult },
-    { name: 'Eye', result: eyeResult },
+    { names: ['LAB111', 'Studio K', 'FilmHallen', 'The Movies', 'FilmKoepel'], result: rssResult, isArray: true },
+    { names: ['Kriterion'], result: kriterionResult },
+    { names: ['FC Hyena'], result: fcHyenaResult },
+    { names: ['Eye Filmmuseum'], result: eyeResult },
   ];
 
-  for (const { name, result, isArray } of namedResults) {
+  for (const { names, result, isArray } of namedResults) {
     if (result.status === 'fulfilled') {
       if (isArray) {
         cinemas.push(...result.value);
@@ -65,20 +66,47 @@ async function fetchAllCinemas() {
         cinemas.push(result.value);
       }
     } else {
-      console.error(`Error fetching ${name}:`, result.reason?.message);
-      failures.push(name);
+      console.error(`Error fetching ${names.join('/')}: ${result.reason?.message}`);
+      failedCinemaNames.push(...names);
     }
-  }
-
-  if (failures.length > 0) {
-    console.warn(`\nWarning: failed to fetch data from: ${failures.join(', ')}. Continuing with partial data.`);
   }
 
   if (cinemas.length === 0) {
     throw new Error('All cinema sources failed — cannot build films.json');
   }
 
-  return cinemas;
+  return { cinemas, failedCinemaNames };
+}
+
+// Reconstruct cinema objects from existing films.json for cinemas that failed to scrape
+function buildFallbackCinemas(existingFilms, failedCinemaNames) {
+  if (failedCinemaNames.length === 0) return [];
+
+  const failedSet = new Set(failedCinemaNames);
+  const cinemaFilmsMap = new Map(); // cinemaName -> films[]
+
+  for (const film of Object.values(existingFilms)) {
+    for (const cs of film.cinemaShowtimes ?? []) {
+      if (!failedSet.has(cs.cinema)) continue;
+      if (!cinemaFilmsMap.has(cs.cinema)) cinemaFilmsMap.set(cs.cinema, []);
+      cinemaFilmsMap.get(cs.cinema).push({
+        title: film.title,
+        director: film.director,
+        runtime: film.runtime,
+        posterUrl: film.posterUrl,
+        _tmdbId: film.tmdb?.id ?? null,
+        year: film.tmdb?.releaseDate ? parseInt(film.tmdb.releaseDate) : null,
+        showtimes: cs.showtimes,
+        subtitles: cs.subtitles,
+        variant: cs.variant,
+      });
+    }
+  }
+
+  return [...cinemaFilmsMap.entries()].map(([name, films]) => {
+    console.warn(`Warning: using cached data for ${name} (scrape failed)`);
+    return { name, films };
+  });
 }
 
 function groupFilmsByCinema(cinemas) {
@@ -246,53 +274,36 @@ async function main() {
   const startTime = performance.now();
   const outputPath = 'src/data/films.json';
 
-  try {
-    console.log('Fetching showtimes...\n');
+  console.log('Fetching showtimes...\n');
 
-    const cinemas = await fetchAllCinemas();
+  mkdirSync(dirname(outputPath), { recursive: true });
 
-    mkdirSync(dirname(outputPath), { recursive: true });
+  const existingFilms = existsSync(outputPath)
+    ? JSON.parse(readFileSync(outputPath, 'utf-8'))
+    : {};
 
-    // Load existing films to preserve dateAdded
-    let existingFilms = {};
-    if (existsSync(outputPath)) {
-      existingFilms = JSON.parse(readFileSync(outputPath, 'utf-8'));
-    }
+  const { cinemas, failedCinemaNames } = await fetchAllCinemas();
 
-    // Generate films.json with TMDB details
-    const filmsIndex = await generateFilmsJson(cinemas);
+  const fallbackCinemas = buildFallbackCinemas(existingFilms, failedCinemaNames);
+  const allCinemas = [...cinemas, ...fallbackCinemas];
 
-    // Preserve dateAdded for existing films, set today's date for new films
-    const today = new Date().toISOString().split('T')[0];
-    for (const slug of Object.keys(filmsIndex)) {
-      if (existingFilms[slug]?.dateAdded) {
-        filmsIndex[slug].dateAdded = existingFilms[slug].dateAdded;
-      } else {
-        filmsIndex[slug].dateAdded = today;
-      }
-    }
+  const filmsIndex = await generateFilmsJson(allCinemas);
 
-    writeFileSync(outputPath, JSON.stringify(filmsIndex, null, 2));
-
-    const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
-    console.log(
-      `\nWrote ${Object.keys(filmsIndex).length} films to ${outputPath}`
-    );
-    console.log(`Last updated: ${new Date().toISOString()}`);
-    console.log(`Total time: ${elapsed}s`);
-  } catch (err) {
-    console.error('Failed to fetch showtimes:', err.message);
-
-    // Fall back to existing cached file if available
-    if (existsSync(outputPath)) {
-      console.log(`\nUsing existing cached ${outputPath}`);
-      const cached = JSON.parse(readFileSync(outputPath, 'utf-8'));
-      console.log(`Cached file contains ${Object.keys(cached).length} films`);
-    } else {
-      console.error('No cached file available, build cannot continue');
-      process.exit(1);
-    }
+  // Preserve dateAdded for existing films, set today's date for new films
+  const today = new Date().toISOString().split('T')[0];
+  for (const slug of Object.keys(filmsIndex)) {
+    filmsIndex[slug].dateAdded = existingFilms[slug]?.dateAdded ?? today;
   }
+
+  writeFileSync(outputPath, JSON.stringify(filmsIndex, null, 2));
+
+  const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
+  console.log(`\nWrote ${Object.keys(filmsIndex).length} films to ${outputPath}`);
+  console.log(`Last updated: ${new Date().toISOString()}`);
+  console.log(`Total time: ${elapsed}s`);
 }
 
-main();
+main().catch((err) => {
+  console.error('Failed to fetch showtimes:', err.message);
+  process.exit(1);
+});
