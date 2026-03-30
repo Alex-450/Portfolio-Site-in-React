@@ -30,7 +30,6 @@ async function fetchFcHyena() {
           runtime: show.duration ? parseInt(show.duration, 10) : null,
           posterUrl: '',
           showtimes: [],
-          _needsTmdbSearch: true,
         });
       }
 

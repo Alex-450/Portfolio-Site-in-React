@@ -96,10 +96,7 @@ async function fetchEye() {
   console.log('Fetching Eye...');
 
   const today = new Date().toISOString().split('T')[0];
-
-  const allShows = [];
-  const page = await fetchEyePage(today);
-  allShows.push(...page);
+  const allShows = await fetchEyePage(today);
 
   // Group by production ID + subtitle language to create separate entries for different subtitle versions
   const filmMap = new Map();
@@ -128,7 +125,6 @@ async function fetchEye() {
         posterUrl: '',
         showtimes: [],
         subtitles: subtitleLang ?? null,
-        _needsTmdbSearch: true,
         _eyeProductionId: production.id, // used below to fetch production page metadata
       });
     }

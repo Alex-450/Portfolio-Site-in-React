@@ -115,20 +115,27 @@ export async function fetchFeed(feed) {
   return { name: feed.name, films };
 }
 
+// Returns { cinemas, failedCinemaNames }
 export async function fetchAllRssFeeds() {
   const results = await Promise.allSettled(FEEDS.map(fetchFeed));
   const cinemas = [];
+  const failedCinemaNames = [];
 
   for (let i = 0; i < results.length; i++) {
     const result = results[i];
     if (result.status === 'fulfilled' && result.value.films.length > 0) {
       cinemas.push(result.value);
-    } else if (result.status === 'rejected') {
-      console.error(`Error fetching ${FEEDS[i].name}:`, result.reason.message);
+    } else {
+      if (result.status === 'rejected') {
+        console.error(`Error fetching ${FEEDS[i].name}:`, result.reason.message);
+      } else {
+        console.error(`Error fetching ${FEEDS[i].name}: returned 0 films`);
+      }
+      failedCinemaNames.push(FEEDS[i].name);
     }
   }
 
-  return cinemas;
+  return { cinemas, failedCinemaNames };
 }
 
 export { FEEDS };

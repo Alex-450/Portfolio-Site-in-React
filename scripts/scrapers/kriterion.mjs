@@ -35,7 +35,6 @@ async function fetchKriterion() {
         posterUrl: '',
         showtimes: [],
         subtitles,
-        _needsTmdbSearch: true,
       });
     }
 

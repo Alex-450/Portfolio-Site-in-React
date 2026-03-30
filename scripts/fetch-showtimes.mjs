@@ -51,23 +51,26 @@ async function fetchAllCinemas() {
   const failedCinemaNames = [];
 
   // Process results
+  if (rssResult.status === 'fulfilled') {
+    cinemas.push(...rssResult.value.cinemas);
+    failedCinemaNames.push(...rssResult.value.failedCinemaNames);
+  } else {
+    console.error(`Error fetching RSS feeds: ${rssResult.reason?.message}`);
+    failedCinemaNames.push('LAB111', 'Studio K', 'FilmHallen', 'The Movies', 'FilmKoepel');
+  }
+
   const namedResults = [
-    { names: ['LAB111', 'Studio K', 'FilmHallen', 'The Movies', 'FilmKoepel'], result: rssResult, isArray: true },
-    { names: ['Kriterion'], result: kriterionResult },
-    { names: ['FC Hyena'], result: fcHyenaResult },
-    { names: ['Eye Filmmuseum'], result: eyeResult },
+    { name: 'Kriterion', result: kriterionResult },
+    { name: 'FC Hyena', result: fcHyenaResult },
+    { name: 'Eye Filmmuseum', result: eyeResult },
   ];
 
-  for (const { names, result, isArray } of namedResults) {
+  for (const { name, result } of namedResults) {
     if (result.status === 'fulfilled') {
-      if (isArray) {
-        cinemas.push(...result.value);
-      } else if (result.value.films.length > 0) {
-        cinemas.push(result.value);
-      }
+      if (result.value.films.length > 0) cinemas.push(result.value);
     } else {
-      console.error(`Error fetching ${names.join('/')}: ${result.reason?.message}`);
-      failedCinemaNames.push(...names);
+      console.error(`Error fetching ${name}: ${result.reason?.message}`);
+      failedCinemaNames.push(name);
     }
   }
 
@@ -153,7 +156,7 @@ function groupFilmsByCinema(cinemas) {
       existing.cinemaShowtimes.push({
         cinema: cinema.name,
         showtimes: film.showtimes,
-        variant: variant,
+        variant,
         subtitles: film.subtitles ?? null,
       });
     }
