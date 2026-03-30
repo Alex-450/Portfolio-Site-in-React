@@ -14,7 +14,7 @@ const parser = new XMLParser({
   attributeNamePrefix: '@_',
 });
 
-export async function fetchFeed(feed) {
+async function fetchFeed(feed) {
   console.log(`Fetching ${feed.name}...`);
   const response = await fetchWithRetry(feed.url, {
     headers: {
@@ -137,5 +137,3 @@ export async function fetchAllRssFeeds() {
 
   return { cinemas, failedCinemaNames };
 }
-
-export { FEEDS };
