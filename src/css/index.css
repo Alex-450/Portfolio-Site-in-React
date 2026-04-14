@@ -465,8 +465,11 @@ code {
 }
 
 .top-film-rank {
-  font-size: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 700;
   color: var(--text-secondary);
+  line-height: 1;
+  margin-bottom: 0.25rem;
 }
 
 .top-film-title {
