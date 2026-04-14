@@ -304,6 +304,10 @@ async function main() {
   console.log(`\nWrote ${Object.keys(filmsIndex).length} films to ${outputPath}`);
   console.log(`Last updated: ${new Date().toISOString()}`);
   console.log(`Total time: ${elapsed}s`);
+
+  if (failedCinemaNames.length > 0) {
+    writeFileSync('scraper-failures.txt', failedCinemaNames.join('\n'));
+  }
 }
 
 main().catch((err) => {

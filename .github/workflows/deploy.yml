@@ -62,6 +62,15 @@ jobs:
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
 
+      - name: Check for scraper failures
+        if: ${{ steps.fetch-showtimes.outcome == 'success' }}
+        run: |
+          if [ -f scraper-failures.txt ]; then
+            while IFS= read -r cinema; do
+              echo "::warning::Scraper failed for $cinema — using cached data"
+            done < scraper-failures.txt
+          fi
+
       - name: Save films.json cache
         if: ${{ steps.fetch-showtimes.outcome == 'success' }}
         uses: actions/cache/save@v5
