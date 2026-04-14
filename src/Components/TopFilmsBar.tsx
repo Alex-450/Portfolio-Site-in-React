@@ -51,12 +51,13 @@ const TopFilmsBar = ({ films, today }: TopFilmsBarProps) => {
               <div className="top-film-rank">#{i + 1}</div>
               <div className="top-film-title">{film.title}</div>
               {film.director && (
-                <div className="top-film-director">
-                  {film.director}{film.releaseYear && <span className="top-film-year"> ({film.releaseYear})</span>}
-                </div>
+                <div className="top-film-director">{film.director}</div>
               )}
-              {film.runtime && <div className="top-film-meta">{film.runtime} min</div>}
-              <div className="top-film-meta"><span className="top-film-count">{count} showings</span></div>
+              <div className="top-film-meta">
+                {film.releaseYear && <span className="top-film-year">({film.releaseYear})</span>}
+                {film.runtime && <span>{film.runtime} min</span>}
+                <span className="top-film-count">{count} showings</span>
+              </div>
               {film.overview && (
                 <div className="top-film-overview">{film.overview}</div>
               )}
