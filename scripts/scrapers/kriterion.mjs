@@ -8,6 +8,7 @@ async function fetchKriterion() {
     headers: {
       Accept: 'application/json',
       'User-Agent': 'Mozilla/5.0 (compatible; FilmListingsFetcher/1.0)',
+      Origin: 'https://www.kriterion.nl',
     },
   });
   const data = await response.json();
