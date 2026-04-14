@@ -161,6 +161,7 @@ export interface FilmWithCinemasLite {
   dateAdded?: string | null;
   releaseDate?: string | null;
   releaseYear?: string | null;
+  overview?: string | null;
 }
 
 export interface FilmsIndexLite {

@@ -329,6 +329,43 @@
     border-color: var(--hover-bg);
   }
 
+  .top-films-label {
+    color: var(--dark-text-primary);
+  }
+
+  .top-films-explainer {
+    color: var(--dark-text-secondary);
+  }
+
+  .top-films-bar {
+    scrollbar-color: var(--hover-bg) var(--dark-bg-primary);
+  }
+
+  .top-films-bar::-webkit-scrollbar-track {
+    background: var(--dark-bg-primary);
+  }
+
+  .top-films-bar::-webkit-scrollbar-thumb {
+    background: var(--hover-bg);
+  }
+
+  .top-film-item {
+    border-color: var(--hover-bg);
+    color: var(--dark-text-primary);
+  }
+
+  .top-film-item:hover {
+    border-color: var(--dark-text-primary);
+  }
+
+  .top-film-rank,
+  .top-film-director,
+  .top-film-meta,
+  .top-film-count,
+  .top-film-overview {
+    color: var(--dark-text-secondary);
+  }
+
   .poster-carousel-image {
     background: var(--dark-bg-tertiary);
   }

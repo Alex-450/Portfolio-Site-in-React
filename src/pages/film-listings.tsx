@@ -64,6 +64,7 @@ export function getStaticProps() {
           releaseYear: film.tmdb?.releaseDate
             ? film.tmdb.releaseDate.split('-')[0]
             : null,
+          overview: film.tmdb?.overview ?? null,
         };
       }
     }

@@ -6,6 +6,7 @@ import { Container } from 'react-bootstrap';
 import { FilmWithCinemasLite, FilmsIndexLite } from '../types';
 import FilmCard from './FilmCard';
 import PosterCarousel from './PosterCarousel';
+import TopFilmsBar from './TopFilmsBar';
 import ViewToggle from './ViewToggle';
 import GenreCarouselRow from './GenreCarouselRow';
 import CinemaFilter from './filters/CinemaFilter';
@@ -328,6 +329,12 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
             <Link href="/film-listings">Film Listings</Link>
           </h1>
         </header>
+
+        {!cinemaFilter.length && !dayFilter.length && !timeFilter && !genreFilter.length && !filmFilter && !directorFilter && !releaseFilter && !watchlistFilter && (
+          <TopFilmsBar films={allFilms} today={today} />
+        )}
+
+        <h2 className="film-listings-section-heading">All Films</h2>
 
         <div className="film-filters">
           <ViewToggle
