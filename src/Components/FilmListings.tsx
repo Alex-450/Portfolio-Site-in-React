@@ -13,7 +13,7 @@ import DayFilter from './filters/DayFilter';
 import DirectorFilter from './filters/DirectorFilter';
 import GenreFilter from './filters/GenreFilter';
 import FilmSearchFilter from './filters/FilmSearchFilter';
-import ReleaseFilter, { ReleaseFilterValue } from './filters/ReleaseFilter';
+import ReleaseFilter, { ReleaseFilterValue, RELEASE_OPTIONS } from './filters/ReleaseFilter';
 import TimeFilter from './filters/TimeFilter';
 import WatchlistFilter from './filters/WatchlistFilter';
 import { getToday, getCurrentTime, formatDate } from '../utils/date';
@@ -414,6 +414,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
           genreFilter.length > 0 ||
           filmFilter ||
           directorFilter ||
+          releaseFilter ||
           watchlistFilter) && (
           <div className="active-filters">
             {cinemaFilter.map((cinema) => (
@@ -486,6 +487,15 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
                 }}
               >
                 Director: {directorFilter}{' '}
+                <span className="chip-remove">×</span>
+              </button>
+            )}
+            {releaseFilter && (
+              <button
+                className="filter-chip"
+                onClick={() => setFilter('release', undefined)}
+              >
+                {RELEASE_OPTIONS.find((o) => o.value === releaseFilter)?.label}{' '}
                 <span className="chip-remove">×</span>
               </button>
             )}

@@ -12,7 +12,7 @@ interface ReleaseFilterProps {
   onChange: (value: ReleaseFilterValue) => void;
 }
 
-const OPTIONS: { value: ReleaseFilterValue; label: string }[] = [
+export const RELEASE_OPTIONS: { value: ReleaseFilterValue; label: string }[] = [
   { value: 'recently-added', label: 'Recently Added' },
   { value: 'upcoming', label: 'Upcoming Releases' },
   { value: 'recently-released', label: 'Recently Released' },
@@ -24,7 +24,7 @@ const ReleaseFilter = ({ value, onChange }: ReleaseFilterProps) => {
 
   const getDisplayLabel = () => {
     if (!value) return 'Release';
-    return OPTIONS.find((o) => o.value === value)?.label ?? 'Release';
+    return RELEASE_OPTIONS.find((o) => o.value === value)?.label ?? 'Release';
   };
 
   return (
@@ -38,7 +38,7 @@ const ReleaseFilter = ({ value, onChange }: ReleaseFilterProps) => {
       </button>
       {showDropdown && (
         <div className="genre-filter-dropdown">
-          {OPTIONS.map((option) => (
+          {RELEASE_OPTIONS.map((option) => (
             <label key={option.value} className="genre-filter-option">
               <input
                 type="radio"
