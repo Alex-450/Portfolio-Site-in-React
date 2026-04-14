@@ -15,7 +15,7 @@ export async function fetchWithRetry(url, options, retries = 3) {
   for (let attempt = 1; attempt <= retries; attempt++) {
     const response = await fetch(url, options);
     if (response.ok) return response;
-    console.warn(`  Attempt ${attempt}/${retries} failed: ${response.status}`);
+    console.warn(`  Attempt ${attempt}/${retries} failed: ${response.status} for: ${url}`);
     if (attempt < retries)
       await new Promise((r) => setTimeout(r, attempt * 2000));
   }
