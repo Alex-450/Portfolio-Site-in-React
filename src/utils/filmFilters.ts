@@ -8,6 +8,7 @@ import { filterPastShowtimes } from './date';
 interface FilterOptions {
   cinemaFilter: string[];
   dayFilter: string[];
+  timeFilter: string | null;
   filmFilter: string;
   genreFilter: string[];
   directorFilter: string;
@@ -33,10 +34,19 @@ function filterShowtimesByDay(
   return showtimes.filter((s) => targetDates.includes(s.date));
 }
 
+function filterShowtimesByTime(
+  showtimes: Showtime[],
+  timeFilter: string | null
+): Showtime[] {
+  if (!timeFilter) return showtimes;
+  return showtimes.filter((s) => s.time >= timeFilter);
+}
+
 function filterCinemaShowtimes(
   cinemaShowtimes: CinemaShowtimes[],
   cinemaFilter: string[],
   dayFilter: string[],
+  timeFilter: string | null,
   today: string,
   currentTime: string
 ): CinemaShowtimes[] {
@@ -46,10 +56,13 @@ function filterCinemaShowtimes(
     )
     .map((cs) => ({
       ...cs,
-      showtimes: filterPastShowtimes(
-        filterShowtimesByDay(cs.showtimes, dayFilter, today),
-        today,
-        currentTime
+      showtimes: filterShowtimesByTime(
+        filterPastShowtimes(
+          filterShowtimesByDay(cs.showtimes, dayFilter, today),
+          today,
+          currentTime
+        ),
+        timeFilter
       ),
     }))
     .filter((cs) => cs.showtimes.length > 0);
@@ -108,6 +121,7 @@ export function filterFilms(
   const {
     cinemaFilter,
     dayFilter,
+    timeFilter,
     filmFilter,
     genreFilter,
     directorFilter,
@@ -145,6 +159,7 @@ export function filterFilms(
         film.cinemaShowtimes,
         cinemaFilter,
         dayFilter,
+        timeFilter,
         today,
         currentTime
       ),

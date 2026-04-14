@@ -14,6 +14,7 @@ import DirectorFilter from './filters/DirectorFilter';
 import GenreFilter from './filters/GenreFilter';
 import FilmSearchFilter from './filters/FilmSearchFilter';
 import ReleaseFilter, { ReleaseFilterValue } from './filters/ReleaseFilter';
+import TimeFilter from './filters/TimeFilter';
 import WatchlistFilter from './filters/WatchlistFilter';
 import { getToday, getCurrentTime, formatDate } from '../utils/date';
 import { filterFilms } from '../utils/filmFilters';
@@ -96,6 +97,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const genreFilter = str(q.genres).split(',').filter(Boolean);
   const directorFilter = str(q.director);
   const releaseFilter = (str(q.release) || null) as ReleaseFilterValue;
+  const timeFilter = str(q.time) || null;
   const viewMode = (str(q.view) === 'carousel' ? 'carousel' : 'list') as
     | 'list'
     | 'carousel';
@@ -148,6 +150,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     let films = filterFilms(allFilms, {
       cinemaFilter,
       dayFilter,
+      timeFilter,
       filmFilter: filmSearch,
       genreFilter,
       directorFilter,
@@ -187,6 +190,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     allFilms,
     cinemaFilter,
     dayFilter,
+    timeFilter,
     filmSearch,
     genreFilter,
     directorFilter,
@@ -205,6 +209,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
       filterFilms(allFilms, {
         cinemaFilter,
         dayFilter,
+        timeFilter,
         filmFilter: filmFilter && dayFilter.length > 0 ? filmFilter : '',
         genreFilter,
         directorFilter,
@@ -219,6 +224,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
       allFilms,
       cinemaFilter,
       dayFilter,
+      timeFilter,
       filmFilter,
       genreFilter,
       directorFilter,
@@ -233,6 +239,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     const filmsForDayOptions = filterFilms(allFilms, {
       cinemaFilter,
       dayFilter: [],
+      timeFilter,
       filmFilter,
       genreFilter,
       directorFilter,
@@ -263,6 +270,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   }, [
     allFilms,
     cinemaFilter,
+    timeFilter,
     filmFilter,
     genreFilter,
     directorFilter,
@@ -383,6 +391,10 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
               setFilter('director', undefined);
             }}
           />
+          <TimeFilter
+            value={timeFilter}
+            onChange={(value) => setFilter('time', value ?? undefined)}
+          />
           <ReleaseFilter
             value={releaseFilter}
             onChange={(value) => setFilter('release', value ?? undefined)}
@@ -398,6 +410,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
 
         {(cinemaFilter.length > 0 ||
           dayFilter.length > 0 ||
+          timeFilter ||
           genreFilter.length > 0 ||
           filmFilter ||
           directorFilter ||
@@ -431,6 +444,14 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
                 {getDayLabel(day)} <span className="chip-remove">×</span>
               </button>
             ))}
+            {timeFilter && (
+              <button
+                className="filter-chip"
+                onClick={() => setFilter('time', undefined)}
+              >
+                From {timeFilter} <span className="chip-remove">×</span>
+              </button>
+            )}
             {genreFilter.map((genre) => (
               <button
                 key={genre}
