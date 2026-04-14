@@ -305,8 +305,9 @@ async function main() {
   console.log(`Last updated: ${new Date().toISOString()}`);
   console.log(`Total time: ${elapsed}s`);
 
-  if (failedCinemaNames.length > 0) {
-    writeFileSync('scraper-failures.txt', failedCinemaNames.join('\n'));
+  for (const name of failedCinemaNames) {
+    // GitHub Actions warning annotation — shows up in the Actions UI and triggers email notifications
+    console.log(`::warning::Scraper failed for ${name} — using cached data`);
   }
 }
 
