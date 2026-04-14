@@ -133,7 +133,7 @@ describe('filterFilms', () => {
 
   it('filters recently added films', () => {
     const films = [
-      createFilm({ dateAdded: '2024-03-10' }), // 4 days ago
+      createFilm({ dateAdded: '2024-03-12' }), // 2 days ago
       createFilm({ slug: 'film-2', dateAdded: '2024-03-01' }), // 13 days ago
     ];
     const result = filterFilms(films, { ...baseOptions, today: '2024-03-14', recentlyAdded: true });

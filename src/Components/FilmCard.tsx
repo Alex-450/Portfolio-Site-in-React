@@ -48,14 +48,22 @@ function FilmCard({
     );
   }, [filteredCinemaShowtimes, showExpanded]);
 
+  const isNew = film.dateAdded
+    ? Math.floor(
+        (new Date(today).getTime() - new Date(film.dateAdded).getTime()) /
+          (1000 * 60 * 60 * 24)
+      ) <= 3
+    : false;
+
   return (
     <div className="film-card">
-      <Link href={`/films/${film.slug}/`}>
+      <Link href={`/films/${film.slug}/`} className="film-poster-link">
         {film.posterUrl ? (
           <img className="film-poster" src={film.posterUrl} alt={film.title} />
         ) : (
           <div className="film-poster-placeholder" />
         )}
+        {isNew && <span className="film-new-badge">New</span>}
       </Link>
       <div className="film-info">
         <div className="film-title-row">

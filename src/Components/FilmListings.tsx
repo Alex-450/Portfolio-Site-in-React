@@ -339,6 +339,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
         {viewMode === 'list' && (
           <PosterCarousel
             films={carouselFilms}
+            today={today}
             onPosterClick={(title) => {
               setFilmSearch(title);
               setFilter('film', title);

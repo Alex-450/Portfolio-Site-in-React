@@ -78,7 +78,7 @@ function isRecentlyAdded(
   const diffDays = Math.floor(
     (todayDate.getTime() - addedDate.getTime()) / (1000 * 60 * 60 * 24)
   );
-  return diffDays <= 7;
+  return diffDays <= 3;
 }
 
 function isUpcomingRelease(
