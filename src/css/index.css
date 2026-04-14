@@ -411,7 +411,7 @@ code {
 .top-films-label {
   font-size: 1rem;
   font-weight: 700;
-  margin-bottom: 1rem;
+  margin-bottom: 0.25rem;
   margin-top: 0.5rem;
 }
 
@@ -419,8 +419,7 @@ code {
   font-size: 0.8rem;
   font-weight: 400;
   color: var(--text-secondary);
-  margin-top: -0.6rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .top-films-track {
