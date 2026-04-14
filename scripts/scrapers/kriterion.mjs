@@ -1,7 +1,6 @@
 import { fetchWithRetry, decodeAndTrim } from './utils.mjs';
 
-const KRITERION_URL =
-  'https://storage.googleapis.com/kritsite-buffer/shows.json';
+const KRITERION_URL = 'https://www.kriterion.nl/data/shows.json';
 
 async function fetchKriterion() {
   console.log('Fetching Kriterion...');
