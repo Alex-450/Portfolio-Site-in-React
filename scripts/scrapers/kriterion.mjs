@@ -1,16 +1,10 @@
 import { fetchWithRetry, decodeAndTrim } from './utils.mjs';
 
-const KRITERION_URL = 'https://www.kriterion.nl/data/shows.json';
+const KRITERION_URL = 'https://film-scraper.alex-wmstearn.workers.dev/';
 
 async function fetchKriterion() {
   console.log('Fetching Kriterion...');
-  const response = await fetchWithRetry(KRITERION_URL, {
-    headers: {
-      Accept: 'application/json',
-      'User-Agent': 'Mozilla/5.0 (compatible; FilmListingsFetcher/1.0)',
-      Origin: 'https://www.kriterion.nl',
-    },
-  });
+  const response = await fetchWithRetry(KRITERION_URL);
   const data = await response.json();
   const filmMap = new Map();
 
