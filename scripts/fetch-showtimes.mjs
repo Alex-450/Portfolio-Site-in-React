@@ -1,6 +1,7 @@
 import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'fs';
 import { dirname } from 'path';
 import { fetchAllRssFeeds } from './scrapers/rss-feeds.mjs';
+import { fetchKriterion } from './scrapers/kriterion.mjs';
 import { fetchFcHyena } from './scrapers/fc-hyena.mjs';
 import { fetchEye } from './scrapers/eye.mjs';
 import {
@@ -38,9 +39,10 @@ async function mapWithConcurrency(items, fn, concurrency = 10) {
 // Returns { cinemas, failedCinemaNames }
 async function fetchAllCinemas() {
   // Fetch all sources in parallel
-  const [rssResult, fcHyenaResult, eyeResult] =
+  const [rssResult, kriterionResult, fcHyenaResult, eyeResult] =
     await Promise.allSettled([
       fetchAllRssFeeds(),
+      fetchKriterion(),
       fetchFcHyena(),
       fetchEye(),
     ]);
@@ -58,6 +60,7 @@ async function fetchAllCinemas() {
   }
 
   const namedResults = [
+    { name: 'Kriterion', result: kriterionResult },
     { name: 'FC Hyena', result: fcHyenaResult },
     { name: 'Eye Filmmuseum', result: eyeResult },
   ];
