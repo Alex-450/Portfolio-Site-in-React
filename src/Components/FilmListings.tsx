@@ -585,10 +585,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
               The Movies
             </a>
             ,{' '}
-            <a href="https://www.kriterion.nl/" target="_blank" rel="noopener noreferrer">
-              Kriterion
-            </a>
-            ,{' '}
             <a href="https://www.eyefilm.nl/en" target="_blank" rel="noopener noreferrer">
               Eye
             </a>{' '}

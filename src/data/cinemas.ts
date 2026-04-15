@@ -10,11 +10,6 @@ export const cinemas: Record<string, Cinema> = {
     address: 'Arie Biemondstraat 111, 1054 PD Amsterdam',
     adsMinutes: 20,
   },
-  Kriterion: {
-    name: 'Kriterion',
-    address: 'Roetersstraat 170, 1018 WE Amsterdam',
-    adsMinutes: 20,
-  },
   Eye: {
     name: 'Eye Filmmuseum',
     address: 'IJpromenade 1, 1031 KT Amsterdam',

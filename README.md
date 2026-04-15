@@ -7,7 +7,6 @@ Personal portfolio site with a blog and film listings for Amsterdam/Haarlem cine
 - Personal blog with MDX support
 - Film listings aggregated from local cinema RSS feeds:
   - LAB111
-  - Kriterion
   - Eye Filmmuseum
   - Studio K
   - FilmHallen
