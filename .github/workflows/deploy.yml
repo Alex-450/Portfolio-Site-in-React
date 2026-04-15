@@ -46,6 +46,10 @@ jobs:
           path: src/data/eye-cache.json
           key: eye-cache-${{ hashFiles('scripts/scrapers/eye.mjs') }}
 
+      # Restore films.json from a previous run. The restore key is based on a hash of the
+      # scripts directory so that pushes that don't change scraper logic reuse the last
+      # fetched result. The save key appends run_id to avoid the "cache already exists"
+      # collision that occurs when the scripts hash hasn't changed between runs.
       - name: Restore films.json cache
         id: cache-films
         uses: actions/cache/restore@v5
@@ -55,6 +59,8 @@ jobs:
           restore-keys: |
             films-json-
 
+      # Only fetch fresh showtimes on schedule/manual runs, or on push when scraper
+      # files have changed (i.e. no exact cache hit on the scripts hash).
       - name: Fetch showtimes
         id: fetch-showtimes
         if: ${{ github.event_name != 'push' || steps.cache-films.outputs.cache-hit != 'true' }}
@@ -67,7 +73,10 @@ jobs:
         uses: actions/cache/save@v5
         with:
           path: src/data/films.json
-          key: films-json-${{ hashFiles('scripts/**') }}
+          # Append run_id so each run gets a unique save key — GitHub Actions doesn't
+          # allow overwriting an existing cache entry, so without this the save silently
+          # fails on every run after the first with the same scripts hash.
+          key: films-json-${{ hashFiles('scripts/**') }}-${{ github.run_id }}
 
       - name: Cache Next.js
         uses: actions/cache@v5
