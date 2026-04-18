@@ -91,11 +91,14 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const q = router.query;
   const { watchlist, isInWatchlist, toggleWatchlist } = useWatchlist();
 
-  // URL-synced filters
-  const cinemaFilter = str(q.cinema).split(',').filter(Boolean);
-  const dayFilter = str(q.day).split(',').filter(Boolean);
+  // URL-synced filters — memoized to keep stable references for useMemo deps
+  const cinemaRaw = str(q.cinema);
+  const dayRaw = str(q.day);
+  const genresRaw = str(q.genres);
+  const cinemaFilter = useMemo(() => cinemaRaw.split(',').filter(Boolean), [cinemaRaw]);
+  const dayFilter = useMemo(() => dayRaw.split(',').filter(Boolean), [dayRaw]);
+  const genreFilter = useMemo(() => genresRaw.split(',').filter(Boolean), [genresRaw]);
   const filmFilter = str(q.film);
-  const genreFilter = str(q.genres).split(',').filter(Boolean);
   const directorFilter = str(q.director);
   const releaseFilter = (str(q.release) || null) as ReleaseFilterValue;
   const timeFilter = str(q.time) || null;
