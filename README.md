@@ -49,3 +49,4 @@ npm run deploy
 - `npm run build:only` - Build without fetching showtimes
 - `npm run deploy` - Deploy to GitHub Pages
 - `npm run format` - Format code with Prettier
+- `npm test` - Run tests
