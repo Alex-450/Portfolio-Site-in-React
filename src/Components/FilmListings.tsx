@@ -350,10 +350,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
           <PosterCarousel
             films={carouselFilms}
             today={today}
-            onPosterClick={(title) => {
-              setFilmSearch(title);
-              setFilter('film', title);
-            }}
+            linkToDetail
           />
         )}
 
