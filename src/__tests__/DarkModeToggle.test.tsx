@@ -42,8 +42,8 @@ describe('DarkModeToggle', () => {
     expect(mockSetTheme).toHaveBeenCalledWith('light');
   });
 
-  it('has the correct CSS class', () => {
-    render(<DarkModeToggle />);
+  it('applies the provided className', () => {
+    render(<DarkModeToggle className="footer-link" />);
     expect(screen.getByRole('button')).toHaveClass('footer-link');
   });
 });
