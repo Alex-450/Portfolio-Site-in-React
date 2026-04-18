@@ -13,6 +13,7 @@ Personal portfolio site with a blog and film listings for Amsterdam/Haarlem cine
   - The Movies
   - FilmKoepel
   - FC Hyena
+  - Kriterion
 - Film filtering by cinema, genre, director, day, and release year
 - Watchlist functionality (stored in local storage)
 - Dark mode support
