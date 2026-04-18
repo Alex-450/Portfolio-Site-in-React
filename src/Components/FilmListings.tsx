@@ -591,6 +591,10 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
             &{' '}
             <a href="https://fchyena.nl/" target="_blank" rel="noopener noreferrer">
               FC Hyena
+            </a>{' '}
+            &{' '}
+            <a href="https://kriterion.nl/" target="_blank" rel="noopener noreferrer">
+              Kriterion
             </a>
           </p>
           <a
