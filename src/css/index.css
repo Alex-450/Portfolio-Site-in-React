@@ -506,6 +506,26 @@ code {
   margin-top: 4px;
 }
 
+@media (max-width: 576px) {
+  .top-film-item {
+    width: auto;
+    border: none;
+  }
+
+  .top-film-item:hover {
+    transform: none;
+  }
+
+  .top-film-info {
+    display: none;
+  }
+
+  .top-film-poster {
+    width: 120px;
+    border-radius: 4px;
+  }
+}
+
 .film-listings-footer {
   margin-top: 2rem;
   padding-top: 1rem;
