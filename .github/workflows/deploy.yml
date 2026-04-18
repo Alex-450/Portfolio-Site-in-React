@@ -67,6 +67,7 @@ jobs:
         run: npm run fetch-showtimes
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          CF_SCRAPER_TOKEN: ${{ secrets.CF_SCRAPER_TOKEN }}
 
       - name: Save films.json cache
         if: ${{ steps.fetch-showtimes.outcome == 'success' }}

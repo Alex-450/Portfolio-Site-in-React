@@ -4,7 +4,10 @@ const KRITERION_URL = 'https://film-scraper-2.alex-wmstearn.workers.dev/';
 
 async function fetchKriterion() {
   console.log('Fetching Kriterion...');
-  const response = await fetchWithRetry(KRITERION_URL);
+  const token = process.env.CF_SCRAPER_TOKEN;
+  const response = await fetchWithRetry(KRITERION_URL, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
   const data = await response.json();
   const filmMap = new Map();
 
