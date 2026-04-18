@@ -34,17 +34,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Cache TMDB data
-        uses: actions/cache@v5
+      - name: Restore TMDB cache
+        uses: actions/cache/restore@v5
         with:
           path: src/data/tmdb-cache.json
-          key: tmdb-cache-${{ hashFiles('scripts/scrapers/tmdb.mjs') }}
+          key: tmdb-cache-${{ hashFiles('src/data/tmdb-cache.json') }}
+          restore-keys: |
+            tmdb-cache-
 
-      - name: Cache Eye data
-        uses: actions/cache@v5
+      - name: Restore Eye cache
+        uses: actions/cache/restore@v5
         with:
           path: src/data/eye-cache.json
-          key: eye-cache-${{ hashFiles('scripts/scrapers/eye.mjs') }}
+          key: eye-cache-${{ hashFiles('src/data/eye-cache.json') }}
+          restore-keys: |
+            eye-cache-
 
       # Restore films.json from a previous run. The restore key is based on a hash of the
       # scripts directory so that pushes that don't change scraper logic reuse the last
@@ -68,6 +72,20 @@ jobs:
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           CF_SCRAPER_TOKEN: ${{ secrets.CF_SCRAPER_TOKEN }}
+
+      - name: Save TMDB cache
+        if: ${{ steps.fetch-showtimes.outcome == 'success' }}
+        uses: actions/cache/save@v5
+        with:
+          path: src/data/tmdb-cache.json
+          key: tmdb-cache-${{ github.run_id }}
+
+      - name: Save Eye cache
+        if: ${{ steps.fetch-showtimes.outcome == 'success' }}
+        uses: actions/cache/save@v5
+        with:
+          path: src/data/eye-cache.json
+          key: eye-cache-${{ github.run_id }}
 
       - name: Save films.json cache
         if: ${{ steps.fetch-showtimes.outcome == 'success' }}
