@@ -200,7 +200,6 @@
 
   .film-poster,
   .film-poster-placeholder {
-    border-color: var(--hover-bg);
     background: var(--dark-bg-tertiary);
   }
 
@@ -326,7 +325,6 @@
   }
 
   .poster-carousel-item {
-    border-color: var(--hover-bg);
   }
 
   .top-films-label {
@@ -411,7 +409,6 @@
   /* Film Detail page dark mode */
   .film-detail-poster,
   .film-detail-poster-placeholder {
-    border-color: var(--hover-bg);
     background: var(--dark-bg-tertiary);
   }
 
