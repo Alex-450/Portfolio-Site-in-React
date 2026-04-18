@@ -68,7 +68,7 @@ jobs:
       # files have changed (i.e. no exact cache hit on the scripts hash).
       - name: Fetch showtimes
         id: fetch-showtimes
-        if: ${{ github.event_name != 'push' || steps.cache-films.outputs.cache-hit != 'true' }}
+        if: ${{ github.event_name != 'push' || !startsWith(steps.cache-films.outputs.cache-matched-key, format('films-json-{0}', hashFiles('scripts/**'))) }}
         run: npm run fetch-showtimes
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
