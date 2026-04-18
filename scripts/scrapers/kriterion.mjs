@@ -1,6 +1,6 @@
 import { fetchWithRetry, decodeAndTrim } from './utils.mjs';
 
-const KRITERION_URL = 'https://film-scraper.alex-wmstearn.workers.dev/';
+const KRITERION_URL = 'https://film-scraper-2.alex-wmstearn.workers.dev/';
 
 async function fetchKriterion() {
   console.log('Fetching Kriterion...');
