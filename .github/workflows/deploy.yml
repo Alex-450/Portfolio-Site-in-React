@@ -13,6 +13,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  issues: write
 
 concurrency:
   group: 'pages'
@@ -96,6 +97,17 @@ jobs:
           # allow overwriting an existing cache entry, so without this the save silently
           # fails on every run after the first with the same scripts hash.
           key: films-json-${{ hashFiles('scripts/**') }}-${{ github.run_id }}
+
+      - name: Notify on scraper failures
+        if: ${{ hashFiles('failed-cinemas.txt') != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          FAILED=$(cat failed-cinemas.txt)
+          gh issue create \
+            --title "Scraper failure: $FAILED" \
+            --body "The following scrapers failed during the [daily build](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}):"$'\n\n'"$FAILED"$'\n\n'"Cached data was used as a fallback." \
+            --label "scraper-failure"
 
       - name: Cache Next.js
         uses: actions/cache@v5

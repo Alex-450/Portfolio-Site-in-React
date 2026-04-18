@@ -306,8 +306,12 @@ async function main() {
   console.log(`Total time: ${elapsed}s`);
 
   for (const name of failedCinemaNames) {
-    // GitHub Actions warning annotation — shows up in the Actions UI and triggers email notifications
     console.log(`::warning::Scraper failed for ${name} — using cached data`);
+  }
+
+  // Write failed cinemas to a file so the CI workflow can notify
+  if (failedCinemaNames.length > 0) {
+    writeFileSync('failed-cinemas.txt', failedCinemaNames.join('\n'));
   }
 }
 
