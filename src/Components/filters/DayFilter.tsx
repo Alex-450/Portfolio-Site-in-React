@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import MultiSelectDropdown from './MultiSelectDropdown';
 
 interface DayOption {
   value: string;
@@ -18,57 +18,19 @@ const DayFilter = ({
   dayOptions,
   showToday = true,
 }: DayFilterProps) => {
-  const [showDropdown, setShowDropdown] = useState(false);
-
-  const getDisplayLabel = () => {
-    if (selectedDays === undefined || selectedDays.length === 0)
-      return 'All Days';
-    return `${selectedDays.length} Day${selectedDays.length > 1 ? 's' : ''}`;
-  };
-
   const allOptions = [
     ...(showToday ? [{ value: 'today', label: 'Today' }] : []),
     ...dayOptions,
   ];
 
   return (
-    <div className="genre-filter">
-      <button
-        className="filter-select genre-filter-button"
-        onClick={() => setShowDropdown(!showDropdown)}
-        onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
-      >
-        {getDisplayLabel()}
-      </button>
-      {showDropdown && (
-        <div className="genre-filter-dropdown">
-          {allOptions.map((day) => (
-            <label key={day.value} className="genre-filter-option">
-              <input
-                type="checkbox"
-                checked={selectedDays.includes(day.value)}
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    onChange([...selectedDays, day.value]);
-                  } else {
-                    onChange(selectedDays.filter((d) => d !== day.value));
-                  }
-                }}
-              />
-              {day.label}
-            </label>
-          ))}
-          {selectedDays.length > 0 && (
-            <button
-              className="genre-filter-clear"
-              onMouseDown={() => onChange([])}
-            >
-              Clear
-            </button>
-          )}
-        </div>
-      )}
-    </div>
+    <MultiSelectDropdown
+      options={allOptions}
+      selected={selectedDays}
+      onChange={onChange}
+      allLabel="All Days"
+      selectedLabel={(n) => `${n} Day${n > 1 ? 's' : ''}`}
+    />
   );
 };
 

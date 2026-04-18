@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import SingleSelectDropdown from './SingleSelectDropdown';
 
 type ReleaseFilterValue =
   | 'recently-added'
@@ -19,49 +19,15 @@ export const RELEASE_OPTIONS: { value: ReleaseFilterValue; label: string }[] = [
   { value: 're-releases', label: 'Re-releases' },
 ];
 
-const ReleaseFilter = ({ value, onChange }: ReleaseFilterProps) => {
-  const [showDropdown, setShowDropdown] = useState(false);
-
-  const getDisplayLabel = () => {
-    if (!value) return 'Release';
-    return RELEASE_OPTIONS.find((o) => o.value === value)?.label ?? 'Release';
-  };
-
-  return (
-    <div className="genre-filter">
-      <button
-        className={`filter-select genre-filter-button${value ? ' filter-toggle-active' : ''}`}
-        onClick={() => setShowDropdown(!showDropdown)}
-        onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
-      >
-        {getDisplayLabel()}
-      </button>
-      {showDropdown && (
-        <div className="genre-filter-dropdown">
-          {RELEASE_OPTIONS.map((option) => (
-            <label key={option.value} className="genre-filter-option">
-              <input
-                type="radio"
-                name="release-filter"
-                checked={value === option.value}
-                onChange={() => onChange(option.value)}
-              />
-              {option.label}
-            </label>
-          ))}
-          {value && (
-            <button
-              className="genre-filter-clear"
-              onMouseDown={() => onChange(null)}
-            >
-              Clear
-            </button>
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
+const ReleaseFilter = ({ value, onChange }: ReleaseFilterProps) => (
+  <SingleSelectDropdown
+    options={RELEASE_OPTIONS as { value: string; label: string }[]}
+    value={value}
+    onChange={(v) => onChange(v as ReleaseFilterValue)}
+    defaultLabel="Release"
+    radioName="release-filter"
+  />
+);
 
 export default ReleaseFilter;
 export type { ReleaseFilterValue };

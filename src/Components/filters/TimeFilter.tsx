@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import SingleSelectDropdown from './SingleSelectDropdown';
 
 const TIME_OPTIONS = [
   { value: '12:00', label: 'From 12:00' },
@@ -12,48 +12,14 @@ interface TimeFilterProps {
   onChange: (value: string | null) => void;
 }
 
-const TimeFilter = ({ value, onChange }: TimeFilterProps) => {
-  const [showDropdown, setShowDropdown] = useState(false);
-
-  const getDisplayLabel = () => {
-    if (!value) return 'Any Time';
-    return TIME_OPTIONS.find((o) => o.value === value)?.label ?? value;
-  };
-
-  return (
-    <div className="genre-filter">
-      <button
-        className={`filter-select genre-filter-button${value ? ' filter-toggle-active' : ''}`}
-        onClick={() => setShowDropdown(!showDropdown)}
-        onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
-      >
-        {getDisplayLabel()}
-      </button>
-      {showDropdown && (
-        <div className="genre-filter-dropdown">
-          {TIME_OPTIONS.map((option) => (
-            <label key={option.value} className="genre-filter-option">
-              <input
-                type="radio"
-                name="time-filter"
-                checked={value === option.value}
-                onChange={() => onChange(option.value)}
-              />
-              {option.label}
-            </label>
-          ))}
-          {value && (
-            <button
-              className="genre-filter-clear"
-              onMouseDown={() => onChange(null)}
-            >
-              Clear
-            </button>
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
+const TimeFilter = ({ value, onChange }: TimeFilterProps) => (
+  <SingleSelectDropdown
+    options={TIME_OPTIONS}
+    value={value}
+    onChange={onChange}
+    defaultLabel="Any Time"
+    radioName="time-filter"
+  />
+);
 
 export default TimeFilter;
