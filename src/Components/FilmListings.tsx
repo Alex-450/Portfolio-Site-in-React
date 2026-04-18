@@ -239,11 +239,11 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   );
 
   // Films filtered by everything except day - used for computing day options
-  const { dayOptions, hasShowtimesToday } = useMemo(() => {
+  const { dayOptions, hasShowtimesToday, hasEveningShowtimesToday } = useMemo(() => {
     const filmsForDayOptions = filterFilms(allFilms, {
       cinemaFilter,
       dayFilter: [],
-      timeFilter,
+      timeFilter: null,
       filmFilter,
       genreFilter,
       directorFilter,
@@ -267,10 +267,15 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
         cs.showtimes.some((s) => s.date === today)
       )
     );
+    const hasEveningShowtimesToday = filmsForDayOptions.some((film) =>
+      film.cinemaShowtimes.some((cs) =>
+        cs.showtimes.some((s) => s.date === today && s.time >= '18:00')
+      )
+    );
     const dayOptions = Array.from(allDates)
       .sort()
       .map((date) => ({ value: date, label: formatDate(date) }));
-    return { dayOptions, hasShowtimesToday };
+    return { dayOptions, hasShowtimesToday, hasEveningShowtimesToday };
   }, [
     allFilms,
     cinemaFilter,
@@ -303,6 +308,28 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     () => groupFilmsByGenre(filteredFilms),
     [filteredFilms]
   );
+
+  const isTonightActive =
+    dayFilter.length === 1 &&
+    dayFilter[0] === 'today' &&
+    timeFilter === '18:00';
+
+  const toggleTonight = useCallback(() => {
+    if (isTonightActive) {
+      // Clear both day and time filters
+      const query = { ...router.query };
+      delete query.day;
+      delete query.time;
+      router.push({ pathname: router.pathname, query }, undefined, {
+        shallow: true,
+      });
+    } else {
+      const query = { ...router.query, day: 'today', time: '18:00' };
+      router.push({ pathname: router.pathname, query }, undefined, {
+        shallow: true,
+      });
+    }
+  }, [isTonightActive, router]);
 
   // Helper to get day label
   const getDayLabel = (day: string) => {
@@ -355,6 +382,14 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
         )}
 
         <div className="film-filters">
+          {hasEveningShowtimesToday && (
+            <button
+              className={`tonight-button${isTonightActive ? ' active' : ''}`}
+              onClick={toggleTonight}
+            >
+              Tonight
+            </button>
+          )}
           <CinemaFilter
             selectedCinemas={cinemaFilter}
             onChange={(v) => setFilter('cinema', v)}
