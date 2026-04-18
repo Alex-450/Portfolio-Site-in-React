@@ -389,23 +389,6 @@ code {
 /* Top Films Bar */
 .top-films-bar {
   margin-bottom: 1.5rem;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  scrollbar-color: var(--text-secondary) var(--bg-primary);
-}
-
-.top-films-bar::-webkit-scrollbar {
-  height: 8px;
-}
-
-.top-films-bar::-webkit-scrollbar-track {
-  background: var(--bg-primary);
-}
-
-.top-films-bar::-webkit-scrollbar-thumb {
-  background: var(--text-secondary);
-  border-radius: 4px;
 }
 
 .top-films-label {
@@ -427,6 +410,23 @@ code {
   gap: 12px;
   flex-wrap: nowrap;
   padding: 12px 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--text-secondary) var(--bg-primary);
+}
+
+.top-films-track::-webkit-scrollbar {
+  height: 8px;
+}
+
+.top-films-track::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+.top-films-track::-webkit-scrollbar-thumb {
+  background: var(--text-secondary);
+  border-radius: 4px;
 }
 
 .top-film-item {
