@@ -366,6 +366,10 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
             dayOptions={dayOptions}
             showToday={hasShowtimesToday}
           />
+          <TimeFilter
+            value={timeFilter}
+            onChange={(value) => setFilter('time', value ?? undefined)}
+          />
           <GenreFilter
             genres={allGenres}
             selectedGenres={genreFilter}
@@ -398,10 +402,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
               setDirectorSearch('');
               setFilter('director', undefined);
             }}
-          />
-          <TimeFilter
-            value={timeFilter}
-            onChange={(value) => setFilter('time', value ?? undefined)}
           />
           <ReleaseFilter
             value={releaseFilter}
