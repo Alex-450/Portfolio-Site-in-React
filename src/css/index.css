@@ -884,6 +884,21 @@ code {
   border-color: var(--hover-bg);
 }
 
+/* Watchlist Management */
+.watchlist-management {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.watchlist-management-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-right: 4px;
+}
+
 .film-title a {
   color: inherit;
   text-decoration: none;

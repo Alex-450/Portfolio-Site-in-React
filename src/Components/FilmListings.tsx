@@ -89,7 +89,7 @@ interface FilmListingsProps {
 const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const router = useRouter();
   const q = router.query;
-  const { watchlist, isInWatchlist, toggleWatchlist } = useWatchlist();
+  const { watchlist, isInWatchlist, toggleWatchlist, removeFromWatchlist, clearWatchlist } = useWatchlist();
 
   // URL-synced filters — memoized to keep stable references for useMemo deps
   const cinemaRaw = str(q.cinema);
@@ -531,6 +531,29 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
               }}
             >
               Clear all
+            </button>
+          </div>
+        )}
+
+        {watchlistFilter && watchlist.length > 0 && (
+          <div className="watchlist-management">
+            <span className="watchlist-management-label">Manage watchlist</span>
+            {watchlist.map((slug) => (
+              <button
+                key={slug}
+                className="filter-chip"
+                onClick={() => removeFromWatchlist(slug)}
+                aria-label={`Remove ${filmsIndex[slug]?.title ?? slug} from watchlist`}
+              >
+                {filmsIndex[slug]?.title ?? slug.replace(/-/g, ' ')}{' '}
+                <span className="chip-remove">×</span>
+              </button>
+            ))}
+            <button
+              className="filter-chip clear-all"
+              onClick={clearWatchlist}
+            >
+              Clear watchlist
             </button>
           </div>
         )}
