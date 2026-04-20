@@ -4,7 +4,7 @@
     "title": "pg_amcheck",
     "topic": "PostgreSQL",
     "dateAdded": "20/04/2026",
-    "link": "postgresql-pg-amcheck",
+    "link": "/postgresql-pg-amcheck",
     "description": "postgresql pg_amcheck extension"
   },
   {
@@ -21,7 +21,7 @@
     "title": "pg_size_pretty()",
     "topic": "PostgreSQL",
     "dateAdded": "03/02/2026",
-    "link": "postgresql-pg-size-pretty",
+    "link": "/postgresql-pg-size-pretty",
     "description": "postgresql pg_size_pretty function"
   },
   {
@@ -39,7 +39,7 @@
     "title": "Comparison with NULL",
     "topic": "PostgreSQL",
     "dateAdded": "03/02/2026",
-    "link": "postgresql-null-comparison",
+    "link": "/postgresql-null-comparison",
     "description": "postgresql null comparison explanation"
   },
   {
