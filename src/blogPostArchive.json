@@ -1,5 +1,13 @@
 [
   {
+    "type": "tech",
+    "title": "pg_amcheck",
+    "topic": "PostgreSQL",
+    "dateAdded": "20/04/2026",
+    "link": "postgresql-pg-amcheck",
+    "description": "postgresql pg_amcheck extension"
+  },
+  {
     "type": "book",
     "title": "Favourite quotes",
     "topic": "The Hitchhiker's Guide to the Galaxy",
