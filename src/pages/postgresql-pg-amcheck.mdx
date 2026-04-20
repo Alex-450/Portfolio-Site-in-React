@@ -1,0 +1,32 @@
+import ArticleLayout from '../Components/ArticleLayout';
+import { findBlogPost } from '../utils/blog';
+
+export const blog = findBlogPost(
+  (b) => b.type === 'tech' && b.title.toLowerCase() === 'pg_amcheck'
+);
+export const metadata = {
+  ...blog,
+  keywords: 'PostgreSQL, pg_amcheck',
+};
+
+A recent Ubuntu upgrade on machines hosting PostgreSQL databases had the unintended 
+side effect of corrupting a number of indexes. Note that this post does not look into the root causes,
+but just at methods for assessing impact and fixing issues.
+
+We got some alerts for specific indexes that were corrupted, but I wanted to audit all of our databases to check how widespread the issue was 
+and which indexes in particular had been impacted. This is when I came across a PostgreSQL extension that I had not used before: `pg_amcheck`.
+It allows you to check for corruption issues in your database, and you can specify whether you'd like to check a specific
+database, index, schema or table. It can be called like so:
+
+`pg_amcheck -d mydb`
+
+With the output I got a list of corrupted indexes and could then use [`reindexdb`](https://www.postgresql.org/docs/current/app-reindexdb.html)
+to fix specific indexes with the `-i indexname` argument and `--concurrently` to avoid any locks on the related tables.
+
+NOTE: For large databases the `pg_amcheck` can take some time, so running in a [tmux](https://github.com/tmux/tmux) session helps if you want to run this in the background.
+
+You can find more information in the [official PostgreSQL documentation](https://www.postgresql.org/docs/current/app-pgamcheck.html)
+
+export default function Layout({ children }) {
+  return <ArticleLayout metadata={metadata}>{children}</ArticleLayout>;
+}
