@@ -362,7 +362,8 @@
   .top-film-director,
   .top-film-meta,
   .top-film-count,
-  .top-film-overview {
+  .top-film-overview,
+  .cinema-bar-address {
     color: var(--dark-text-secondary);
   }
 
