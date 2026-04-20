@@ -347,13 +347,15 @@
     background: var(--hover-bg);
   }
 
-  .top-film-item {
+  .listing-card {
     border-color: var(--hover-bg);
     color: var(--dark-text-primary);
   }
 
-  .top-film-item:hover {
+  .listing-card:hover {
     border-color: var(--dark-text-primary);
+    background-color: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
   .top-film-rank,
@@ -488,6 +490,47 @@
 
   .archive-toggle:hover {
     color: var(--dark-text-body);
+  }
+
+  /* Cinema index page dark mode */
+  .cinema-index-address,
+  .cinema-index-website {
+    color: var(--dark-text-secondary);
+  }
+
+  .cinema-index-address:hover,
+  .cinema-index-website:hover {
+    color: var(--dark-text-primary);
+  }
+
+  /* Cinema detail page dark mode */
+  .cinema-detail-address {
+    color: var(--dark-text-secondary);
+  }
+
+  .cinema-detail-address:hover {
+    color: var(--dark-text-primary);
+  }
+
+  .cinema-detail-website {
+    color: var(--dark-text-secondary);
+  }
+
+  .cinema-detail-website:hover {
+    color: var(--dark-text-primary);
+  }
+
+  .cinema-name a {
+    color: var(--dark-text-primary);
+  }
+
+  .showtime-cinema a {
+    color: var(--dark-text-secondary);
+  }
+
+  .cinema-name a:hover,
+  .showtime-cinema a:hover {
+    color: var(--dark-text-primary);
   }
 }
 

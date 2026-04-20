@@ -38,7 +38,7 @@ const TopFilmsBar = ({ films, today }: TopFilmsBarProps) => {
           <Link
             key={film.slug}
             href={`/films/${film.slug}/`}
-            className="top-film-item"
+            className="listing-card top-film-item"
           >
             {film.posterUrl && (
               <img

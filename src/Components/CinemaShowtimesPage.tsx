@@ -1,74 +1,69 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Calendar } from 'lucide-react';
-import { CinemaShowtimes } from '../types';
+import { FilmWithCinemasLite } from '../types';
 import { formatDate, getToday, getCurrentTime } from '../utils/date';
 import { generateCalendarUrlFromFilm } from '../utils/calendar';
-import { getCinemaSlug } from '../data/cinemas';
 
-interface ShowtimeWithCinema {
+interface ShowtimeWithFilm {
   time: string;
   ticketUrl: string;
-  screen: string;
-  cinema: string;
+  filmTitle: string;
+  filmSlug: string;
+  filmRuntime: number | null;
+  cinemaKey: string;
   variant?: string | null;
   subtitles?: string | null;
 }
 
-interface FilmShowtimesProps {
-  cinemaShowtimes: CinemaShowtimes[];
-  filmTitle: string;
-  filmLength: number | null;
+interface CinemaShowtimesPageProps {
+  films: FilmWithCinemasLite[];
+  cinemaKey: string;
 }
 
-function FilmShowtimes({
-  cinemaShowtimes,
-  filmTitle,
-  filmLength,
-}: FilmShowtimesProps) {
+function CinemaShowtimesPage({ films, cinemaKey }: CinemaShowtimesPageProps) {
   const today = useMemo(getToday, []);
   const currentTime = useMemo(getCurrentTime, []);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
 
-  // Group all showtimes by date, filtering out past showtimes
   const showtimesByDate = useMemo(() => {
-    const byDate = new Map<string, ShowtimeWithCinema[]>();
+    const byDate = new Map<string, ShowtimeWithFilm[]>();
 
-    for (const cs of cinemaShowtimes) {
-      for (const s of cs.showtimes) {
-        // Skip past dates
-        if (s.date < today) continue;
-        // Skip past times for today
-        if (s.date === today && s.time < currentTime) continue;
+    for (const film of films) {
+      for (const cs of film.cinemaShowtimes) {
+        if (cs.cinema !== cinemaKey) continue;
+        for (const s of cs.showtimes) {
+          if (s.date < today) continue;
+          if (s.date === today && s.time < currentTime) continue;
 
-        if (!byDate.has(s.date)) {
-          byDate.set(s.date, []);
+          if (!byDate.has(s.date)) {
+            byDate.set(s.date, []);
+          }
+          byDate.get(s.date)!.push({
+            time: s.time,
+            ticketUrl: s.ticketUrl,
+            filmTitle: film.title,
+            filmSlug: film.slug,
+            filmRuntime: film.runtime,
+            cinemaKey: cs.cinema,
+            variant: cs.variant,
+            subtitles: cs.subtitles,
+          });
         }
-        byDate.get(s.date)!.push({
-          time: s.time,
-          ticketUrl: s.ticketUrl,
-          screen: s.screen,
-          cinema: cs.cinema,
-          variant: cs.variant,
-          subtitles: cs.subtitles,
-        });
       }
     }
 
-    // Sort each day's showtimes by time
     for (const [, showtimes] of byDate) {
       showtimes.sort((a, b) => a.time.localeCompare(b.time));
     }
 
-    // Return sorted by date
     return new Map(
       [...byDate.entries()].sort((a, b) => a[0].localeCompare(b[0]))
     );
-  }, [cinemaShowtimes, today]);
+  }, [films, cinemaKey, today]);
 
   const dates = useMemo(() => [...showtimesByDate.keys()], [showtimesByDate]);
 
-  // Auto-select first day if none selected
   const activeDay =
     selectedDay && dates.includes(selectedDay) ? selectedDay : dates[0];
 
@@ -99,7 +94,7 @@ function FilmShowtimes({
           <div key={i} className="showtime-row">
             <span className="showtime-time">{s.time}</span>
             <span className="showtime-cinema">
-              <Link href={`/cinemas/${getCinemaSlug(s.cinema)}/`}>{s.cinema}</Link>
+              <Link href={`/films/${s.filmSlug}/`}>{s.filmTitle}</Link>
               {s.variant && (
                 <span className="cinema-variant"> ({s.variant})</span>
               )}
@@ -131,9 +126,9 @@ function FilmShowtimes({
               </a>
               <a
                 href={generateCalendarUrlFromFilm(
-                  filmTitle,
-                  filmLength,
-                  s.cinema,
+                  s.filmTitle,
+                  s.filmRuntime,
+                  s.cinemaKey,
                   activeDay!,
                   s.time,
                   s.variant
@@ -153,4 +148,4 @@ function FilmShowtimes({
   );
 }
 
-export default FilmShowtimes;
+export default CinemaShowtimesPage;

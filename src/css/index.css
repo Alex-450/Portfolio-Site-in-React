@@ -429,21 +429,26 @@ code {
   border-radius: 4px;
 }
 
-.top-film-item {
+/* Shared card style for top-films and cinema bar */
+.listing-card {
   display: flex;
-  flex-direction: row;
   text-decoration: none;
   color: inherit;
   border: 2px solid var(--border-primary);
-  width: 420px;
   flex-shrink: 0;
-  transition: border-color 0.15s, transform 0.15s;
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
 }
 
-.top-film-item:hover {
+.listing-card:hover {
   color: inherit;
   border-color: var(--text-primary);
-  transform: scale(1.008);
+  background-color: rgba(0, 0, 0, 0.03);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.top-film-item {
+  flex-direction: row;
+  width: 420px;
 }
 
 .top-film-poster {
@@ -524,6 +529,50 @@ code {
     width: 120px;
     border-radius: 4px;
   }
+}
+
+/* Cinema bar */
+.cinema-bar-track {
+  display: flex;
+  gap: 12px;
+  flex-wrap: nowrap;
+  padding: 12px 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--text-secondary) var(--bg-primary);
+}
+
+.cinema-bar-track::-webkit-scrollbar {
+  height: 8px;
+}
+
+.cinema-bar-track::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+.cinema-bar-track::-webkit-scrollbar-thumb {
+  background: var(--text-secondary);
+  border-radius: 4px;
+}
+
+.cinema-bar-item {
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 16px;
+  min-width: 200px;
+}
+
+.cinema-bar-name {
+  font-size: 1rem;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.cinema-bar-address {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.3;
 }
 
 .film-listings-footer {
@@ -1491,6 +1540,119 @@ code {
 .showtime-actions {
   display: flex;
   align-items: stretch;
+}
+
+/* Cinema index page */
+.cinema-index-container {
+  padding-top: 20px;
+  padding-bottom: 40px;
+}
+
+.cinema-index-container h1 {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.cinema-index-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.cinema-index-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cinema-index-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.cinema-index-name:hover {
+  text-decoration: underline;
+}
+
+.cinema-index-address,
+.cinema-index-website {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.cinema-index-address:hover,
+.cinema-index-website:hover {
+  color: var(--text-primary);
+}
+
+/* Cinema detail page */
+.cinema-detail-container {
+  padding-top: 20px;
+  padding-bottom: 40px;
+}
+
+.cinema-detail-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.cinema-detail-header h1 {
+  font-size: 1.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.cinema-detail-address {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  margin-bottom: 0.25rem;
+}
+
+.cinema-detail-address:hover {
+  color: var(--text-primary);
+}
+
+.cinema-detail-website {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.cinema-detail-website:hover {
+  color: var(--text-primary);
+}
+
+.cinema-poster-section {
+  margin-bottom: 2rem;
+}
+
+.cinema-poster-section h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+/* Cinema name links in cards and showtimes */
+.cinema-name a,
+.showtime-cinema a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.cinema-name a:hover,
+.showtime-cinema a:hover {
+  text-decoration: underline;
 }
 
 .cinema-showtimes-detail {

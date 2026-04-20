@@ -4,6 +4,7 @@ import { Calendar } from 'lucide-react';
 import { FilmWithCinemasLite } from '../types';
 import { formatDate, groupShowtimesByDate, filterByDay } from '../utils/date';
 import { generateCalendarUrlFromFilm } from '../utils/calendar';
+import { getCinemaSlug } from '../data/cinemas';
 
 interface FilmCardProps {
   film: FilmWithCinemasLite;
@@ -107,7 +108,7 @@ function FilmCard({
                   className="cinema-showtime-group"
                 >
                   <div className="cinema-name">
-                    {cs.cinema}
+                    <Link href={`/cinemas/${getCinemaSlug(cs.cinema)}/`}>{cs.cinema}</Link>
                     {singleScreen && (
                       <span className="cinema-screen"> ({singleScreen})</span>
                     )}
