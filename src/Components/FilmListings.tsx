@@ -384,7 +384,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
         <div className="film-filters">
           {hasEveningShowtimesToday && (
             <button
-              className={`tonight-button${isTonightActive ? ' active' : ''}`}
+              className={`filter-select${isTonightActive ? ' filter-toggle-active' : ''}`}
               onClick={toggleTonight}
             >
               Tonight
