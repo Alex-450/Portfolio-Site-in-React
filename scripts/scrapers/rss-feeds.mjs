@@ -12,6 +12,7 @@ const FEEDS = [
 const parser = new XMLParser({
   ignoreAttributes: false,
   attributeNamePrefix: '@_',
+  processEntities: false,
 });
 
 async function fetchFeed(feed) {
