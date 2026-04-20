@@ -55,7 +55,8 @@ async function fetchAllCinemas() {
     cinemas.push(...rssResult.value.cinemas);
     failedCinemaNames.push(...rssResult.value.failedCinemaNames);
   } else {
-    console.error(`Error fetching RSS feeds: ${rssResult.reason?.message}`);
+    console.error(`Error fetching RSS feeds:`);
+    console.error(rssResult.reason);
     failedCinemaNames.push('LAB111', 'Studio K', 'FilmHallen', 'The Movies', 'FilmKoepel');
   }
 
@@ -69,7 +70,8 @@ async function fetchAllCinemas() {
     if (result.status === 'fulfilled') {
       if (result.value.films.length > 0) cinemas.push(result.value);
     } else {
-      console.error(`Error fetching ${name}: ${result.reason?.message}`);
+      console.error(`Error fetching ${name}:`);
+      console.error(result.reason);
       failedCinemaNames.push(name);
     }
   }

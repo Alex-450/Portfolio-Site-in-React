@@ -19,5 +19,5 @@ export async function fetchWithRetry(url, options, retries = 3) {
     if (attempt < retries)
       await new Promise((r) => setTimeout(r, attempt * 2000));
   }
-  throw new Error(`Failed after ${retries} attempts`);
+  throw new Error(`Failed after ${retries} attempts: ${url}`);
 }
