@@ -22,6 +22,10 @@
     background-color: var(--hover-bg);
   }
 
+  .header-menu-link:hover {
+    color: var(--dark-text-secondary);
+  }
+
   .blog-container {
     background-color: var(--dark-bg-primary);
     color: var(--dark-text-primary);
