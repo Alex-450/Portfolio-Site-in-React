@@ -4,8 +4,51 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
-
+    groups:
+      react:
+        patterns:
+          - 'react'
+          - 'react-dom'
+          - 'next'
+          - 'next-themes'
+          - '@next/*'
+          - '@types/react'
+          - '@types/react-dom'
+      bootstrap:
+        patterns:
+          - 'bootstrap'
+          - 'react-bootstrap'
+          - '@popperjs/core'
+      mdx:
+        patterns:
+          - '@mdx-js/*'
+      testing:
+        patterns:
+          - 'jest'
+          - 'jest-*'
+          - '@testing-library/*'
+          - '@types/jest'
+      types:
+        patterns:
+          - '@types/*'
+        exclude-patterns:
+          - '@types/react'
+          - '@types/react-dom'
+          - '@types/jest'
+      tooling:
+        patterns:
+          - 'prettier'
+          - 'gh-pages'
+          - 'typescript'
+          - 'dotenv'
+          - 'fast-xml-parser'
+          - 'he'
+          - 'lucide-react'
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
       interval: 'weekly'
+    groups:
+      github-actions:
+        patterns:
+          - '*'
