@@ -24,8 +24,7 @@ const TopFilmsBar = ({ films, today }: TopFilmsBarProps) => {
     .map((film) => ({ film, count: countShowtimesThisWeek(film, today) }))
     .filter(({ count }) => count > 0)
     .sort((a, b) => b.count - a.count)
-    .slice(0, 5)
-    .map(({ film, count }) => ({ film, count }));
+    .slice(0, 10);
 
   if (topFilms.length === 0) return null;
 
