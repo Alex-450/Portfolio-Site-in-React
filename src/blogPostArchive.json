@@ -1,5 +1,14 @@
 [
   {
+    "type": "book",
+    "title": "Favourite quotes",
+    "topic": "Earthsea: The First Four Books",
+    "author": "Ursula K. Le Guin",
+    "dateAdded": "25/04/2026",
+    "link": "/earthsea-favourite-quotes",
+    "description": "List of favourite quotes from the first four Earthsea novels"
+  },
+  {
     "type": "tech",
     "title": "pg_amcheck",
     "topic": "PostgreSQL",

@@ -1,0 +1,26 @@
+import ArticleLayout from '../Components/ArticleLayout';
+import { findBlogPostByLink } from '../utils/blog';
+
+export const blog = findBlogPostByLink('/earthsea-favourite-quotes');
+export const metadata = {
+  ...blog,
+  bookAuthor: blog.type === 'book' ? blog.author : '',
+  keywords: "Earthsea: The First Four Books favourite quotes",
+};
+
+
+“Thus to Ged who had lost faith in himself, Vetch had given that gift only a friend can give, the proof of unshaken, unshakable trust.” - p.70-71
+
+“And he began to see the truth, that Ged had neither lost nor won but, naming the shadow of his death with his own name, had made himself whole: a man : who, knowing his whole true self, cannot be used or possessed by any power other than himself, and whose life therefore is lived for life’s sake and never in the service of ruin, or pain, or hatred, or the dark. In the Creation of Ea which is the oldest song, it is said, ‘Only in silence the word, only in dark the light, only in dying life: bright the hawk’s flight on the empty sky’.” p.165-166
+
+“‘Now,’ he said, ‘now we’re away, now we’re clear, we’re clean gone Tenar. Do you feel it?’
+She did feel it. A dark hand had let go its lifelong hold upon her heart. But she did not feel joy, as she had in the mountains. She put her head down in her arms and cried, and her cheeks were salt and wet. She cried for the waste of her years in bondage to a useless evil. She wept in pain, because she was free.” - p.295
+
+“But I am old. I have made my choices, I have done what I must do. I stand in daylight facing my own death. And I know that there is only one power worth having. And that is the power, not to take, but to accept. Not to have, but to give” - p. 424
+
+---
+
+
+export default function Layout({ children }) {
+  return <ArticleLayout metadata={metadata}>{children}</ArticleLayout>;
+}
