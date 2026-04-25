@@ -95,11 +95,17 @@ function FilmShowtimes({
       </div>
 
       <div className="day-showtimes">
-        {activeShowtimes.map((s, i) => (
-          <div key={i} className="showtime-row">
+        {activeShowtimes.map((s) => (
+          <div
+            key={`${s.cinema}-${s.time}-${s.screen ?? ''}-${s.variant ?? ''}`}
+            className="showtime-row"
+          >
             <span className="showtime-time">{s.time}</span>
             <span className="showtime-cinema">
               <Link href={`/cinemas/${getCinemaSlug(s.cinema)}/`}>{s.cinema}</Link>
+              {s.screen && (
+                <span className="cinema-screen"> - {s.screen}</span>
+              )}
               {s.variant && (
                 <span className="cinema-variant"> ({s.variant})</span>
               )}
