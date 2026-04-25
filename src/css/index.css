@@ -1069,7 +1069,8 @@ code {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 12px;
+  padding: 6px 0;
+  width: 64px;
   background-color: var(--bg-primary);
   border: 2px solid var(--border-primary);
   font-size: 0.85rem;
