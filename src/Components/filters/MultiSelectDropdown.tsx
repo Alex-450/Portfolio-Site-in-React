@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 
 interface Option {
   value: string;
@@ -21,6 +21,7 @@ const MultiSelectDropdown = ({
   selectedLabel,
 }: MultiSelectDropdownProps) => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownId = useId();
 
   if (options.length === 0) {
     return null;
@@ -32,11 +33,14 @@ const MultiSelectDropdown = ({
         className="filter-select genre-filter-button"
         onClick={() => setShowDropdown(!showDropdown)}
         onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+        aria-expanded={showDropdown}
+        aria-controls={dropdownId}
+        aria-haspopup="listbox"
       >
         {selected.length === 0 ? allLabel : selectedLabel(selected.length)}
       </button>
       {showDropdown && (
-        <div className="genre-filter-dropdown">
+        <div id={dropdownId} role="listbox" className="genre-filter-dropdown">
           {options.map((option) => (
             <label key={option.value} className="genre-filter-option">
               <input
