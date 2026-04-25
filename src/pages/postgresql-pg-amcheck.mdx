@@ -1,9 +1,7 @@
 import ArticleLayout from '../Components/ArticleLayout';
-import { findBlogPost } from '../utils/blog';
+import { findBlogPostByLink } from '../utils/blog';
 
-export const blog = findBlogPost(
-  (b) => b.type === 'tech' && b.title.toLowerCase() === 'pg_amcheck'
-);
+export const blog = findBlogPostByLink('/postgresql-pg-amcheck');
 export const metadata = {
   ...blog,
   keywords: 'PostgreSQL, pg_amcheck',

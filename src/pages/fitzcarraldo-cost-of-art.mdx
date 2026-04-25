@@ -1,10 +1,8 @@
 import ArticleLayout from '../Components/ArticleLayout';
 import YouTubeEmbed from '../Components/YouTubeEmbed';
-import { findBlogPost } from '../utils/blog';
+import { findBlogPostByLink } from '../utils/blog';
 
-export const blog = findBlogPost(
-  (b) => b.type === 'film' && b.topic.toLowerCase() === 'fitzcarraldo'
-);
+export const blog = findBlogPostByLink('/fitzcarraldo-cost-of-art');
 export const metadata = {
   ...blog,
   keywords: 'Fitzcarraldo, Werner Herzog, Film analysis',

@@ -1,9 +1,7 @@
 import ArticleLayout from '../Components/ArticleLayout';
-import { findBlogPost } from '../utils/blog';
+import { findBlogPostByLink } from '../utils/blog';
 
-export const blog = findBlogPost(
-  (b) => b.type === 'creative-writing' && b.title.toLowerCase() === 'plage des catalans'
-);
+export const blog = findBlogPostByLink('/plage-des-catalans');
 export const metadata = {
   ...blog,
   keywords: 'Plage des Catalans Marseille',

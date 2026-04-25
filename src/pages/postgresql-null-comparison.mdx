@@ -1,9 +1,7 @@
 import ArticleLayout from '../Components/ArticleLayout';
-import { findBlogPost } from '../utils/blog';
+import { findBlogPostByLink } from '../utils/blog';
 
-export const blog = findBlogPost(
-  (b) => b.type === 'tech' && b.title.toLowerCase() === 'comparison with null'
-);
+export const blog = findBlogPostByLink('/postgresql-null-comparison');
 export const metadata = {
   ...blog,
   keywords: 'PostgreSQL, NULL, comparison',

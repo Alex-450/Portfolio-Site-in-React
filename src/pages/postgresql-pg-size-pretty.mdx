@@ -1,9 +1,7 @@
 import ArticleLayout from '../Components/ArticleLayout';
-import { findBlogPost } from '../utils/blog';
+import { findBlogPostByLink } from '../utils/blog';
 
-export const blog = findBlogPost(
-  (b) => b.type === 'tech' && b.title.toLowerCase() === 'pg_size_pretty()'
-);
+export const blog = findBlogPostByLink('/postgresql-pg-size-pretty');
 export const metadata = {
   ...blog,
   keywords: 'PostgreSQL, pg_size_pretty',

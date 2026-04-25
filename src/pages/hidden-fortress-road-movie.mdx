@@ -1,9 +1,7 @@
 import ArticleLayout from '../Components/ArticleLayout';
-import { findBlogPost } from '../utils/blog';
+import { findBlogPostByLink } from '../utils/blog';
 
-export const blog = findBlogPost(
-  (b) => b.type === 'film' && b.topic.toLowerCase() === 'the hidden fortress'
-);
+export const blog = findBlogPostByLink('/hidden-fortress-road-movie');
 export const metadata = {
   ...blog,
   keywords: 'The Hidden Fortress, Akira Kurosawa, film analysis',

@@ -1,10 +1,8 @@
 import ArticleLayout from '../Components/ArticleLayout';
 import YouTubeEmbed from '../Components/YouTubeEmbed';
-import { findBlogPost } from '../utils/blog';
+import { findBlogPostByLink } from '../utils/blog';
 
-export const blog = findBlogPost(
-  (b) => b.type === 'film' && b.topic.toLowerCase() === 'wake up dead man'
-);
+export const blog = findBlogPostByLink('/wake-up-dead-man');
 export const metadata = {
   ...blog,
   keywords: 'Wake Up Dead Man, Rian Johnson, film analysis',

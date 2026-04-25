@@ -1,9 +1,7 @@
 import ArticleLayout from '../Components/ArticleLayout';
-import { findBlogPost } from '../utils/blog';
+import { findBlogPostByLink } from '../utils/blog';
 
-export const blog = findBlogPost(
-  (b) => b.type === 'creative-writing' && b.title.toLowerCase() === '18 cotland acres'
-);
+export const blog = findBlogPostByLink('/18-cotland-acres');
 export const metadata = {
   ...blog,
   keywords: '18 cotland acres redhill',

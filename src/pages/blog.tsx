@@ -7,17 +7,38 @@ import { ArrowRight } from 'lucide-react';
 
 type CategoryFilter = 'film' | 'creative-writing' | 'tech' | 'book';
 
+const CATEGORIES: { key: CategoryFilter; label: string }[] = [
+  { key: 'film', label: 'Film' },
+  { key: 'creative-writing', label: 'Creative Writing' },
+  { key: 'tech', label: 'Tech' },
+  { key: 'book', label: 'Books' },
+];
+
+const getSubtitle = (blog: BlogPost) =>
+  blog.type === 'creative-writing' ? blog.location : blog.topic;
+
+const BlogRow = ({ blog, index }: { blog: BlogPost; index: number }) => (
+  <Link href={blog.link} className="blog-link" key={blog.link}>
+    <Row
+      className="blog-row slide-in"
+      style={{ animationDelay: `${index / 10 + 0.1}s` }}
+    >
+      <Col md={2}>{blog.dateAdded}</Col>
+      <Col>
+        {getSubtitle(blog)} | {blog.title} <ArrowRight size={16} />
+      </Col>
+    </Row>
+  </Link>
+);
+
 const Page = () => {
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>('film');
   const [showArchive, setShowArchive] = useState(false);
   const posts: BlogPost[] = blogPostArchive as BlogPost[];
 
-  const hasFilmPosts = posts.some((p) => p.type === 'film' && !p.archived);
-  const hasCreativeWritingPosts = posts.some(
-    (p) => p.type === 'creative-writing' && !p.archived
+  const activeCategories = new Set(
+    posts.filter((p) => !p.archived).map((p) => p.type)
   );
-  const hasTechPosts = posts.some((p) => p.type === 'tech' && !p.archived);
-  const hasBookPosts = posts.some((p) => p.type === 'book' && !p.archived);
 
   const filteredPosts = posts.filter(
     (post) => post.type === activeCategory && !post.archived
@@ -26,49 +47,20 @@ const Page = () => {
     (post) => post.type === activeCategory && post.archived
   );
 
-  const getSubtitle = (blog: BlogPost) => {
-    if (blog.type === 'film') return blog.topic;
-    if (blog.type === 'creative-writing') return blog.location;
-    if (blog.type === 'tech') return blog.topic;
-    if (blog.type === 'book') return blog.topic;
-    return '';
-  };
-
   return (
     <Container className="title-container flex-grow-1">
       <h1>Blog</h1>
       <div className="blog-pills">
-        {hasFilmPosts && (
-          <button
-            className={`blog-pill ${activeCategory === 'film' ? 'blog-pill-active' : ''}`}
-            onClick={() => setActiveCategory('film')}
-          >
-            Film
-          </button>
-        )}
-        {hasCreativeWritingPosts && (
-          <button
-            className={`blog-pill ${activeCategory === 'creative-writing' ? 'blog-pill-active' : ''}`}
-            onClick={() => setActiveCategory('creative-writing')}
-          >
-            Creative Writing
-          </button>
-        )}
-        {hasTechPosts && (
-          <button
-            className={`blog-pill ${activeCategory === 'tech' ? 'blog-pill-active' : ''}`}
-            onClick={() => setActiveCategory('tech')}
-          >
-            Tech
-          </button>
-        )}
-        {hasBookPosts && (
-          <button
-            className={`blog-pill ${activeCategory === 'book' ? 'blog-pill-active' : ''}`}
-            onClick={() => setActiveCategory('book')}
-          >
-            Books
-          </button>
+        {CATEGORIES.filter(({ key }) => activeCategories.has(key)).map(
+          ({ key, label }) => (
+            <button
+              key={key}
+              className={`blog-pill ${activeCategory === key ? 'blog-pill-active' : ''}`}
+              onClick={() => setActiveCategory(key)}
+            >
+              {label}
+            </button>
+          )
         )}
       </div>
       <Row className="blog-header">
@@ -76,17 +68,7 @@ const Page = () => {
         <Col>Title</Col>
       </Row>
       {filteredPosts.map((blog, index) => (
-        <Link href={blog.link} className="blog-link" key={blog.title}>
-          <Row
-            className="blog-row slide-in"
-            style={{ animationDelay: `${index / 10 + 0.1}s` }}
-          >
-            <Col md={2}>{blog.dateAdded}</Col>
-            <Col>
-              {getSubtitle(blog)} | {blog.title} <ArrowRight size={16} />
-            </Col>
-          </Row>
-        </Link>
+        <BlogRow key={blog.link} blog={blog} index={index} />
       ))}
       {archivedPosts.length > 0 && (
         <>
@@ -98,17 +80,7 @@ const Page = () => {
           </button>
           {showArchive &&
             archivedPosts.map((blog, index) => (
-              <Link href={blog.link} className="blog-link" key={blog.title}>
-                <Row
-                  className="blog-row slide-in"
-                  style={{ animationDelay: `${index / 10 + 0.1}s` }}
-                >
-                  <Col md={2}>{blog.dateAdded}</Col>
-                  <Col>
-                    {getSubtitle(blog)} | {blog.title} <ArrowRight size={16} />
-                  </Col>
-                </Row>
-              </Link>
+              <BlogRow key={blog.link} blog={blog} index={index} />
             ))}
         </>
       )}

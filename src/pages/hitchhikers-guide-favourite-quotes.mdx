@@ -1,9 +1,7 @@
 import ArticleLayout from '../Components/ArticleLayout';
-import { findBlogPost } from '../utils/blog';
+import { findBlogPostByLink } from '../utils/blog';
 
-export const blog = findBlogPost(
-  (b) => b.type === 'book' && b.topic.toLowerCase() === "the hitchhiker's guide to the galaxy"
-);
+export const blog = findBlogPostByLink('/hitchhikers-guide-favourite-quotes');
 export const metadata = {
   ...blog,
   bookAuthor: blog.type === 'book' ? blog.author : '',

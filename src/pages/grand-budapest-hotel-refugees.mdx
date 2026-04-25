@@ -1,10 +1,8 @@
 import ArticleLayout from '../Components/ArticleLayout';
 import YouTubeEmbed from '../Components/YouTubeEmbed';
-import { findBlogPost } from '../utils/blog';
+import { findBlogPostByLink } from '../utils/blog';
 
-export const blog = findBlogPost(
-  (b) => b.type === 'film' && b.topic.toLowerCase() === 'the grand budapest hotel'
-);
+export const blog = findBlogPostByLink('/grand-budapest-hotel-refugees');
 export const metadata = {
   ...blog,
   keywords: 'The Grand Budapest Hotel, Wes Anderson, Refugees, film anaylsis',

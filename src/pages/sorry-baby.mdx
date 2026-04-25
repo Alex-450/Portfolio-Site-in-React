@@ -1,10 +1,8 @@
 import ArticleLayout from '../Components/ArticleLayout';
 import YouTubeEmbed from '../Components/YouTubeEmbed';
-import { findBlogPost } from '../utils/blog';
+import { findBlogPostByLink } from '../utils/blog';
 
-export const blog = findBlogPost(
-  (b) => b.type === 'film' && b.topic.toLowerCase() === 'sorry, baby'
-);
+export const blog = findBlogPostByLink('/sorry-baby');
 export const metadata = {
   ...blog,
   keywords: 'Sorry Baby, Eva Victor, film analysis',
