@@ -90,8 +90,11 @@ function CinemaShowtimesPage({ films, cinemaKey }: CinemaShowtimesPageProps) {
       </div>
 
       <div className="day-showtimes">
-        {activeShowtimes.map((s, i) => (
-          <div key={i} className="showtime-row">
+        {activeShowtimes.map((s) => (
+          <div
+            key={`${s.filmSlug}-${s.time}-${s.variant ?? ''}`}
+            className="showtime-row"
+          >
             <span className="showtime-time">{s.time}</span>
             <span className="showtime-cinema">
               <Link href={`/films/${s.filmSlug}/`}>{s.filmTitle}</Link>

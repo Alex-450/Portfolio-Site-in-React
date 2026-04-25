@@ -156,8 +156,11 @@ function FilmCard({
                               )}
                             </div>
                             <div className="showtime-times">
-                              {screenTimes.map((s, i) => (
-                                <span key={i} className="showtime-item">
+                              {screenTimes.map((s) => (
+                                <span
+                                  key={`${s.date}-${s.time}-${s.screen ?? ''}`}
+                                  className="showtime-item"
+                                >
                                   <a
                                     href={s.ticketUrl}
                                     target="_blank"
