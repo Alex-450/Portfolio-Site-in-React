@@ -15,11 +15,14 @@ import DayFilter from './filters/DayFilter';
 import DirectorFilter from './filters/DirectorFilter';
 import GenreFilter from './filters/GenreFilter';
 import FilmSearchFilter from './filters/FilmSearchFilter';
-import ReleaseFilter, { ReleaseFilterValue, RELEASE_OPTIONS } from './filters/ReleaseFilter';
+import ReleaseFilter, {
+  ReleaseFilterValue,
+  RELEASE_OPTIONS,
+} from './filters/ReleaseFilter';
 import TimeFilter from './filters/TimeFilter';
 import WatchlistFilter from './filters/WatchlistFilter';
 import { getToday, getCurrentTime, formatDate } from '../utils/date';
-import { filterFilms } from '../utils/filmFilters';
+import { filterFilms, filterFilmsBySearch } from '../utils/filmFilters';
 import { useWatchlist } from '../hooks/useWatchlist';
 import { cinemas, getCinemaSlug } from '../data/cinemas';
 
@@ -41,30 +44,12 @@ function getCinemaNames(filmsIndex: FilmsIndexLite): string[] {
 
 const str = (v: unknown) => (typeof v === 'string' ? v : '');
 
-const GENRE_ORDER = [
-  'Drama',
-  'Romance',
-  'Comedy',
-  'Action',
-  'Animation',
-  'Science Fiction',
-  'Horror',
-  'Thriller',
-  'Crime',
-  'Music',
-  'Adventure',
-  'Mystery',
-  'History',
-  'Other',
-];
-
 function groupFilmsByGenre(
   films: FilmWithCinemasLite[]
 ): Map<string, FilmWithCinemasLite[]> {
   const genreMap = new Map<string, FilmWithCinemasLite[]>();
 
   for (const film of films) {
-    // Use only the first (primary) genre, or 'Other' if none
     const primaryGenre = film.genres?.[0] || 'Other';
     if (!genreMap.has(primaryGenre)) {
       genreMap.set(primaryGenre, []);
@@ -72,14 +57,12 @@ function groupFilmsByGenre(
     genreMap.get(primaryGenre)!.push(film);
   }
 
-  // Sort by custom genre order, unlisted genres go to the end
+  // Sort by film count descending; "Other" always sorts last as the catch-all.
   return new Map(
-    [...genreMap.entries()].sort((a, b) => {
-      const indexA = GENRE_ORDER.indexOf(a[0]);
-      const indexB = GENRE_ORDER.indexOf(b[0]);
-      const orderA = indexA === -1 ? GENRE_ORDER.length : indexA;
-      const orderB = indexB === -1 ? GENRE_ORDER.length : indexB;
-      return orderA - orderB;
+    [...genreMap.entries()].sort(([genreA, filmsA], [genreB, filmsB]) => {
+      if (genreA === 'Other') return 1;
+      if (genreB === 'Other') return -1;
+      return filmsB.length - filmsA.length;
     })
   );
 }
@@ -91,15 +74,27 @@ interface FilmListingsProps {
 const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const router = useRouter();
   const q = router.query;
-  const { watchlist, isInWatchlist, toggleWatchlist, removeFromWatchlist, clearWatchlist } = useWatchlist();
+  const {
+    watchlist,
+    isInWatchlist,
+    toggleWatchlist,
+    removeFromWatchlist,
+    clearWatchlist,
+  } = useWatchlist();
 
   // URL-synced filters — memoized to keep stable references for useMemo deps
   const cinemaRaw = str(q.cinema);
   const dayRaw = str(q.day);
   const genresRaw = str(q.genres);
-  const cinemaFilter = useMemo(() => cinemaRaw.split(',').filter(Boolean), [cinemaRaw]);
+  const cinemaFilter = useMemo(
+    () => cinemaRaw.split(',').filter(Boolean),
+    [cinemaRaw]
+  );
   const dayFilter = useMemo(() => dayRaw.split(',').filter(Boolean), [dayRaw]);
-  const genreFilter = useMemo(() => genresRaw.split(',').filter(Boolean), [genresRaw]);
+  const genreFilter = useMemo(
+    () => genresRaw.split(',').filter(Boolean),
+    [genresRaw]
+  );
   const filmFilter = str(q.film);
   const directorFilter = str(q.director);
   const releaseFilter = (str(q.release) || null) as ReleaseFilterValue;
@@ -152,12 +147,15 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     [allFilms]
   );
 
-  const filteredFilms = useMemo(() => {
+  // Shared base: everything filtered/sorted except the free-text film search and watchlist.
+  // The carousel uses this directly (it ignores film search to remain clickable);
+  // the list view applies film search and watchlist on top.
+  const baseFilms = useMemo(() => {
     let films = filterFilms(allFilms, {
       cinemaFilter,
       dayFilter,
       timeFilter,
-      filmFilter: filmSearch,
+      filmFilter: '',
       genreFilter,
       directorFilter,
       today,
@@ -168,24 +166,14 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
       reRelease: releaseFilter === 're-releases',
     });
 
-    // Apply watchlist filter
-    if (watchlistFilter) {
-      films = films.filter((film) => watchlist.includes(film.slug));
-    }
-
-    // Sort by release date when release filters are active
     if (releaseFilter === 'recently-released') {
-      // Most recent first (descending)
       films = [...films].sort((a, b) =>
         (b.releaseDate ?? '').localeCompare(a.releaseDate ?? '')
       );
-    } else if (releaseFilter === 'upcoming') {
-      // Closest to today first (ascending)
-      films = [...films].sort((a, b) =>
-        (a.releaseDate ?? '').localeCompare(b.releaseDate ?? '')
-      );
-    } else if (releaseFilter === 're-releases') {
-      // Oldest first (ascending by release date)
+    } else if (
+      releaseFilter === 'upcoming' ||
+      releaseFilter === 're-releases'
+    ) {
       films = [...films].sort((a, b) =>
         (a.releaseDate ?? '').localeCompare(b.releaseDate ?? '')
       );
@@ -197,26 +185,52 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     cinemaFilter,
     dayFilter,
     timeFilter,
-    filmSearch,
     genreFilter,
     directorFilter,
     today,
     currentTime,
     releaseFilter,
-    watchlistFilter,
-    watchlist,
   ]);
 
-  // Carousel shows all matching films (ignoring film search) so users can click posters to filter.
-  // Exception: when a day filter is active alongside a film filter, we keep the film filter
+  const filteredFilms = useMemo(() => {
+    let films = filmSearch
+      ? filterFilmsBySearch(baseFilms, filmSearch)
+      : baseFilms;
+    if (watchlistFilter) {
+      films = films.filter((film) => watchlist.includes(film.slug));
+    }
+    return films;
+  }, [baseFilms, filmSearch, watchlistFilter, watchlist]);
+
+  // Carousel ignores film search so users can click posters to filter.
+  // Exception: when a day filter is active alongside a film filter, keep the film filter
   // so the carousel highlights only films showing on that specific day.
   const carouselFilms = useMemo(
     () =>
-      filterFilms(allFilms, {
+      filmFilter && dayFilter.length > 0
+        ? filterFilmsBySearch(baseFilms, filmFilter)
+        : baseFilms,
+    [baseFilms, filmFilter, dayFilter]
+  );
+
+  const hasActiveFilters =
+    cinemaFilter.length > 0 ||
+    dayFilter.length > 0 ||
+    !!timeFilter ||
+    genreFilter.length > 0 ||
+    !!filmFilter ||
+    !!directorFilter ||
+    !!releaseFilter ||
+    watchlistFilter;
+
+  // Films filtered by everything except day - used for computing day options
+  const { dayOptions, hasShowtimesToday, hasEveningShowtimesToday } =
+    useMemo(() => {
+      const filmsForDayOptions = filterFilms(allFilms, {
         cinemaFilter,
-        dayFilter,
-        timeFilter,
-        filmFilter: filmFilter && dayFilter.length > 0 ? filmFilter : '',
+        dayFilter: [],
+        timeFilter: null,
+        filmFilter,
         genreFilter,
         directorFilter,
         today,
@@ -225,11 +239,32 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
         upcomingRelease: releaseFilter === 'upcoming',
         recentlyReleased: releaseFilter === 'recently-released',
         reRelease: releaseFilter === 're-releases',
-      }),
-    [
+      });
+      const allDates = new Set<string>();
+      filmsForDayOptions.forEach((film) => {
+        film.cinemaShowtimes.forEach((cs) => {
+          cs.showtimes.forEach((s) => {
+            if (s.date !== today) allDates.add(s.date);
+          });
+        });
+      });
+      const hasShowtimesToday = filmsForDayOptions.some((film) =>
+        film.cinemaShowtimes.some((cs) =>
+          cs.showtimes.some((s) => s.date === today)
+        )
+      );
+      const hasEveningShowtimesToday = filmsForDayOptions.some((film) =>
+        film.cinemaShowtimes.some((cs) =>
+          cs.showtimes.some((s) => s.date === today && s.time >= '18:00')
+        )
+      );
+      const dayOptions = Array.from(allDates)
+        .sort()
+        .map((date) => ({ value: date, label: formatDate(date) }));
+      return { dayOptions, hasShowtimesToday, hasEveningShowtimesToday };
+    }, [
       allFilms,
       cinemaFilter,
-      dayFilter,
       timeFilter,
       filmFilter,
       genreFilter,
@@ -237,58 +272,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
       today,
       currentTime,
       releaseFilter,
-    ]
-  );
-
-  // Films filtered by everything except day - used for computing day options
-  const { dayOptions, hasShowtimesToday, hasEveningShowtimesToday } = useMemo(() => {
-    const filmsForDayOptions = filterFilms(allFilms, {
-      cinemaFilter,
-      dayFilter: [],
-      timeFilter: null,
-      filmFilter,
-      genreFilter,
-      directorFilter,
-      today,
-      currentTime,
-      recentlyAdded: releaseFilter === 'recently-added',
-      upcomingRelease: releaseFilter === 'upcoming',
-      recentlyReleased: releaseFilter === 'recently-released',
-      reRelease: releaseFilter === 're-releases',
-    });
-    const allDates = new Set<string>();
-    filmsForDayOptions.forEach((film) => {
-      film.cinemaShowtimes.forEach((cs) => {
-        cs.showtimes.forEach((s) => {
-          if (s.date !== today) allDates.add(s.date);
-        });
-      });
-    });
-    const hasShowtimesToday = filmsForDayOptions.some((film) =>
-      film.cinemaShowtimes.some((cs) =>
-        cs.showtimes.some((s) => s.date === today)
-      )
-    );
-    const hasEveningShowtimesToday = filmsForDayOptions.some((film) =>
-      film.cinemaShowtimes.some((cs) =>
-        cs.showtimes.some((s) => s.date === today && s.time >= '18:00')
-      )
-    );
-    const dayOptions = Array.from(allDates)
-      .sort()
-      .map((date) => ({ value: date, label: formatDate(date) }));
-    return { dayOptions, hasShowtimesToday, hasEveningShowtimesToday };
-  }, [
-    allFilms,
-    cinemaFilter,
-    timeFilter,
-    filmFilter,
-    genreFilter,
-    directorFilter,
-    today,
-    currentTime,
-    releaseFilter,
-  ]);
+    ]);
 
   // Clear invalid day filters
   const validDayValues = useMemo(() => {
@@ -362,13 +346,9 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
           </h1>
         </header>
 
-        {!cinemaFilter.length && !dayFilter.length && !timeFilter && !genreFilter.length && !filmFilter && !directorFilter && !releaseFilter && !watchlistFilter && (
-          <TopFilmsBar films={allFilms} today={today} />
-        )}
+        {!hasActiveFilters && <TopFilmsBar films={allFilms} today={today} />}
 
-        {!cinemaFilter.length && !dayFilter.length && !timeFilter && !genreFilter.length && !filmFilter && !directorFilter && !releaseFilter && !watchlistFilter && (
-          <CinemaBar />
-        )}
+        {!hasActiveFilters && <CinemaBar />}
 
         <h2 className="film-listings-section-heading">All Films</h2>
 
@@ -380,11 +360,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
         </div>
 
         {viewMode === 'list' && (
-          <PosterCarousel
-            films={carouselFilms}
-            today={today}
-            linkToDetail
-          />
+          <PosterCarousel films={carouselFilms} today={today} linkToDetail />
         )}
 
         <div className="film-filters">
@@ -457,14 +433,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
           />
         </div>
 
-        {(cinemaFilter.length > 0 ||
-          dayFilter.length > 0 ||
-          timeFilter ||
-          genreFilter.length > 0 ||
-          filmFilter ||
-          directorFilter ||
-          releaseFilter ||
-          watchlistFilter) && (
+        {hasActiveFilters && (
           <div className="active-filters">
             {cinemaFilter.map((cinema) => (
               <button
@@ -590,10 +559,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
                 <span className="chip-remove">×</span>
               </button>
             ))}
-            <button
-              className="filter-chip clear-all"
-              onClick={clearWatchlist}
-            >
+            <button className="filter-chip clear-all" onClick={clearWatchlist}>
               Clear watchlist
             </button>
           </div>
@@ -603,8 +569,12 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
           <p className="no-results">No showtimes available</p>
         )}
 
-        {filteredFilms.length === 0 && allFilms.length > 0 && !filmSearch && (
-          <p className="no-results">No showtimes found for selected filters</p>
+        {filteredFilms.length === 0 && allFilms.length > 0 && (
+          <p className="no-results">
+            {filmSearch
+              ? `No showtimes found for "${filmSearch}"`
+              : 'No showtimes found for selected filters'}
+          </p>
         )}
 
         {viewMode === 'list' ? (
