@@ -80,6 +80,13 @@ async function fetchAllCinemas() {
     throw new Error('All cinema sources failed — cannot build films.json');
   }
 
+  const totalCinemas = cinemas.length + failedCinemaNames.length;
+  if (failedCinemaNames.length > totalCinemas / 2) {
+    throw new Error(
+      `${failedCinemaNames.length}/${totalCinemas} cinema sources failed — refusing to build with mostly stale data: ${failedCinemaNames.join(', ')}`
+    );
+  }
+
   return { cinemas, failedCinemaNames };
 }
 
