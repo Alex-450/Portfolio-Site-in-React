@@ -48,13 +48,15 @@ export function extractVariant(title) {
   const match = baseTitle.match(/\s*\(([^)]+)\)\s*$/);
   if (!match) return null;
 
-  const variant = match[1];
+  const variant = match[1].trim();
   // Skip subtitle-related variants - these are handled by the subtitles field
   const subtitlePatterns =
     /^(eng(lish)?\s*subs?|en\s*subs?|nl\s*subs?|dutch\s*subs?|no\s*subs?|ondertitel|subs?)$/i;
-  if (subtitlePatterns.test(variant.trim())) return null;
+  if (subtitlePatterns.test(variant)) return null;
+  // Skip bare release-year variants (e.g. "(1971)") — already shown as releaseYear
+  if (/^\d{4}$/.test(variant)) return null;
 
-  return variant;
+  return match[1];
 }
 
 /**
