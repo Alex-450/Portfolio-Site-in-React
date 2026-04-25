@@ -103,14 +103,18 @@ export interface CinemaShowtimes {
   subtitles?: string | null; // e.g., "NL", "EN", or null if unknown
 }
 
-export interface FilmWithCinemas {
+// Fields common to all film representations
+interface FilmBase {
   slug: string;
   title: string;
   director: string | null;
   runtime: number | null;
   posterUrl: string;
-  genres?: string[];
   cinemaShowtimes: CinemaShowtimes[];
+}
+
+export interface FilmWithCinemas extends FilmBase {
+  genres?: string[];
   dateAdded?: string;
 }
 
@@ -133,14 +137,8 @@ export interface TmdbData {
 }
 
 // Full film data for detail pages
-export interface FilmDetail {
-  slug: string;
-  title: string;
-  director: string | null;
-  runtime: number | null;
-  posterUrl: string;
+export interface FilmDetail extends FilmBase {
   tmdb: TmdbData | null;
-  cinemaShowtimes: CinemaShowtimes[];
   dateAdded?: string;
 }
 
@@ -150,14 +148,8 @@ export interface FilmsIndex {
 }
 
 // Slimmed-down type for listings page (excludes tmdb field not needed for cards)
-export interface FilmWithCinemasLite {
-  slug: string;
-  title: string;
-  director: string | null;
-  runtime: number | null;
-  posterUrl: string;
+export interface FilmWithCinemasLite extends FilmBase {
   genres: string[];
-  cinemaShowtimes: CinemaShowtimes[];
   dateAdded?: string | null;
   releaseDate?: string | null;
   releaseYear?: string | null;
