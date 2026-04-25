@@ -147,7 +147,7 @@ function groupFilmsByCinema(cinemas) {
         existing.title = incomingTitle;
       if (!existing.director && film.director)
         existing.director = film.director;
-      if (!existing.year && year) existing.year = film.year;
+      if (!existing.year && year) existing.year = year;
       if (!existing.runtime && film.runtime) existing.runtime = film.runtime;
       if (!existing.posterUrl && film.posterUrl)
         existing.posterUrl = film.posterUrl;
