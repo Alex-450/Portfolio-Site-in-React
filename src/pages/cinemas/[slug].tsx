@@ -96,13 +96,8 @@ export const getStaticProps: GetStaticProps<CinemaPageProps> = async ({
   const { key: cinemaKey, cinema } = result;
 
   const filePath = join(process.cwd(), 'src/data/films.json');
-  let allFilms: FilmsIndex = {};
-  try {
-    const data = readFileSync(filePath, 'utf-8');
-    allFilms = JSON.parse(data);
-  } catch {
-    // films.json doesn't exist yet
-  }
+  const data = readFileSync(filePath, 'utf-8');
+  const allFilms: FilmsIndex = JSON.parse(data);
 
   const today = getToday();
 

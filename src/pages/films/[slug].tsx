@@ -209,14 +209,8 @@ export default function FilmDetailPage({ film }: Props) {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const filePath = join(process.cwd(), 'src/data/films.json');
-  let films: FilmsIndex = {};
-
-  try {
-    const data = readFileSync(filePath, 'utf-8');
-    films = JSON.parse(data);
-  } catch {
-    // films.json doesn't exist yet, return empty paths
-  }
+  const data = readFileSync(filePath, 'utf-8');
+  const films: FilmsIndex = JSON.parse(data);
 
   const paths = Object.keys(films).map((slug) => ({
     params: { slug },
