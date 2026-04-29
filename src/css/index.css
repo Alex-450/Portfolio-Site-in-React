@@ -32,6 +32,10 @@
   --color-error: #dc2626;
 }
 
+html {
+  scroll-behavior: auto;
+}
+
 * {
   font-family:
     'Roboto Slab', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
