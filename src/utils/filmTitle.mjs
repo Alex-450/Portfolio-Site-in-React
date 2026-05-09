@@ -33,6 +33,7 @@ export function cleanTitle(title) {
     .replace(/[\u00B4\u2018\u2019\u0027]/g, "'")
     .normalize('NFD')
     .replace(/\p{Diacritic}/gu, '')
+    .replace(/–/, '-')
     .trim()
     .toLowerCase();
 }
