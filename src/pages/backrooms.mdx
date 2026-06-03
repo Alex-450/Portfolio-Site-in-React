@@ -1,0 +1,42 @@
+import ArticleLayout from '../Components/ArticleLayout';
+import YouTubeEmbed from '../Components/YouTubeEmbed';
+import { findBlogPostByLink } from '../utils/blog';
+
+export const blog = findBlogPostByLink('/backrooms');
+export const metadata = {
+  ...blog,
+  keywords: 'Backrooms, Kane Parsons, film analysis',
+  spoilers: true,
+};
+
+What happens to memories over time?
+Do people, places and events slowly morph until they no longer really resemble the original?
+The backrooms, where most of this unsettling and disorienting film takes place appear to be never-ending layers of increasingly
+poor and unnerving imitations of real places and real people, a yellow labyrinth with seemingly no logic behind its design. 
+
+_Backrooms_ meanders around these questions without providing any real answers or suggestions, but the feeling is that these rooms
+are some sort of extension of a collective or personal subconscious, a place where you could get lost, a place that you might not want to come back from, a
+place where there is terror but also perhaps, for a short time, some comfort.
+
+The two protagonists, a therapist - Mary, and her client, Clark, both spend time in the backrooms. We get the impression that they have learned about as much
+about this anomalous place as we have about them, that is to say, we have scratched the surface, been shown a small glimpse of who they are.
+
+Parsons dangles things in front of the audience without ever really committing to a coherent idea, but there is a real sense of unease and foreboding throughout.
+One question does make its way to the surface: Can people change, or are we fated to repeat the same patterns and cycles over and over again?
+When Clark decides that he doesn't want to leave the backrooms, that he finally feels comfortable, away from his life where he had cast around looking for someone
+to blame for his unfulfilled dreams and the fact that he is alone. He tells Mary that actually, he doesn't want to change, doesn't want to forge a new
+path, he is happy to stay inside this distorted underworld, where his anger and insistence on blaming everyone but himself can go unnoticed and consequence-free. 
+
+If we are left somewhat unsatisfied by the end, it is because there is no development. Clark does not change, despite Mary's best attempts - she cannot save him from himself. 
+We expect people to grow and to impact each other, but maybe that is all an illusion, and the only thing that changes is our perception of the past, 
+the constantly reconstructed collection that we carry around with us, that we can slip into at any time.
+
+---
+
+<YouTubeEmbed videoId="0HjdiohVOik" />
+
+---
+
+export default function Layout({ children }) {
+  return <ArticleLayout metadata={metadata}>{children}</ArticleLayout>;
+}

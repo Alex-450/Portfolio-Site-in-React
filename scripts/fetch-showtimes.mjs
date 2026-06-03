@@ -204,7 +204,7 @@ async function generateFilmsJson(cinemas) {
       toFetchByTitle.push(film);
     }
   }
-
+  
   const totalFetches = toFetchById.length + toFetchByTitle.length;
   console.log(
     `\nFetching TMDB details for ${totalFetches} unique films (${groupedFilms.length} total)...`
