@@ -45,7 +45,7 @@ async function fetchFeed(feed) {
           showtimes.push({
             date: st.day,
             time: st.time,
-            ticketUrl: st.bookinglink || '',
+            ticketUrl: st.bookinglink || st.permalink || '',
             screen: st.screen || '',
           });
         }
