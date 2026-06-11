@@ -1,5 +1,10 @@
 import { XMLParser } from 'fast-xml-parser';
-import { decodeAndTrim, parseFilmLength, fetchWithRetry } from './utils.mjs';
+import {
+  decodeAndTrim,
+  parseFilmLength,
+  fetchWithRetry,
+  normalizeSubtitles,
+} from './utils.mjs';
 
 const FEEDS = [
   { name: 'LAB111', url: 'https://www.lab111.nl/feed' },
@@ -8,6 +13,10 @@ const FEEDS = [
   { name: 'The Movies', url: 'https://www.themovies.nl/feed' },
   { name: 'FilmKoepel', url: 'https://filmkoepel.nl/feed/' },
 ];
+
+// Cinema names served by the RSS feeds — used by the orchestrator to mark them
+// all as failed if the whole RSS batch throws.
+export const RSS_FEED_NAMES = FEEDS.map((f) => f.name);
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -54,23 +63,7 @@ async function fetchFeed(feed) {
 
     if (film.title && showtimes.length > 0) {
       // Normalize subtitle_lang to standard codes
-      let subtitles = null;
-      const subtitleLang = film.subtitle_lang?.toLowerCase?.() || '';
-      if (
-        subtitleLang.includes('nederland') ||
-        subtitleLang === 'nl' ||
-        subtitleLang === 'nld'
-      ) {
-        subtitles = 'NL';
-      } else if (
-        subtitleLang.includes('english') ||
-        subtitleLang === 'en' ||
-        subtitleLang === 'eng'
-      ) {
-        subtitles = 'EN';
-      } else if (subtitleLang === 'geen' || subtitleLang === 'none') {
-        subtitles = 'none';
-      }
+      let subtitles = normalizeSubtitles(film.subtitle_lang);
 
       // If no subtitle_lang field, try to extract from title
       if (!subtitles) {
@@ -128,7 +121,10 @@ export async function fetchAllRssFeeds() {
       cinemas.push(result.value);
     } else {
       if (result.status === 'rejected') {
-        console.error(`Error fetching ${FEEDS[i].name}:`, result.reason.message);
+        console.error(
+          `Error fetching ${FEEDS[i].name}:`,
+          result.reason.message
+        );
       } else {
         console.error(`Error fetching ${FEEDS[i].name}: returned 0 films`);
       }

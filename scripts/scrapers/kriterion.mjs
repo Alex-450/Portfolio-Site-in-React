@@ -1,4 +1,4 @@
-import { fetchWithRetry, decodeAndTrim } from './utils.mjs';
+import { fetchWithRetry, decodeAndTrim, normalizeSubtitles } from './utils.mjs';
 
 const KRITERION_URL = 'https://film-scraper-2.alex-wmstearn.workers.dev/';
 
@@ -16,22 +16,13 @@ async function fetchKriterion() {
 
     const key = show.production_id || show.name;
     if (!filmMap.has(key)) {
-      // Normalize subtitle_languages to standard code
-      let subtitles = null;
-      const subLangs = show.subtitle_languages || [];
-      if (subLangs.includes('en') || subLangs.includes('eng')) {
-        subtitles = 'EN';
-      } else if (subLangs.includes('nl') || subLangs.includes('nld')) {
-        subtitles = 'NL';
-      }
-
       filmMap.set(key, {
         title: decodeAndTrim(show.display_name) || decodeAndTrim(show.name),
         director: show.director || null,
+        subtitles: normalizeSubtitles(show.subtitle_languages),
         runtime: show.duration ? parseInt(show.duration, 10) : null,
         posterUrl: '',
         showtimes: [],
-        subtitles,
       });
     }
 

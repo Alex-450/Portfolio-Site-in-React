@@ -1,6 +1,6 @@
 import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'fs';
 import { dirname } from 'path';
-import { fetchAllRssFeeds } from './scrapers/rss-feeds.mjs';
+import { fetchAllRssFeeds, RSS_FEED_NAMES } from './scrapers/rss-feeds.mjs';
 import { fetchFcHyena } from './scrapers/fc-hyena.mjs';
 import { fetchEye } from './scrapers/eye.mjs';
 import { fetchKriterion } from './scrapers/kriterion.mjs';
@@ -57,7 +57,7 @@ async function fetchAllCinemas() {
   } else {
     console.error(`Error fetching RSS feeds:`);
     console.error(rssResult.reason);
-    failedCinemaNames.push('LAB111', 'Studio K', 'FilmHallen', 'The Movies', 'FilmKoepel');
+    failedCinemaNames.push(...RSS_FEED_NAMES);
   }
 
   const namedResults = [
@@ -149,7 +149,10 @@ function groupFilmsByCinema(cinemas) {
       // Keep better data if available
       const incomingTitle = getCleanDisplayTitle(film.title);
       // Prefer the title with more accented/non-ASCII characters (e.g. L'Étranger > L'Etranger)
-      const countAccents = (s) => [...s].filter((c) => c !== c.normalize('NFD').replace(/\p{Diacritic}/gu, '')).length;
+      const countAccents = (s) =>
+        [...s].filter(
+          (c) => c !== c.normalize('NFD').replace(/\p{Diacritic}/gu, '')
+        ).length;
       if (countAccents(incomingTitle) > countAccents(existing.title))
         existing.title = incomingTitle;
       if (!existing.director && film.director)
@@ -204,7 +207,7 @@ async function generateFilmsJson(cinemas) {
       toFetchByTitle.push(film);
     }
   }
-  
+
   const totalFetches = toFetchById.length + toFetchByTitle.length;
   console.log(
     `\nFetching TMDB details for ${totalFetches} unique films (${groupedFilms.length} total)...`
@@ -246,7 +249,9 @@ async function generateFilmsJson(cinemas) {
       let counter = 1;
       while (usedSlugs.has(`${slug}-${counter}`)) counter++;
       const newSlug = `${slug}-${counter}`;
-      console.warn(`Slug collision: "${slug}" already used — assigning "${newSlug}" to "${film.title}"`);
+      console.warn(
+        `Slug collision: "${slug}" already used — assigning "${newSlug}" to "${film.title}"`
+      );
       slug = newSlug;
     }
     usedSlugs.add(slug);
@@ -296,7 +301,10 @@ async function main() {
 
   const { cinemas, failedCinemaNames } = await fetchAllCinemas();
 
-  const fallbackCinemas = buildFallbackCinemas(existingFilms, failedCinemaNames);
+  const fallbackCinemas = buildFallbackCinemas(
+    existingFilms,
+    failedCinemaNames
+  );
   const allCinemas = [...cinemas, ...fallbackCinemas];
 
   const filmsIndex = await generateFilmsJson(allCinemas);
@@ -310,7 +318,9 @@ async function main() {
   writeFileSync(outputPath, JSON.stringify(filmsIndex, null, 2));
 
   const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
-  console.log(`\nWrote ${Object.keys(filmsIndex).length} films to ${outputPath}`);
+  console.log(
+    `\nWrote ${Object.keys(filmsIndex).length} films to ${outputPath}`
+  );
   console.log(`Last updated: ${new Date().toISOString()}`);
   console.log(`Total time: ${elapsed}s`);
 
