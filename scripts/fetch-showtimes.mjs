@@ -4,6 +4,7 @@ import { fetchAllRssFeeds, RSS_FEED_NAMES } from './scrapers/rss-feeds.mjs';
 import { fetchFcHyena } from './scrapers/fc-hyena.mjs';
 import { fetchEye } from './scrapers/eye.mjs';
 import { fetchKriterion } from './scrapers/kriterion.mjs';
+import { toDateStamp } from './scrapers/utils.mjs';
 import {
   searchTmdbMovieDetails,
   fetchTmdbMovieDetails,
@@ -121,6 +122,34 @@ function buildFallbackCinemas(existingFilms, failedCinemaNames) {
   });
 }
 
+// Number of accented/non-ASCII characters in a string — used to prefer the
+// richer spelling of a title (e.g. "L'Étranger" over "L'Etranger").
+const countAccents = (s) =>
+  [...s].filter((c) => c !== c.normalize('NFD').replace(/\p{Diacritic}/gu, ''))
+    .length;
+
+// Fill in any fields the grouped film is still missing from a new screening of
+// the same film, and upgrade the title if this copy has richer accents.
+function mergeFilmData(existing, film, incomingTitle, year) {
+  if (countAccents(incomingTitle) > countAccents(existing.title))
+    existing.title = incomingTitle;
+  existing.director ||= film.director;
+  existing.year ||= year;
+  existing.runtime ||= film.runtime;
+  existing.posterUrl ||= film.posterUrl;
+  existing._tmdbId ||= film._tmdbId;
+  existing._originalTitle ||= film._originalTitle;
+}
+
+// The release year for a screening: an explicit "(YYYY)" variant wins over the
+// scraper-provided year.
+function resolveYear(variant, film) {
+  const yearMatch = variant?.match(/\b\d{4}\b/);
+  return yearMatch ? parseInt(yearMatch[0]) : (film.year ?? null);
+}
+
+// Collapse screenings from all cinemas into one entry per film (keyed by cleaned
+// title), merging metadata and collecting each cinema's showtimes.
 function groupFilmsByCinema(cinemas) {
   const filmMap = new Map();
 
@@ -128,13 +157,12 @@ function groupFilmsByCinema(cinemas) {
     for (const film of cinema.films) {
       const key = cleanTitle(film.title);
       const variant = extractVariant(film.title);
-
-      const yearMatch = variant?.match(/\b\d{4}\b/);
-      const year = yearMatch ? parseInt(yearMatch[0]) : (film.year ?? null);
+      const year = resolveYear(variant, film);
+      const incomingTitle = getCleanDisplayTitle(film.title);
 
       if (!filmMap.has(key)) {
         filmMap.set(key, {
-          title: getCleanDisplayTitle(film.title),
+          title: incomingTitle,
           director: film.director,
           year,
           runtime: film.runtime,
@@ -143,29 +171,11 @@ function groupFilmsByCinema(cinemas) {
           _originalTitle: film._originalTitle ?? null,
           cinemaShowtimes: [],
         });
+      } else {
+        mergeFilmData(filmMap.get(key), film, incomingTitle, year);
       }
 
-      const existing = filmMap.get(key);
-      // Keep better data if available
-      const incomingTitle = getCleanDisplayTitle(film.title);
-      // Prefer the title with more accented/non-ASCII characters (e.g. L'Étranger > L'Etranger)
-      const countAccents = (s) =>
-        [...s].filter(
-          (c) => c !== c.normalize('NFD').replace(/\p{Diacritic}/gu, '')
-        ).length;
-      if (countAccents(incomingTitle) > countAccents(existing.title))
-        existing.title = incomingTitle;
-      if (!existing.director && film.director)
-        existing.director = film.director;
-      if (!existing.year && year) existing.year = year;
-      if (!existing.runtime && film.runtime) existing.runtime = film.runtime;
-      if (!existing.posterUrl && film.posterUrl)
-        existing.posterUrl = film.posterUrl;
-      if (!existing._tmdbId && film._tmdbId) existing._tmdbId = film._tmdbId;
-      if (!existing._originalTitle && film._originalTitle)
-        existing._originalTitle = film._originalTitle;
-
-      existing.cinemaShowtimes.push({
+      filmMap.get(key).cinemaShowtimes.push({
         cinema: cinema.name,
         showtimes: film.showtimes,
         variant,
@@ -177,84 +187,84 @@ function groupFilmsByCinema(cinemas) {
   return Array.from(filmMap.values());
 }
 
-async function generateFilmsJson(cinemas) {
-  const groupedFilms = groupFilmsByCinema(cinemas);
-  const filmsIndex = {};
-  const usedSlugs = new Set();
+// Fetch TMDB details for every grouped film, deduplicating so each unique
+// tmdbId or cleaned title is only fetched once. Returns a lookup: given a film,
+// it resolves to that film's TMDB details (or null).
+async function fetchTmdbForFilms(groupedFilms) {
+  const byId = new Map();
+  const byTitle = new Map();
 
-  // Build caches from films that already have data
-  const tmdbCacheById = new Map();
-  const tmdbCacheByTitle = new Map();
-
+  // Films with a known tmdbId are fetched once per id; the rest once per title.
+  const idsToFetch = new Set();
+  const titlesToFetch = new Map(); // cleanedTitle -> film
   for (const film of groupedFilms) {
     if (film._tmdbId) {
-      tmdbCacheById.set(film._tmdbId, film);
+      idsToFetch.add(film._tmdbId);
+    } else {
+      const cleaned = cleanTitle(film.title);
+      if (!titlesToFetch.has(cleaned)) titlesToFetch.set(cleaned, film);
     }
   }
 
-  // Deduplicate: only fetch once per unique tmdbId or cleaned title
-  const toFetchById = [];
-  const toFetchByTitle = [];
-  const seenTitles = new Set();
-
-  for (const film of groupedFilms) {
-    const cleaned = cleanTitle(film.title);
-    if (film._tmdbId && !tmdbCacheById.get(film._tmdbId)?._fetchedDetails) {
-      toFetchById.push(film);
-      tmdbCacheById.get(film._tmdbId)._fetchedDetails = 'pending';
-    } else if (!film._tmdbId && !seenTitles.has(cleaned)) {
-      seenTitles.add(cleaned);
-      toFetchByTitle.push(film);
-    }
-  }
-
-  const totalFetches = toFetchById.length + toFetchByTitle.length;
   console.log(
-    `\nFetching TMDB details for ${totalFetches} unique films (${groupedFilms.length} total)...`
+    `\nFetching TMDB details for ${idsToFetch.size + titlesToFetch.size} unique films (${groupedFilms.length} total)...`
   );
 
-  // Combine all fetches and run with concurrency limit
-  const allToFetch = [
-    ...toFetchById.map((film) => ({ film, byId: true })),
-    ...toFetchByTitle.map((film) => ({ film, byId: false })),
-  ];
-
-  await mapWithConcurrency(
-    allToFetch,
-    async ({ film, byId }) => {
-      if (byId) {
-        const details = await fetchTmdbMovieDetails(film._tmdbId);
-        tmdbCacheById.set(film._tmdbId, details);
-      } else {
-        const details = await searchTmdbMovieDetails(film.title, {
+  const tasks = [
+    ...[...idsToFetch].map((id) => async () => {
+      byId.set(id, await fetchTmdbMovieDetails(id));
+    }),
+    ...[...titlesToFetch].map(([cleaned, film]) => async () => {
+      byTitle.set(
+        cleaned,
+        await searchTmdbMovieDetails(film.title, {
           director: film.director,
           year: film.year,
           originalTitle: film._originalTitle,
-        });
-        tmdbCacheByTitle.set(cleanTitle(film.title), details);
-      }
-    },
-    10
-  );
-
-  // Build results using cached data
-  for (const film of groupedFilms) {
-    const details = film._tmdbId
-      ? tmdbCacheById.get(film._tmdbId)
-      : tmdbCacheByTitle.get(cleanTitle(film.title));
-
-    // Generate unique slug
-    let slug = generateSlug(film.title);
-    if (usedSlugs.has(slug)) {
-      let counter = 1;
-      while (usedSlugs.has(`${slug}-${counter}`)) counter++;
-      const newSlug = `${slug}-${counter}`;
-      console.warn(
-        `Slug collision: "${slug}" already used — assigning "${newSlug}" to "${film.title}"`
+        })
       );
-      slug = newSlug;
-    }
-    usedSlugs.add(slug);
+    }),
+  ];
+  await mapWithConcurrency(tasks, (task) => task(), 10);
+
+  return (film) =>
+    film._tmdbId ? byId.get(film._tmdbId) : byTitle.get(cleanTitle(film.title));
+}
+
+// Project TMDB details (buildResult's shape) onto the public TmdbData object,
+// or null. Field list lives here so adding a TMDB field is a one-line change.
+function toTmdbData(details) {
+  if (!details) return null;
+  const { tmdbId, director, posterPath, ...rest } = details;
+  return { id: tmdbId, ...rest };
+}
+
+// A slug unique within `usedSlugs`, appending -1, -2, ... on collision.
+function uniqueSlug(title, usedSlugs) {
+  let slug = generateSlug(title);
+  if (usedSlugs.has(slug)) {
+    let counter = 1;
+    while (usedSlugs.has(`${slug}-${counter}`)) counter++;
+    const next = `${slug}-${counter}`;
+    console.warn(
+      `Slug collision: "${slug}" already used — assigning "${next}" to "${title}"`
+    );
+    slug = next;
+  }
+  usedSlugs.add(slug);
+  return slug;
+}
+
+async function generateFilmsJson(cinemas) {
+  const groupedFilms = groupFilmsByCinema(cinemas);
+  const resolveDetails = await fetchTmdbForFilms(groupedFilms);
+
+  const filmsIndex = {};
+  const usedSlugs = new Set();
+
+  for (const film of groupedFilms) {
+    const details = resolveDetails(film);
+    const slug = uniqueSlug(film.title, usedSlugs);
 
     filmsIndex[slug] = {
       slug,
@@ -262,24 +272,7 @@ async function generateFilmsJson(cinemas) {
       director: film.director || details?.director || null,
       runtime: details?.runtime || film.runtime || null,
       posterUrl: details?.posterPath || film.posterUrl || '',
-      tmdb: details
-        ? {
-            id: details.tmdbId,
-            overview: details.overview,
-            releaseDate: details.releaseDate,
-            releaseDateNl: details.releaseDateNl,
-            genres: details.genres,
-            originalLanguage: details.originalLanguage,
-            runtime: details.runtime,
-            youtubeTrailerId: details.youtubeTrailerId,
-            imdbId: details.imdbId,
-            rtId: details.rtId,
-            metacriticId: details.metacriticId,
-            rtScore: details.rtScore,
-            metacriticScore: details.metacriticScore,
-            letterboxdId: details.letterboxdId,
-          }
-        : null,
+      tmdb: toTmdbData(details),
       cinemaShowtimes: film.cinemaShowtimes,
     };
   }
@@ -310,7 +303,7 @@ async function main() {
   const filmsIndex = await generateFilmsJson(allCinemas);
 
   // Preserve dateAdded for existing films, set today's date for new films
-  const today = new Date().toISOString().split('T')[0];
+  const today = toDateStamp();
   for (const slug of Object.keys(filmsIndex)) {
     filmsIndex[slug].dateAdded = existingFilms[slug]?.dateAdded ?? today;
   }

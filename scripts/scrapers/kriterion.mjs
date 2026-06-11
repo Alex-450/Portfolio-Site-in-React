@@ -1,4 +1,10 @@
-import { fetchWithRetry, decodeAndTrim, normalizeSubtitles } from './utils.mjs';
+import {
+  fetchWithRetry,
+  decodeAndTrim,
+  normalizeSubtitles,
+  finalizeFilms,
+  toDateStamp,
+} from './utils.mjs';
 
 const KRITERION_URL = 'https://film-scraper-2.alex-wmstearn.workers.dev/';
 
@@ -27,8 +33,7 @@ async function fetchKriterion() {
     }
 
     const film = filmMap.get(key);
-    const startsAt = new Date(show.starts_at);
-    const date = startsAt.toISOString().split('T')[0];
+    const date = toDateStamp(show.starts_at);
     const time = show.start_time;
 
     if (date && time) {
@@ -41,9 +46,7 @@ async function fetchKriterion() {
     }
   }
 
-  const films = [...filmMap.values()].filter((f) => f.showtimes.length > 0);
-  console.log(`Found ${films.length} films with showtimes for Kriterion`);
-  return { name: 'Kriterion', films };
+  return finalizeFilms(filmMap, 'Kriterion');
 }
 
 export { fetchKriterion };

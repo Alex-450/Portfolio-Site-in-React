@@ -1,5 +1,11 @@
 import { readFileSync, writeFileSync, existsSync } from 'fs';
-import { fetchWithRetry, decodeAndTrim, parseFilmLength } from './utils.mjs';
+import {
+  fetchWithRetry,
+  decodeAndTrim,
+  parseFilmLength,
+  finalizeFilms,
+  toDateStamp,
+} from './utils.mjs';
 
 const EYE_URL = 'https://service.eyefilm.nl/graphql';
 
@@ -80,7 +86,9 @@ async function fetchProductionMetadata(productionId) {
     }
     const result = {
       director: pairs['Director'] || null,
-      year: pairs['Production year'] ? parseInt(pairs['Production year'], 10) : null,
+      year: pairs['Production year']
+        ? parseInt(pairs['Production year'], 10)
+        : null,
       runtime: pairs['Length'] ? parseFilmLength(pairs['Length']) : null,
       originalTitle: pairs['Original title'] || null,
     };
@@ -95,7 +103,7 @@ async function fetchProductionMetadata(productionId) {
 async function fetchEye() {
   console.log('Fetching Eye...');
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = toDateStamp();
   const allShows = await fetchEyePage(today);
 
   // Group by production ID + subtitle language to create separate entries for different subtitle versions
@@ -131,7 +139,7 @@ async function fetchEye() {
 
     const film = filmMap.get(key);
     const startDt = new Date(show.startDateTime);
-    const date = startDt.toISOString().split('T')[0];
+    const date = toDateStamp(startDt);
     const time = startDt.toLocaleTimeString('en-GB', {
       hour: '2-digit',
       minute: '2-digit',
@@ -148,7 +156,9 @@ async function fetchEye() {
   }
 
   if (unknownSubtitleUuids.size > 0) {
-    console.warn(`Eye: unknown subtitle UUIDs (subtitles will be null): ${[...unknownSubtitleUuids].join(', ')}`);
+    console.warn(
+      `Eye: unknown subtitle UUIDs (subtitles will be null): ${[...unknownSubtitleUuids].join(', ')}`
+    );
   }
 
   // Fetch director/year/runtime from production pages for unique productions
@@ -159,7 +169,9 @@ async function fetchEye() {
     }
   }
 
-  console.log(`Fetching Eye production metadata for ${uniqueProductions.size} unique films...`);
+  console.log(
+    `Fetching Eye production metadata for ${uniqueProductions.size} unique films...`
+  );
   await Promise.all(
     [...uniqueProductions.entries()].map(async ([productionId, film]) => {
       const meta = await fetchProductionMetadata(productionId);
@@ -170,9 +182,11 @@ async function fetchEye() {
     })
   );
 
-  const films = [...filmMap.values()].filter((f) => f.showtimes.length > 0);
-  console.log(`Found ${films.length} films with showtimes for Eye (${allShows.length} total shows fetched)`);
-  return { name: 'Eye', films };
+  return finalizeFilms(
+    filmMap,
+    'Eye',
+    ` (${allShows.length} total shows fetched)`
+  );
 }
 
 export { fetchEye };

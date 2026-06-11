@@ -1,4 +1,4 @@
-import { fetchWithRetry, decodeAndTrim } from './utils.mjs';
+import { fetchWithRetry, decodeAndTrim, finalizeFilms } from './utils.mjs';
 
 const FC_HYENA_URL = 'https://fchyena.nl/json/shows.json';
 
@@ -59,9 +59,7 @@ async function fetchFcHyena() {
     }
   }
 
-  const films = [...filmMap.values()].filter((f) => f.showtimes.length > 0);
-  console.log(`Found ${films.length} films with showtimes for FC Hyena`);
-  return { name: 'FC Hyena', films };
+  return finalizeFilms(filmMap, 'FC Hyena');
 }
 
 export { fetchFcHyena };

@@ -43,6 +43,20 @@ export function parseFilmLength(filmLength) {
   return parseInt(match[0], 10);
 }
 
+// "YYYY-MM-DD" (UTC) for a Date or date-string. Defaults to now.
+export const toDateStamp = (date = new Date()) =>
+  new Date(date).toISOString().split('T')[0];
+
+// Finalize a scraper's filmMap: drop films with no showtimes, log the count,
+// and return the standard { name, films } result.
+export function finalizeFilms(filmMap, name, extraLog = '') {
+  const films = [...filmMap.values()].filter((f) => f.showtimes.length > 0);
+  console.log(
+    `Found ${films.length} films with showtimes for ${name}${extraLog}`
+  );
+  return { name, films };
+}
+
 export async function fetchWithRetry(url, options, retries = 3) {
   for (let attempt = 1; attempt <= retries; attempt++) {
     const response = await fetch(url, options);
