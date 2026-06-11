@@ -41,6 +41,28 @@ export function cleanTitle(title) {
     .toLowerCase();
 }
 
+// Subtitle-related parentheticals — handled by the subtitles field, not shown
+// as a title or variant.
+const subtitlePatterns =
+  /^(eng(lish)?\s*subs?|en\s*subs?|nl\s*subs?|dutch\s*subs?|no\s*subs?|ondertitel|subs?)$/i;
+
+/**
+ * Whether a trailing parenthetical is an annotation (variant/subtitle/year) that
+ * should be stripped from the display title, rather than part of the real title.
+ * e.g. "(ENG subs)", "(1971)", "(50th Anniversary)" are annotations;
+ * "(The Unexpected Virtue of Ignorance)" is not.
+ */
+function isAnnotation(inner) {
+  const v = inner.trim();
+  return (
+    subtitlePatterns.test(v) ||
+    /^\d{4}$/.test(v) ||
+    /\b(anniversary|restoration|restored|remaster(ed)?|cut|extended|uncut|\dk|mm|ov|imax|q&a|sing[- ]?along)\b/i.test(
+      v
+    )
+  );
+}
+
 /**
  * Extract variant info from title (e.g., "50th Anniversary").
  * Handles both "Film (variant)" and "Film (variant) | Event" formats.
@@ -54,22 +76,28 @@ export function extractVariant(title) {
 
   const variant = match[1].trim();
   // Skip subtitle-related variants - these are handled by the subtitles field
-  const subtitlePatterns =
-    /^(eng(lish)?\s*subs?|en\s*subs?|nl\s*subs?|dutch\s*subs?|no\s*subs?|ondertitel|subs?)$/i;
   if (subtitlePatterns.test(variant)) return null;
   // Skip bare release-year variants (e.g. "(1971)") — already shown as releaseYear
   if (/^\d{4}$/.test(variant)) return null;
+  // Only treat recognized annotations as variants; an unrecognized parenthetical
+  // is part of the real title (e.g. "Birdman or (The Unexpected Virtue...)").
+  if (!isAnnotation(variant)) return null;
 
   return match[1];
 }
 
 /**
  * Get clean title for display (remove variant suffix and event suffix).
- * e.g., "Film (ENG subs) | Event" -> "Film"
+ * A trailing parenthetical is only stripped when it's a recognized annotation
+ * (variant/subtitle/year); otherwise it's kept as part of the real title.
+ * e.g. "Film (ENG subs) | Event" -> "Film";
+ *      "Birdman or (The Unexpected Virtue of Ignorance)" is left intact.
  */
 export function getCleanDisplayTitle(title) {
   return title
     .split(/[|•]/)[0]
-    .replace(/\s*\([^)]*\)\s*$/, '')
+    .replace(/\s*\(([^)]*)\)\s*$/, (full, inner) =>
+      isAnnotation(inner) ? '' : full
+    )
     .trim();
 }
