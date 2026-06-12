@@ -1,5 +1,16 @@
 import he from 'he';
 
+// Cloudflare Worker proxy for cinema sources behind bot management. The URL is
+// not committed; provide CF_SCRAPER_URL via the environment (.env locally, a CI
+// secret in Actions).
+export const CF_SCRAPER_URL = process.env.CF_SCRAPER_URL;
+
+if (!CF_SCRAPER_URL) {
+  throw new Error(
+    'CF_SCRAPER_URL is not set. Add it to .env (see .env.example).'
+  );
+}
+
 export function decodeAndTrim(string) {
   if (!string) return '';
   // Decode repeatedly to handle double-encoded entities (e.g. WordPress feeds
@@ -57,15 +68,31 @@ export function finalizeFilms(filmMap, name, extraLog = '') {
   return { name, films };
 }
 
-export async function fetchWithRetry(url, options, retries = 3) {
+export async function fetchWithRetry(url, options = {}, retries = 3) {
+  const { timeoutMs = 30000, ...fetchOptions } = options;
+  let lastError;
   for (let attempt = 1; attempt <= retries; attempt++) {
-    const response = await fetch(url, options);
-    if (response.ok) return response;
-    console.warn(
-      `  Attempt ${attempt}/${retries} failed: ${response.status} for: ${url}`
-    );
+    try {
+      const response = await fetch(url, {
+        ...fetchOptions,
+        signal: AbortSignal.timeout(timeoutMs),
+      });
+      if (response.ok) return response;
+      lastError = new Error(`HTTP ${response.status}`);
+      console.warn(
+        `  Attempt ${attempt}/${retries} failed: ${response.status} for: ${url}`
+      );
+    } catch (err) {
+      // Network-level failure (connect timeout, DNS, reset, abort) — retry too.
+      lastError = err;
+      console.warn(
+        `  Attempt ${attempt}/${retries} failed: ${err.message} for: ${url}`
+      );
+    }
     if (attempt < retries)
       await new Promise((r) => setTimeout(r, attempt * 2000));
   }
-  throw new Error(`Failed after ${retries} attempts: ${url}`);
+  throw new Error(
+    `Failed after ${retries} attempts: ${url} (${lastError?.message})`
+  );
 }

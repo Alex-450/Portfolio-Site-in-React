@@ -73,6 +73,7 @@ jobs:
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           CF_SCRAPER_TOKEN: ${{ secrets.CF_SCRAPER_TOKEN }}
+          CF_SCRAPER_URL: ${{ secrets.CF_SCRAPER_URL }}
 
       - name: Save TMDB cache
         if: ${{ steps.fetch-showtimes.outcome == 'success' }}

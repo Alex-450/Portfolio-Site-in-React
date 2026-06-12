@@ -4,14 +4,13 @@ import {
   normalizeSubtitles,
   finalizeFilms,
   toDateStamp,
+  CF_SCRAPER_URL,
 } from './utils.mjs';
-
-const KRITERION_URL = 'https://film-scraper-2.alex-wmstearn.workers.dev/';
 
 async function fetchKriterion() {
   console.log('Fetching Kriterion...');
   const token = process.env.CF_SCRAPER_TOKEN;
-  const response = await fetchWithRetry(KRITERION_URL, {
+  const response = await fetchWithRetry(`${CF_SCRAPER_URL}?target=kriterion`, {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
   });
   const data = await response.json();

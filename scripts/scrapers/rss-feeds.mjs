@@ -4,11 +4,21 @@ import {
   parseFilmLength,
   fetchWithRetry,
   normalizeSubtitles,
+  CF_SCRAPER_URL,
 } from './utils.mjs';
 
+// `proxyTarget` routes the request through the Cloudflare Worker proxy
+// (see scripts/scrapers/kriterion.mjs) instead of fetching the feed directly.
+// LAB111 and Studio K sit behind Cloudflare bot management, which intermittently
+// returns 415 to GitHub Actions datacenter IPs; egressing from the worker
+// (Amsterdam colo) avoids that.
 const FEEDS = [
-  { name: 'LAB111', url: 'https://www.lab111.nl/feed' },
-  { name: 'Studio K', url: 'https://www.studio-k.nu/feed' },
+  { name: 'LAB111', url: 'https://www.lab111.nl/feed', proxyTarget: 'lab111' },
+  {
+    name: 'Studio K',
+    url: 'https://www.studio-k.nu/feed',
+    proxyTarget: 'studio-k',
+  },
   { name: 'FilmHallen', url: 'https://www.filmhallen.nl/feed' },
   { name: 'The Movies', url: 'https://www.themovies.nl/feed' },
   { name: 'FilmKoepel', url: 'https://filmkoepel.nl/feed/' },
@@ -26,12 +36,20 @@ const parser = new XMLParser({
 
 async function fetchFeed(feed) {
   console.log(`Fetching ${feed.name}...`);
-  const response = await fetchWithRetry(feed.url, {
-    headers: {
-      Accept: 'application/rss+xml, application/xml, text/xml, */*',
-      'User-Agent': 'Mozilla/5.0 (compatible; FilmListingsFetcher/1.0)',
-    },
-  });
+  const token = process.env.CF_SCRAPER_TOKEN;
+  const { url, headers } = feed.proxyTarget
+    ? {
+        url: `${CF_SCRAPER_URL}?target=${feed.proxyTarget}`,
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      }
+    : {
+        url: feed.url,
+        headers: {
+          Accept: 'application/rss+xml, application/xml, text/xml, */*',
+          'User-Agent': 'Mozilla/5.0 (compatible; FilmListingsFetcher/1.0)',
+        },
+      };
+  const response = await fetchWithRetry(url, { headers });
   const xml = await response.text();
   const data = parser.parse(xml);
 

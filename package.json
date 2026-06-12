@@ -36,7 +36,7 @@
     "start": "npx serve@latest ./out",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d out --nojekyll --cname a-450.com",
-    "fetch-showtimes": "node scripts/fetch-showtimes.mjs",
+    "fetch-showtimes": "node -r dotenv/config scripts/fetch-showtimes.mjs",
     "prebuild": "npm run fetch-showtimes",
     "build": "next build",
     "build:only": "next build",
