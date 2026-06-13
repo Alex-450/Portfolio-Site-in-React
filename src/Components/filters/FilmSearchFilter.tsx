@@ -6,7 +6,7 @@ interface FilmSearchFilterProps {
   films: FilmWithCinemasLite[];
   searchValue: string;
   onSearchChange: (value: string) => void;
-  onSelect: (title: string) => void;
+  onSelect: (film: FilmWithCinemasLite) => void;
   onClear: () => void;
 }
 
@@ -58,7 +58,7 @@ const FilmSearchFilter = ({
             <li
               key={film.title}
               onMouseDown={() => {
-                onSelect(film.title);
+                onSelect(film);
                 setShowDropdown(false);
               }}
             >

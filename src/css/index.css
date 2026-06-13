@@ -536,49 +536,6 @@ code {
 }
 
 /* Cinema bar */
-.cinema-bar-track {
-  display: flex;
-  gap: 12px;
-  flex-wrap: nowrap;
-  padding: 12px 0;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  scrollbar-color: var(--text-secondary) var(--bg-primary);
-}
-
-.cinema-bar-track::-webkit-scrollbar {
-  height: 8px;
-}
-
-.cinema-bar-track::-webkit-scrollbar-track {
-  background: var(--bg-primary);
-}
-
-.cinema-bar-track::-webkit-scrollbar-thumb {
-  background: var(--text-secondary);
-  border-radius: 4px;
-}
-
-.cinema-bar-item {
-  flex-direction: column;
-  gap: 4px;
-  padding: 12px 16px;
-  min-width: 200px;
-}
-
-.cinema-bar-name {
-  font-size: 1rem;
-  font-weight: bold;
-  line-height: 1.2;
-}
-
-.cinema-bar-address {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  line-height: 1.3;
-}
-
 .film-listings-footer {
   margin-top: 2rem;
   padding-top: 1rem;
@@ -622,6 +579,13 @@ code {
   margin-bottom: 1.5rem;
   flex-wrap: wrap;
 }
+
+.filters-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 
 .active-filters {
   display: flex;
@@ -852,7 +816,9 @@ code {
   align-items: flex-start;
   gap: 1rem;
   padding: 10px 0;
-  border-bottom: 1px solid var(--border-primary);
+  /* Heavier than the 2px day-tabs divider so the card boundary reads as the
+     stronger separator and the date line as a sub-divider within a card. */
+  border-bottom: 3px solid var(--border-primary);
 }
 
 .film-card:last-child {
@@ -879,6 +845,24 @@ code {
   border-radius: 3px;
   pointer-events: none;
   line-height: 1.4;
+}
+
+/* Inline "New" tag in the title row; only shown on mobile, where the poster
+   (and its badge) is hidden. Desktop uses .film-new-badge on the poster. */
+.film-new-tag {
+  display: none;
+  margin-left: 8px;
+  vertical-align: middle;
+  background: #e63946;
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 3px;
+  line-height: 1.4;
+  white-space: nowrap;
 }
 
 .film-poster,
@@ -1020,54 +1004,6 @@ code {
   font-size: 0.85rem;
 }
 
-.cinema-showtimes {
-  display: flex;
-  gap: 1.5rem;
-  margin-top: 0.5rem;
-  width: max-content;
-}
-
-.cinema-showtime-group {
-  flex-shrink: 0;
-}
-
-.cinema-name {
-  font-size: 1rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-}
-
-.showtimes {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.showtime-group {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-}
-
-.showtime-date {
-  font-size: 0.85rem;
-  font-weight: bold;
-  color: var(--text-secondary);
-  min-width: 80px;
-  width: 80px;
-}
-
-.showtime-date.with-screen {
-  min-width: 200px;
-  width: 200px;
-}
-
-.showtime-times {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
 .showtime-link,
 .calendar-link {
   display: inline-flex;
@@ -1091,28 +1027,6 @@ code {
 .calendar-link {
   border-left: none;
   cursor: pointer;
-}
-
-.showtime-item {
-  display: inline-flex;
-  align-items: stretch;
-}
-
-.expand-btn {
-  margin-top: 10px;
-  font-family: inherit;
-  font-size: 0.85rem;
-  padding: 2px 8px;
-  background-color: transparent;
-  border: 2px solid var(--border-primary);
-  color: var(--text-primary);
-  cursor: pointer;
-  width: 150px;
-}
-
-.expand-btn:hover {
-  background-color: var(--hover-bg);
-  color: var(--color-white);
 }
 
 /* Watchlist Button */
@@ -1547,6 +1461,22 @@ code {
   align-items: stretch;
 }
 
+.showtimes-show-more {
+  margin-top: 0.75rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 4px 12px;
+  background-color: transparent;
+  border: 2px solid var(--border-primary);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.showtimes-show-more:hover {
+  background-color: var(--hover-bg);
+  color: var(--color-white);
+}
+
 /* Cinema index page */
 .cinema-index-container {
   padding-top: 20px;
@@ -1681,9 +1611,33 @@ code {
 }
 
 @media (max-width: 600px) {
-  .film-poster,
-  .film-poster-placeholder {
-    width: 120px;
+  /* On mobile, float a small poster in the top-right corner so the title/meta
+     wrap to its left and the showtimes run beside/below it. flow-root both
+     enables the float layout and contains the float within the card (so it
+     can't bleed past the card's bottom border into the next film). */
+  .film-card {
+    display: flow-root;
+  }
+
+  .film-card .film-poster-link {
+    float: right;
+    margin: 0 0 0.5rem 1rem;
+  }
+
+  .film-card .film-poster,
+  .film-card .film-poster-placeholder {
+    width: 90px;
+  }
+
+  /* No longer a flex column on mobile; drop the horizontal scroll container. */
+  .film-card .film-info {
+    overflow-x: visible;
+  }
+
+  /* Start the showtimes below the floated poster (clear it) so every row is
+     full-width and can't get squeezed beside the poster into a scroll. */
+  .film-card .film-showtimes-by-day {
+    clear: both;
   }
 
   .film-filters {

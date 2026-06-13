@@ -1,4 +1,4 @@
-import { useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 interface Option {
   value: string;
@@ -22,17 +22,33 @@ const MultiSelectDropdown = ({
 }: MultiSelectDropdownProps) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownId = useId();
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Close when tapping/clicking outside. onBlur is unreliable on touch devices
+  // because tapping a checkbox label never focuses (and so never blurs) the button.
+  useEffect(() => {
+    if (!showDropdown) return;
+    const handlePointerDown = (e: PointerEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => document.removeEventListener('pointerdown', handlePointerDown);
+  }, [showDropdown]);
 
   if (options.length === 0) {
     return null;
   }
 
   return (
-    <div className="genre-filter">
+    <div className="genre-filter" ref={containerRef}>
       <button
         className="filter-select genre-filter-button"
         onClick={() => setShowDropdown(!showDropdown)}
-        onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
         aria-expanded={showDropdown}
         aria-controls={dropdownId}
         aria-haspopup="listbox"
@@ -52,6 +68,8 @@ const MultiSelectDropdown = ({
                   } else {
                     onChange(selected.filter((v) => v !== option.value));
                   }
+                  // Apply the choice and close; reopen to add more.
+                  setShowDropdown(false);
                 }}
               />
               {option.label}
@@ -60,7 +78,10 @@ const MultiSelectDropdown = ({
           {selected.length > 0 && (
             <button
               className="genre-filter-clear"
-              onMouseDown={() => onChange([])}
+              onClick={() => {
+                onChange([]);
+                setShowDropdown(false);
+              }}
             >
               Clear
             </button>

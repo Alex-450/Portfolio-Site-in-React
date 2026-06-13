@@ -19,16 +19,34 @@ interface FilmShowtimesProps {
   cinemaShowtimes: CinemaShowtimes[];
   filmTitle: string;
   filmLength: number | null;
+  // Optional: restrict the day tabs to these dates (e.g. the listings day filter).
+  // The literal 'today' is resolved to the current date.
+  dayFilter?: string[];
+  // Optional: cap the number of showtimes shown per day, with a "Show more" toggle.
+  // Omitted (e.g. on the detail page) means show all.
+  maxPerDay?: number;
 }
 
 function FilmShowtimes({
   cinemaShowtimes,
   filmTitle,
   filmLength,
+  dayFilter,
+  maxPerDay,
 }: FilmShowtimesProps) {
   const today = useMemo(getToday, []);
   const currentTime = useMemo(getCurrentTime, []);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState(false);
+
+  // Dates the day filter restricts us to, with 'today' resolved. Empty/undefined = no restriction.
+  const allowedDates = useMemo(
+    () =>
+      dayFilter && dayFilter.length > 0
+        ? new Set(dayFilter.map((d) => (d === 'today' ? today : d)))
+        : null,
+    [dayFilter, today]
+  );
 
   // Group all showtimes by date, filtering out past showtimes
   const showtimesByDate = useMemo(() => {
@@ -40,6 +58,8 @@ function FilmShowtimes({
         if (s.date < today) continue;
         // Skip past times for today
         if (s.date === today && s.time < currentTime) continue;
+        // Skip dates excluded by the day filter
+        if (allowedDates && !allowedDates.has(s.date)) continue;
 
         if (!byDate.has(s.date)) {
           byDate.set(s.date, []);
@@ -64,7 +84,7 @@ function FilmShowtimes({
     return new Map(
       [...byDate.entries()].sort((a, b) => a[0].localeCompare(b[0]))
     );
-  }, [cinemaShowtimes, today]);
+  }, [cinemaShowtimes, today, currentTime, allowedDates]);
 
   const dates = useMemo(() => [...showtimesByDate.keys()], [showtimesByDate]);
 
@@ -75,6 +95,17 @@ function FilmShowtimes({
   const activeShowtimes = activeDay
     ? showtimesByDate.get(activeDay) || []
     : [];
+
+  const isCapped =
+    maxPerDay != null && !expanded && activeShowtimes.length > maxPerDay;
+  const visibleShowtimes = isCapped
+    ? activeShowtimes.slice(0, maxPerDay)
+    : activeShowtimes;
+
+  const selectDay = (date: string) => {
+    setSelectedDay(date);
+    setExpanded(false); // collapse again when switching days
+  };
 
   if (dates.length === 0) {
     return <p className="no-results">No upcoming showtimes</p>;
@@ -87,7 +118,7 @@ function FilmShowtimes({
           <button
             key={date}
             className={`day-tab${date === activeDay ? ' day-tab-active' : ''}`}
-            onClick={() => setSelectedDay(date)}
+            onClick={() => selectDay(date)}
           >
             {formatDate(date)}
           </button>
@@ -95,7 +126,7 @@ function FilmShowtimes({
       </div>
 
       <div className="day-showtimes">
-        {activeShowtimes.map((s) => (
+        {visibleShowtimes.map((s) => (
           <div
             key={`${s.cinema}-${s.time}-${s.screen ?? ''}-${s.variant ?? ''}`}
             className="showtime-row"
@@ -155,6 +186,15 @@ function FilmShowtimes({
           </div>
         ))}
       </div>
+
+      {isCapped && (
+        <button
+          className="showtimes-show-more"
+          onClick={() => setExpanded(true)}
+        >
+          Show {activeShowtimes.length - maxPerDay!} more
+        </button>
+      )}
     </div>
   );
 }

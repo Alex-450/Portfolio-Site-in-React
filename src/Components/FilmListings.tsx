@@ -3,11 +3,11 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
 import { Container } from 'react-bootstrap';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { FilmWithCinemasLite, FilmsIndexLite } from '../types';
 import FilmCard from './FilmCard';
 import PosterCarousel from './PosterCarousel';
 import TopFilmsBar from './TopFilmsBar';
-import CinemaBar from './CinemaBar';
 import ViewToggle from './ViewToggle';
 import GenreCarouselRow from './GenreCarouselRow';
 import CinemaFilter from './filters/CinemaFilter';
@@ -223,6 +223,19 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     !!releaseFilter ||
     watchlistFilter;
 
+  // Count of filters tucked behind the collapsible "Filters" panel.
+  // Film search and Tonight stay at the top level, so they're excluded here.
+  const advancedFilterCount =
+    cinemaFilter.length +
+    dayFilter.length +
+    (timeFilter ? 1 : 0) +
+    genreFilter.length +
+    (directorFilter ? 1 : 0) +
+    (releaseFilter ? 1 : 0) +
+    (watchlistFilter ? 1 : 0);
+
+  const [filtersOpen, setFiltersOpen] = useState(false);
+
   // Films filtered by everything except day - used for computing day options
   const { dayOptions, hasShowtimesToday, hasEveningShowtimesToday } =
     useMemo(() => {
@@ -348,8 +361,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
 
         {!hasActiveFilters && <TopFilmsBar films={allFilms} today={today} />}
 
-        {!hasActiveFilters && <CinemaBar />}
-
         <h2 className="film-listings-section-heading">All Films</h2>
 
         <div className="film-filters">
@@ -363,7 +374,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
           <PosterCarousel films={carouselFilms} today={today} linkToDetail />
         )}
 
-        <div className="film-filters">
+        <div className="film-filters film-filters-primary">
           {hasEveningShowtimesToday && (
             <button
               className={`filter-select${isTonightActive ? ' filter-toggle-active' : ''}`}
@@ -372,66 +383,84 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
               Tonight
             </button>
           )}
-          <CinemaFilter
-            selectedCinemas={cinemaFilter}
-            onChange={(v) => setFilter('cinema', v)}
-            cinemaNames={cinemaNames}
-          />
-          <DayFilter
-            selectedDays={dayFilter}
-            onChange={(v) => setFilter('day', v)}
-            dayOptions={dayOptions}
-            showToday={hasShowtimesToday}
-          />
-          <TimeFilter
-            value={timeFilter}
-            onChange={(value) => setFilter('time', value ?? undefined)}
-          />
-          <GenreFilter
-            genres={allGenres}
-            selectedGenres={genreFilter}
-            onChange={(v) => setFilter('genres', v)}
-          />
           {viewMode === 'list' && (
             <FilmSearchFilter
               films={allFilms}
               searchValue={filmSearch}
               onSearchChange={setFilmSearch}
-              onSelect={(title) => {
-                setFilmSearch(title);
-                setFilter('film', title);
-              }}
+              onSelect={(film) => router.push(`/films/${film.slug}/`)}
               onClear={() => {
                 setFilmSearch('');
                 setFilter('film', undefined);
               }}
             />
           )}
-          <DirectorFilter
-            directors={allDirectors}
-            searchValue={directorSearch}
-            onSearchChange={setDirectorSearch}
-            onSelect={(d) => {
-              setDirectorSearch(d);
-              setFilter('director', d);
-            }}
-            onClear={() => {
-              setDirectorSearch('');
-              setFilter('director', undefined);
-            }}
-          />
-          <ReleaseFilter
-            value={releaseFilter}
-            onChange={(value) => setFilter('release', value ?? undefined)}
-          />
-          <WatchlistFilter
-            enabled={watchlistFilter}
-            onChange={(enabled) =>
-              setFilter('watchlist', enabled ? 'true' : undefined)
-            }
-            watchlistCount={watchlist.length}
-          />
+          <button
+            className={`filter-select filters-toggle${advancedFilterCount > 0 ? ' filter-toggle-active' : ''}`}
+            onClick={() => setFiltersOpen((open) => !open)}
+            aria-expanded={filtersOpen}
+            aria-controls="advanced-filters"
+          >
+            <span>
+              Filters
+              {advancedFilterCount > 0 && ` (${advancedFilterCount})`}
+            </span>
+            {filtersOpen ? (
+              <ChevronUp size={16} aria-hidden="true" />
+            ) : (
+              <ChevronDown size={16} aria-hidden="true" />
+            )}
+          </button>
         </div>
+
+        {filtersOpen && (
+          <div id="advanced-filters" className="film-filters film-filters-panel">
+            <CinemaFilter
+              selectedCinemas={cinemaFilter}
+              onChange={(v) => setFilter('cinema', v)}
+              cinemaNames={cinemaNames}
+            />
+            <DayFilter
+              selectedDays={dayFilter}
+              onChange={(v) => setFilter('day', v)}
+              dayOptions={dayOptions}
+              showToday={hasShowtimesToday}
+            />
+            <TimeFilter
+              value={timeFilter}
+              onChange={(value) => setFilter('time', value ?? undefined)}
+            />
+            <GenreFilter
+              genres={allGenres}
+              selectedGenres={genreFilter}
+              onChange={(v) => setFilter('genres', v)}
+            />
+            <DirectorFilter
+              directors={allDirectors}
+              searchValue={directorSearch}
+              onSearchChange={setDirectorSearch}
+              onSelect={(d) => {
+                setDirectorSearch(d);
+                setFilter('director', d);
+              }}
+              onClear={() => {
+                setDirectorSearch('');
+                setFilter('director', undefined);
+              }}
+            />
+            <ReleaseFilter
+              value={releaseFilter}
+              onChange={(value) => setFilter('release', value ?? undefined)}
+            />
+            <WatchlistFilter
+              enabled={watchlistFilter}
+              onChange={(enabled) =>
+                setFilter('watchlist', enabled ? 'true' : undefined)
+              }
+              watchlistCount={watchlist.length}
+            />
+          </div>
+        )}
 
         {hasActiveFilters && (
           <div className="active-filters">
