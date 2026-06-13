@@ -1643,16 +1643,8 @@ code {
     clear: both;
   }
 
-  /* Loosen the spacing on mobile so cards breathe rather than feeling packed. */
-  /* Full-bleed card divider on mobile: pull the card out to the viewport edges
-     with negative margins, then add matching padding so the content stays put
-     and only the bottom border spans the full width. The Bootstrap container
-     pads each side by half its gutter (--bs-gutter-x * 0.5), so we mirror that. */
   .film-card {
-    --film-card-gutter: calc(var(--bs-gutter-x, 1.5rem) * 0.5);
-    padding: 18px var(--film-card-gutter);
-    margin-left: calc(-1 * var(--film-card-gutter));
-    margin-right: calc(-1 * var(--film-card-gutter));
+    padding: 18px;
   }
 
   .film-card .film-showtimes-by-day {
