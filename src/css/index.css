@@ -816,9 +816,9 @@ code {
   align-items: flex-start;
   gap: 1rem;
   padding: 10px 0;
-  /* Heavier than the 2px day-tabs divider so the card boundary reads as the
+  /* Heavier than the day-tabs divider so the card boundary reads as the
      stronger separator and the date line as a sub-divider within a card. */
-  border-bottom: 3px solid var(--border-primary);
+  border-bottom: 2px solid var(--border-primary);
 }
 
 .film-card:last-child {
@@ -880,7 +880,6 @@ code {
 .film-info {
   flex: 1;
   min-width: 0;
-  overflow-x: auto;
 }
 
 .film-title {
@@ -1396,9 +1395,17 @@ code {
 .day-tabs {
   display: flex;
   gap: 0;
+  /* Detail pages can have many weeks of dates, so scroll them horizontally. */
   overflow-x: auto;
   overflow-y: hidden;
-  border-bottom: 2px solid var(--border-primary);
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+/* Listings cards have only a handful of dates, so wrap them instead of
+   scrolling (avoids a tiny scroll area inside the card). */
+.film-card .day-tabs {
+  flex-wrap: wrap;
+  overflow-x: visible;
 }
 
 .day-tab {
@@ -1407,8 +1414,8 @@ code {
   font-size: 0.9rem;
   background: transparent;
   border: none;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
+  border-bottom: 1px solid transparent;
+  margin-bottom: -1px;
   cursor: pointer;
   white-space: nowrap;
   color: var(--text-secondary);
@@ -1611,33 +1618,68 @@ code {
 }
 
 @media (max-width: 600px) {
-  /* On mobile, float a small poster in the top-right corner so the title/meta
-     wrap to its left and the showtimes run beside/below it. flow-root both
-     enables the float layout and contains the float within the card (so it
-     can't bleed past the card's bottom border into the next film). */
+  /* On mobile, show the poster as a small thumbnail floated beside the
+     title/meta, with the showtimes running full-width below. flow-root
+     contains the float so it can't bleed into the next card. */
   .film-card {
     display: flow-root;
   }
 
   .film-card .film-poster-link {
-    float: right;
-    margin: 0 0 0.5rem 1rem;
+    float: left;
+    margin: 0 0.75rem 0.5rem 0;
   }
 
   .film-card .film-poster,
   .film-card .film-poster-placeholder {
-    width: 90px;
+    width: 56px;
   }
 
-  /* No longer a flex column on mobile; drop the horizontal scroll container. */
-  .film-card .film-info {
-    overflow-x: visible;
+  /* The "New" badge is oversized for a 56px thumbnail; use the inline tag
+     next to the title instead. */
+  .film-card .film-new-badge {
+    display: none;
   }
 
-  /* Start the showtimes below the floated poster (clear it) so every row is
-     full-width and can't get squeezed beside the poster into a scroll. */
+  .film-new-tag {
+    display: inline-block;
+  }
+
+  /* Showtimes span the full card width below the thumbnail. */
   .film-card .film-showtimes-by-day {
     clear: both;
+  }
+
+  /* Loosen the spacing on mobile so cards breathe rather than feeling packed. */
+  /* Full-bleed card divider on mobile: pull the card out to the viewport edges
+     with negative margins, then add matching padding so the content stays put
+     and only the bottom border spans the full width. The Bootstrap container
+     pads each side by half its gutter (--bs-gutter-x * 0.5), so we mirror that. */
+  .film-card {
+    --film-card-gutter: calc(var(--bs-gutter-x, 1.5rem) * 0.5);
+    padding: 18px var(--film-card-gutter);
+    margin-left: calc(-1 * var(--film-card-gutter));
+    margin-right: calc(-1 * var(--film-card-gutter));
+  }
+
+  .film-card .film-showtimes-by-day {
+    margin-top: 1.5rem;
+  }
+
+  .film-card .showtime-row {
+    padding: 1rem 0;
+  }
+
+  /* Lighten the dividers on mobile so they recede: thin the day-tabs underline
+     to 1px and fade both it and the per-row dividers to a low-contrast tint
+     that works in either theme. */
+  .film-card .day-tabs {
+    border-bottom-width: 1px;
+  }
+
+  .film-card .day-tabs,
+  .film-card .showtime-row {
+    border-bottom-color: rgba(128, 128, 128, 0.3);
   }
 
   .film-filters {

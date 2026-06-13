@@ -423,9 +423,10 @@
     color: var(--dark-text-body);
   }
 
-  /* Day-based showtimes dark mode */
+  /* Day-based showtimes dark mode. Keep the tab track underline thin and faint
+     (the active-tab underline below stays brighter as the selection cue). */
   .day-tabs {
-    border-bottom-color: var(--hover-bg);
+    border-bottom-color: rgba(128, 128, 128, 0.3);
   }
 
   .day-tab {
@@ -443,6 +444,15 @@
 
   .showtime-row {
     border-bottom-color: var(--dark-bg-tertiary);
+  }
+
+  /* On mobile, lighten the per-row dividers so they recede (matches the mobile
+     override in index.css; placed here so it wins over the dark rule above).
+     The day-tabs underline is already faint at all widths. */
+  @media (max-width: 600px) {
+    .film-card .showtime-row {
+      border-bottom-color: rgba(128, 128, 128, 0.3);
+    }
   }
 
   .showtime-cinema {
