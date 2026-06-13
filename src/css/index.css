@@ -1619,7 +1619,7 @@ code {
   }
 
   .film-card .film-poster-link {
-    float: left;
+    float: right;
     margin: 0 0.75rem 0.5rem 0;
   }
 
