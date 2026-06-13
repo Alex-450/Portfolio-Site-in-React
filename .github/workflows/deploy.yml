@@ -52,6 +52,14 @@ jobs:
           restore-keys: |
             eye-cache-
 
+      - name: Restore Rialto cache
+        uses: actions/cache/restore@v5
+        with:
+          path: src/data/rialto-cache.json
+          key: rialto-cache-${{ hashFiles('src/data/rialto-cache.json') }}
+          restore-keys: |
+            rialto-cache-
+
       # Restore films.json from a previous run. The restore key is based on a hash of the
       # scripts directory so that pushes that don't change scraper logic reuse the last
       # fetched result. The save key appends run_id to avoid the "cache already exists"
@@ -90,6 +98,13 @@ jobs:
         with:
           path: src/data/eye-cache.json
           key: eye-cache-${{ github.run_id }}
+
+      - name: Save Rialto cache
+        if: ${{ steps.fetch-showtimes.outcome == 'success' }}
+        uses: actions/cache/save@v5
+        with:
+          path: src/data/rialto-cache.json
+          key: rialto-cache-${{ github.run_id }}
 
       - name: Save films.json cache
         if: ${{ steps.fetch-showtimes.outcome == 'success' }}

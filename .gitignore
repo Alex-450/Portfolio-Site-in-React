@@ -30,4 +30,5 @@ next-env.d.ts
 src/data/films.json
 src/data/tmdb-cache.json
 src/data/eye-cache.json
+src/data/rialto-cache.json
 
