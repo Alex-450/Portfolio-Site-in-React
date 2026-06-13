@@ -1,5 +1,6 @@
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { cleanTitle } from '../../src/utils/filmTitle.mjs';
+import { fetchWithRetry } from './utils.mjs';
 
 // Read from the environment (set via .env locally, CI secrets in Actions).
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
@@ -24,8 +25,12 @@ const TMDB_BASE = 'https://api.themoviedb.org/3';
 // null on a non-OK response. `params` values are URL-encoded automatically.
 async function tmdbGet(path, params = {}) {
   const query = new URLSearchParams({ api_key: TMDB_API_KEY, ...params });
-  const res = await fetch(`${TMDB_BASE}/${path}?${query}`);
-  return res.ok ? res.json() : null;
+  try {
+    const res = await fetchWithRetry(`${TMDB_BASE}/${path}?${query}`);
+    return res.json();
+  } catch {
+    return null;
+  }
 }
 
 // Strip diacritics and punctuation but keep spaces (so last names stay split).
@@ -121,6 +126,7 @@ async function fetchWikidataIds(wikidataId) {
   const result = await (wikidataQueue = wikidataQueue.then(async () => {
     try {
       let res;
+      let lastError;
       for (let attempt = 0; attempt < 5; attempt++) {
         if (attempt > 0) {
           const retryAfter = res?.headers?.get('Retry-After');
@@ -129,10 +135,25 @@ async function fetchWikidataIds(wikidataId) {
             : attempt * 5000;
           await new Promise((r) => setTimeout(r, delay));
         }
-        res = await fetch(
-          `https://www.wikidata.org/wiki/Special:EntityData/${wikidataId}.json`
+        // A timeout or network error is retryable too — not just a 429 — so
+        // catch it here rather than letting it break out of the retry loop.
+        try {
+          res = await fetch(
+            `https://www.wikidata.org/wiki/Special:EntityData/${wikidataId}.json`,
+            { signal: AbortSignal.timeout(30000) }
+          );
+          lastError = null;
+          if (res.status !== 429) break;
+        } catch (err) {
+          res = undefined;
+          lastError = err;
+        }
+      }
+      if (lastError) {
+        console.warn(
+          `Wikidata fetch failed for ${wikidataId}: ${lastError.message}`
         );
-        if (res.status !== 429) break;
+        return {};
       }
       if (!res.ok) {
         console.warn(

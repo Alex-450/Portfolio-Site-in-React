@@ -22,6 +22,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -68,6 +69,7 @@ jobs:
       # files have changed (i.e. no exact cache hit on the scripts hash).
       - name: Fetch showtimes
         id: fetch-showtimes
+        timeout-minutes: 10
         if: ${{ github.event_name != 'push' || !startsWith(steps.cache-films.outputs.cache-matched-key, format('films-json-{0}', hashFiles('scripts/**'))) }}
         run: npm run fetch-showtimes
         env:
