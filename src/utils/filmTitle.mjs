@@ -24,11 +24,10 @@ export function generateSlug(title) {
  * Normalizes apostrophe variants and strips diacritics so that e.g.
  * "L'Étranger", "L'Etranger", and "L\u2019Etranger" all map to the same key.
  * NOTE: used only for grouping/cache keys, not for display.
- * e.g., "Film (ENG subs) | Event" -> "film"
+ * e.g., "Film (ENG subs) | Event" -> "film"; "Film - eng subs" -> "film"
  */
 export function cleanTitle(title) {
-  return title
-    .split(/[|•]/)[0]
+  return stripDashAnnotation(title.split(/[|•]/)[0])
     .replace(/\s*\[[^\]]*\]\s*/g, ' ') // strip [35mm], [OV], etc.
     .replace(/\s*\([^)]*\)\s*/g, ' ')
     .replace(/\s+incl\..*$/i, '') // strip "incl. panel talk" etc.
@@ -59,8 +58,25 @@ function isAnnotation(inner) {
     /^\d{4}$/.test(v) ||
     /\b(anniversary|restoration|restored|remaster(ed)?|cut|extended|uncut|\dk|mm|ov|imax|q&a|sing[- ]?along)\b/i.test(
       v
+    ) ||
+    // Programme/distribution annotations: a screening label, not part of the
+    // film's real title (e.g. "The Watermelon Woman - Previously Unreleased").
+    /\b(previously unreleased|sneak preview|preview|premiere|re[- ]?release|directors? cut)\b/i.test(
+      v
     )
   );
+}
+
+/**
+ * Strip a trailing " - <annotation>" suffix (some sources use a dash instead of
+ * parentheses, e.g. "Blue Heron - eng subs", "Film - 50th Anniversary",
+ * "The Watermelon Woman – Previously Unreleased"). Handles hyphen/en-dash/em-dash
+ * separators. Only stripped when the suffix is a recognized annotation, so real
+ * dash titles (e.g. "Dead Man - Jim Jarmusch Revisited") are left intact.
+ */
+function stripDashAnnotation(title) {
+  const match = title.match(/^(.*\S)\s+[-–—]\s+([^-–—]+)$/);
+  return match && isAnnotation(match[2]) ? match[1].trim() : title;
 }
 
 /**
@@ -90,12 +106,11 @@ export function extractVariant(title) {
  * Get clean title for display (remove variant suffix and event suffix).
  * A trailing parenthetical is only stripped when it's a recognized annotation
  * (variant/subtitle/year); otherwise it's kept as part of the real title.
- * e.g. "Film (ENG subs) | Event" -> "Film";
+ * e.g. "Film (ENG subs) | Event" -> "Film"; "Film - eng subs" -> "Film";
  *      "Birdman or (The Unexpected Virtue of Ignorance)" is left intact.
  */
 export function getCleanDisplayTitle(title) {
-  return title
-    .split(/[|•]/)[0]
+  return stripDashAnnotation(title.split(/[|•]/)[0])
     .replace(/\s*\(([^)]*)\)\s*$/, (full, inner) =>
       isAnnotation(inner) ? '' : full
     )

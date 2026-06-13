@@ -368,13 +368,23 @@ async function pickWithoutDirector(
     return null; // genuinely ambiguous
   }
 
-  // Partial match, or multiple exact matches with a year to help: prefer a
-  // single original-title result (only when no year), else take the top score.
-  if (!year) {
-    const byOriginal = await singleByOriginalTitle(originalTitle);
-    if (byOriginal) return byOriginal;
+  // Multiple exact matches with a year to help: take the exact match whose
+  // release year agrees (high certainty), else fall through.
+  if (exactMatches.length > 1 && year) {
+    const byYear = exactMatches.find((c) =>
+      c.movie.release_date?.startsWith(String(year))
+    );
+    if (byYear) return byYear.movie;
   }
-  return top.movie;
+
+  // No exact title match at this point — only a partial/fuzzy overlap. Without a
+  // director to validate against, that's too weak to trust (it once matched
+  // "The Watermelon Woman" to an unrelated adult title). Require a confident
+  // signal: a single original-title result, otherwise give up (no enrichment)
+  // rather than accept a wrong film.
+  const byOriginal = await singleByOriginalTitle(originalTitle);
+  if (byOriginal) return byOriginal;
+  return null;
 }
 
 export async function searchTmdbMovieDetails(
