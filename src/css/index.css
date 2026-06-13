@@ -1401,13 +1401,6 @@ code {
   border-bottom: 1px solid var(--border-secondary);
 }
 
-/* Listings cards have only a handful of dates, so wrap them instead of
-   scrolling (avoids a tiny scroll area inside the card). */
-.film-card .day-tabs {
-  flex-wrap: wrap;
-  overflow-x: visible;
-}
-
 .day-tab {
   padding: 8px 16px;
   font-family: inherit;
