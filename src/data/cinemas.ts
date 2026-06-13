@@ -63,6 +63,20 @@ export const cinemas: Record<string, Cinema> = {
     websiteUrl: 'https://kriterion.nl',
     adsMinutes: 20,
   },
+  'Rialto De Pijp': {
+    name: 'Rialto De Pijp',
+    slug: 'rialto-de-pijp',
+    address: 'Ceintuurbaan 338, 1072 GN Amsterdam',
+    websiteUrl: 'https://rialtofilm.nl',
+    adsMinutes: 20,
+  },
+  'Rialto VU': {
+    name: 'Rialto VU',
+    slug: 'rialto-vu',
+    address: 'De Boelelaan 1111, 1081 HV Amsterdam',
+    websiteUrl: 'https://rialtofilm.nl',
+    adsMinutes: 20,
+  },
 };
 
 export function getCinema(name: string): Cinema | undefined {

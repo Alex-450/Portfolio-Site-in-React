@@ -4,6 +4,7 @@ import { fetchAllRssFeeds, RSS_FEED_NAMES } from './scrapers/rss-feeds.mjs';
 import { fetchFcHyena } from './scrapers/fc-hyena.mjs';
 import { fetchEye } from './scrapers/eye.mjs';
 import { fetchKriterion } from './scrapers/kriterion.mjs';
+import { fetchRialto } from './scrapers/rialto.mjs';
 import { toDateStamp } from './scrapers/utils.mjs';
 import {
   searchTmdbMovieDetails,
@@ -40,12 +41,13 @@ async function mapWithConcurrency(items, fn, concurrency = 10) {
 // Returns { cinemas, failedCinemaNames }
 async function fetchAllCinemas() {
   // Fetch all sources in parallel
-  const [rssResult, fcHyenaResult, eyeResult, kriterionResult] =
+  const [rssResult, fcHyenaResult, eyeResult, kriterionResult, rialtoResult] =
     await Promise.allSettled([
       fetchAllRssFeeds(),
       fetchFcHyena(),
       fetchEye(),
       fetchKriterion(),
+      fetchRialto(),
     ]);
 
   const cinemas = [];
@@ -75,6 +77,18 @@ async function fetchAllCinemas() {
       console.error(result.reason);
       failedCinemaNames.push(name);
     }
+  }
+
+  // Rialto returns multiple venues (one { name, films } per location).
+  const RIALTO_VENUE_NAMES = ['Rialto De Pijp', 'Rialto VU'];
+  if (rialtoResult.status === 'fulfilled') {
+    for (const venue of rialtoResult.value) {
+      if (venue.films.length > 0) cinemas.push(venue);
+    }
+  } else {
+    console.error('Error fetching Rialto:');
+    console.error(rialtoResult.reason);
+    failedCinemaNames.push(...RIALTO_VENUE_NAMES);
   }
 
   if (cinemas.length === 0) {
