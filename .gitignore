@@ -32,3 +32,6 @@ src/data/tmdb-cache.json
 src/data/eye-cache.json
 src/data/rialto-cache.json
 
+# ts
+tsconfig.tsbuildinfo
+
