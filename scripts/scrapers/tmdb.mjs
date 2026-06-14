@@ -240,81 +240,15 @@ async function findByDirectorInResults(movies, targets, limit) {
   return null;
 }
 
-// A single unambiguous result for `originalTitle`, or null. Used to break ties
-// when the listed title alone is ambiguous.
-async function singleByOriginalTitle(originalTitle) {
-  if (!originalTitle) return null;
-  const res = await tmdbGet('search/movie', {
-    query: cleanTitle(originalTitle),
-  });
-  return res?.results?.length === 1 ? res.results[0] : null;
-}
-
-// Choose a movie when we have no director to validate against. Returns the
-// chosen movie, or null if no confident choice can be made (caller decides how
-// to log/retry). Requires a reasonable top score and disambiguates exact-title
-// collisions by original-title search, then by a dominant vote count.
-async function pickWithoutDirector(
-  candidates,
-  searchTitle,
-  originalTitle,
-  year
-) {
-  const top = candidates[0];
-  if (!top || top.score < 50) return null;
-
-  const exactMatches = candidates.filter(
-    (c) =>
-      cleanTitle(c.movie.title || '') === searchTitle ||
-      cleanTitle(c.movie.original_title || '') === searchTitle
-  );
-
-  // Exactly one exact title match — unambiguous.
-  if (exactMatches.length === 1) return exactMatches[0].movie;
-
-  // Multiple exact matches and no year to help differentiate.
-  if (exactMatches.length > 1 && !year) {
-    const byOriginal = await singleByOriginalTitle(originalTitle);
-    if (byOriginal) return byOriginal;
-
-    // Tie-break by vote count: pick the one exact match that is overwhelmingly
-    // more established (e.g. Sean Baker's "Tangerine", 799 votes vs. 0-2).
-    const byVotes = [...exactMatches].sort(
-      (a, b) => (b.movie.vote_count || 0) - (a.movie.vote_count || 0)
-    );
-    const topVotes = byVotes[0].movie.vote_count || 0;
-    const runnerUpVotes = byVotes[1].movie.vote_count || 0;
-    if (topVotes >= 50 && topVotes >= runnerUpVotes * 10) {
-      return byVotes[0].movie;
-    }
-    return null; // genuinely ambiguous
-  }
-
-  // Multiple exact matches with a year to help: take the exact match whose
-  // release year agrees (high certainty), else fall through.
-  if (exactMatches.length > 1 && year) {
-    const byYear = exactMatches.find((c) =>
-      c.movie.release_date?.startsWith(String(year))
-    );
-    if (byYear) return byYear.movie;
-  }
-
-  // No exact title match at this point — only a partial/fuzzy overlap. Without a
-  // director to validate against, that's too weak to trust (it once matched
-  // "The Watermelon Woman" to an unrelated adult title). Require a confident
-  // signal: a single original-title result, otherwise give up (no enrichment)
-  // rather than accept a wrong film.
-  const byOriginal = await singleByOriginalTitle(originalTitle);
-  if (byOriginal) return byOriginal;
-  return null;
-}
-
 export async function searchTmdbMovieDetails(
   title,
   { director = null, year = null, originalTitle = null } = {}
 ) {
   if (!TMDB_API_KEY) return null;
   if (!title) return null;
+  // Without a director we can't validate a match, and title-only matching is too
+  // unreliable — skip enrichment entirely rather than risk attaching a wrong film.
+  if (!director) return null;
 
   const cacheKey = `${cleanTitle(title)}|${director?.toLowerCase() || ''}|${year || ''}`;
   if (cache[cacheKey]) return cache[cacheKey];
@@ -377,81 +311,49 @@ export async function searchTmdbMovieDetails(
     let bestMatch;
     let fetchedDetails = null;
 
-    if (director) {
-      const targets = parseDirectors(director);
-      const wantedTitles = [searchTitle, postColonTitle];
+    const targets = parseDirectors(director);
+    const wantedTitles = [searchTitle, postColonTitle];
 
-      // Try each strategy in turn until one yields a match (director must agree).
-      bestMatch = await findInFilmography(targets, wantedTitles);
+    // Try each strategy in turn until one yields a match (director must agree).
+    bestMatch = await findInFilmography(targets, wantedTitles);
 
-      if (!bestMatch) {
-        // The director name may differ between source and TMDB (diacritics,
-        // romanization) — validate the title-search candidates by their credits.
-        const found = await findByDirectorInResults(
-          candidates.map((c) => c.movie),
-          targets,
-          10
-        );
-        if (found) ({ movie: bestMatch, fetched: fetchedDetails } = found);
-      }
-      if (!bestMatch && originalTitle) {
-        // Retry the search under the original title (e.g. non-English films).
-        const orig = await tmdbGet('search/movie', {
-          query: cleanTitle(originalTitle),
-        });
-        const found = await findByDirectorInResults(
-          orig?.results || [],
-          targets,
-          5
-        );
-        if (found) ({ movie: bestMatch, fetched: fetchedDetails } = found);
-      }
-      if (!bestMatch && year) {
-        // Director never matched — fall back to a year-constrained title search.
-        const byYear = await tmdbGet('search/movie', {
-          query: searchTitle,
-          year,
-        });
-        if (byYear?.results?.length) bestMatch = byYear.results[0];
-      }
-      if (!bestMatch && postColonTitle) {
-        console.log(
-          `TMDB: no director match for "${title}", retrying with post-colon title "${postColonTitle}"`
-        );
-        return retryAndCache(postColonTitle);
-      }
-      if (!bestMatch) {
-        console.warn(
-          `TMDB: no director match for "${title}" (director: "${director}") — skipping`
-        );
-        return null;
-      }
-    } else {
-      bestMatch = await pickWithoutDirector(
-        candidates,
-        searchTitle,
-        originalTitle,
-        year
+    if (!bestMatch) {
+      // The director name may differ between source and TMDB (diacritics,
+      // romanization) — validate the title-search candidates by their credits.
+      const found = await findByDirectorInResults(
+        candidates.map((c) => c.movie),
+        targets,
+        10
       );
-      if (!bestMatch) {
-        if (postColonTitle) {
-          console.log(
-            `TMDB: low score for "${title}", retrying with post-colon title "${postColonTitle}"`
-          );
-          return retryAndCache(postColonTitle);
-        }
-        const top = candidates[0];
-        if (top && top.score < 50) {
-          console.warn(
-            `TMDB: no match for "${title}" (top score ${top.score}) — skipping`
-          );
-        } else {
-          console.warn(
-            `TMDB: ambiguous title "${title}" — no confident match — skipping`
-          );
-        }
-        return null;
-      }
+      if (found) ({ movie: bestMatch, fetched: fetchedDetails } = found);
+    }
+    if (!bestMatch && originalTitle) {
+      // Retry the search under the original title (e.g. non-English films).
+      const orig = await tmdbGet('search/movie', {
+        query: cleanTitle(originalTitle),
+      });
+      const found = await findByDirectorInResults(orig?.results || [], targets, 5);
+      if (found) ({ movie: bestMatch, fetched: fetchedDetails } = found);
+    }
+    if (!bestMatch && year) {
+      // Director never matched — fall back to a year-constrained title search.
+      const byYear = await tmdbGet('search/movie', {
+        query: searchTitle,
+        year,
+      });
+      if (byYear?.results?.length) bestMatch = byYear.results[0];
+    }
+    if (!bestMatch && postColonTitle) {
+      console.log(
+        `TMDB: no director match for "${title}", retrying with post-colon title "${postColonTitle}"`
+      );
+      return retryAndCache(postColonTitle);
+    }
+    if (!bestMatch) {
+      console.warn(
+        `TMDB: no director match for "${title}" (director: "${director}") — skipping`
+      );
+      return null;
     }
 
     const fetched = fetchedDetails || (await fetchDetails(bestMatch.id));
