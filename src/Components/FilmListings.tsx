@@ -74,13 +74,7 @@ interface FilmListingsProps {
 const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const router = useRouter();
   const q = router.query;
-  const {
-    watchlist,
-    isInWatchlist,
-    toggleWatchlist,
-    removeFromWatchlist,
-    clearWatchlist,
-  } = useWatchlist();
+  const { watchlist, removeFromWatchlist, clearWatchlist } = useWatchlist();
 
   // URL-synced filters — memoized to keep stable references for useMemo deps
   const cinemaRaw = str(q.cinema);
@@ -613,8 +607,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
               film={film}
               dayFilter={dayFilter}
               today={today}
-              isInWatchlist={isInWatchlist(film.slug)}
-              onToggleWatchlist={() => toggleWatchlist(film.slug)}
             />
           ))
         ) : (

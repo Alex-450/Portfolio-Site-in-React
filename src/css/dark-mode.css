@@ -22,7 +22,7 @@
     background-color: var(--hover-bg);
   }
 
-  .blog-container {
+  .app-shell {
     background-color: var(--dark-bg-primary);
     color: var(--dark-text-primary);
   }

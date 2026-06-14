@@ -50,7 +50,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
-      <div className="d-flex flex-column min-vh-100 blog-container">
+      <div className="d-flex flex-column min-vh-100 app-shell">
         <NavBar />
         <main id="main-content">
           <Component {...pageProps} />

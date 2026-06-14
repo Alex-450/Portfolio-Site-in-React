@@ -240,8 +240,13 @@ button.footer-link {
   opacity: 1;
 }
 
-.blog-container {
+.app-shell {
   background-color: var(--bg-secondary);
+  /* Clip any horizontal overflow from children (e.g. the poster carousel /
+     showtime rows) so a too-wide child can't scroll the whole document right
+     and expose the white page background beside the dark wrapper. */
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .blog-pills {
@@ -1625,17 +1630,13 @@ code {
 
   .film-card .film-poster,
   .film-card .film-poster-placeholder {
-    width: 56px;
+    width: 80px;
   }
 
-  /* The "New" badge is oversized for a 56px thumbnail; use the inline tag
-     next to the title instead. */
+  /* No "New" indicator on mobile: hide both the poster badge and the inline
+     title tag. */
   .film-card .film-new-badge {
     display: none;
-  }
-
-  .film-new-tag {
-    display: inline-block;
   }
 
   /* Showtimes span the full card width below the thumbnail. */
