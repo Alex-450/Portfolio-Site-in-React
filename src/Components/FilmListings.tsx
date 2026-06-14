@@ -218,7 +218,8 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     watchlistFilter;
 
   // Count of filters tucked behind the collapsible "Filters" panel.
-  // Film search and Tonight stay at the top level, so they're excluded here.
+  // Film search stays at the top level, so it's excluded here. Tonight is
+  // composed of the day + time filters, which are already counted below.
   const advancedFilterCount =
     cinemaFilter.length +
     dayFilter.length +
@@ -369,14 +370,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
         )}
 
         <div className="film-filters film-filters-primary">
-          {hasEveningShowtimesToday && (
-            <button
-              className={`filter-select${isTonightActive ? ' filter-toggle-active' : ''}`}
-              onClick={toggleTonight}
-            >
-              Tonight
-            </button>
-          )}
           {viewMode === 'list' && (
             <FilmSearchFilter
               films={allFilms}
@@ -409,6 +402,14 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
 
         {filtersOpen && (
           <div id="advanced-filters" className="film-filters film-filters-panel">
+            {hasEveningShowtimesToday && (
+              <button
+                className={`filter-select${isTonightActive ? ' filter-toggle-active' : ''}`}
+                onClick={toggleTonight}
+              >
+                Tonight
+              </button>
+            )}
             <CinemaFilter
               selectedCinemas={cinemaFilter}
               onChange={(v) => setFilter('cinema', v)}
