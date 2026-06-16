@@ -6,7 +6,7 @@ on:
       - master
   schedule:
     # Run daily at 6 AM UTC (7 AM CET / 8 AM CEST)
-    - cron: '0 6 * * *'
+    - cron: '10 3,15 * * *'
   workflow_dispatch: # Allow manual triggers
 
 permissions:
