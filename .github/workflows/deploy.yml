@@ -26,7 +26,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -38,7 +38,7 @@ jobs:
         run: npm ci
 
       - name: Restore TMDB cache
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: src/data/tmdb-cache.json
           key: tmdb-cache-${{ hashFiles('src/data/tmdb-cache.json') }}
@@ -46,7 +46,7 @@ jobs:
             tmdb-cache-
 
       - name: Restore Eye cache
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: src/data/eye-cache.json
           key: eye-cache-${{ hashFiles('src/data/eye-cache.json') }}
@@ -54,7 +54,7 @@ jobs:
             eye-cache-
 
       - name: Restore Rialto cache
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: src/data/rialto-cache.json
           key: rialto-cache-${{ hashFiles('src/data/rialto-cache.json') }}
@@ -67,7 +67,7 @@ jobs:
       # collision that occurs when the scripts hash hasn't changed between runs.
       - name: Restore films.json cache
         id: cache-films
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: src/data/films.json
           key: films-json-${{ hashFiles('scripts/**') }}
@@ -88,28 +88,28 @@ jobs:
 
       - name: Save TMDB cache
         if: ${{ steps.fetch-showtimes.outcome == 'success' }}
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: src/data/tmdb-cache.json
           key: tmdb-cache-${{ github.run_id }}
 
       - name: Save Eye cache
         if: ${{ steps.fetch-showtimes.outcome == 'success' }}
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: src/data/eye-cache.json
           key: eye-cache-${{ github.run_id }}
 
       - name: Save Rialto cache
         if: ${{ steps.fetch-showtimes.outcome == 'success' }}
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: src/data/rialto-cache.json
           key: rialto-cache-${{ github.run_id }}
 
       - name: Save films.json cache
         if: ${{ steps.fetch-showtimes.outcome == 'success' }}
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: src/data/films.json
           # Append run_id so each run gets a unique save key — GitHub Actions doesn't
@@ -129,7 +129,7 @@ jobs:
             --label "scraper-failure"
 
       - name: Cache Next.js
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ${{ github.workspace }}/.next/cache
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
