@@ -1,66 +1,38 @@
-import { readFileSync, writeFileSync, existsSync } from 'fs';
 import {
   fetchWithRetry,
   decodeAndTrim,
   parseFilmLength,
   finalizeFilms,
   normalizeSubtitles,
+  toDateStamp,
 } from './utils.mjs';
 
-// Per-film metadata (director/year/runtime/poster) lives only in the SSR film
-// page HTML — there's no JSON feed for it. Cache by film_id on disk so each page
-// is fetched once across builds (same approach as the Eye scraper).
-const RIALTO_CACHE_PATH = 'src/data/rialto-cache.json';
-let rialtoCache = existsSync(RIALTO_CACHE_PATH)
-  ? JSON.parse(readFileSync(RIALTO_CACHE_PATH, 'utf-8'))
-  : {};
-const saveRialtoCache = () =>
-  writeFileSync(RIALTO_CACHE_PATH, JSON.stringify(rialtoCache, null, 2));
+// Each venue has its own subdomain and a POST-based JSON API that backs the
+// agenda page. Everything we need is inline (poster, runtime, genres, showtimes),
+// so there's no per-film detail page to scrape.
+//
+// Endpoint (internal, undocumented — powers the site's own JS):
+//   POST {apiBase}/nl/api/events/programs
+//   body: { filters: { startAt }, pagination: { page, pageSize }, sortings: [] }
+// Each response entry is a single screening: film metadata plus one `program`
+// (start time, screen, ticket link, cancel flag). We page through and group the
+// screenings back into films ourselves.
+//
+// If Rialto starts blocking the CI runner IP, route these through the Cloudflare
+// worker by adding `rialto-de-pijp`/`rialto-silo` targets there and switching to
+// `${CF_SCRAPER_URL}?target=...` (see kriterion.mjs / rss-feeds.mjs).
+const VENUES = [
+  { name: 'Rialto De Pijp', apiBase: 'https://depijp.rialtofilm.nl/prod' },
+  // Rialto VU is a separate venue served from griffioen.vu.nl (see griffioen.mjs).
+  { name: 'Rialto Silo', apiBase: 'https://silo.rialtofilm.nl/prod' },
+];
 
-// Fetch a film's detail page and parse its <dl> metadata + poster. The page is
-// server-rendered, so the fields are in the raw HTML.
-async function fetchFilmMetadata(filmId, filmUrl) {
-  if (filmId != null && rialtoCache[filmId]) return rialtoCache[filmId];
-  if (!filmUrl) return { director: null, year: null, runtime: null };
-
-  try {
-    const res = await fetchWithRetry(filmUrl, {
-      headers: {
-        'User-Agent':
-          'Mozilla/5.0 (compatible; FilmListingsFetcher/1.0)',
-        Accept: 'text/html,application/xhtml+xml',
-      },
-    });
-    const html = await res.text();
-
-    const pairs = {};
-    for (const [, label, value] of html.matchAll(
-      /<dt[^>]*>([^<]+)<\/dt>\s*<dd[^>]*>([\s\S]*?)<\/dd>/g
-    )) {
-      pairs[label.trim()] = decodeAndTrim(value.replace(/<[^>]+>/g, ' '));
-    }
-    const poster = html.match(/og:image"\s+content="([^"]+)"/)?.[1] ?? '';
-
-    const result = {
-      director: pairs['Regisseur'] || null,
-      year: pairs['Jaartal'] ? parseInt(pairs['Jaartal'], 10) : null,
-      runtime: pairs['Duur'] ? parseFilmLength(pairs['Duur']) : null,
-      posterUrl: poster,
-    };
-    if (filmId != null) {
-      rialtoCache[filmId] = result;
-      saveRialtoCache();
-    }
-    return result;
-  } catch {
-    return { director: null, year: null, runtime: null, posterUrl: '' };
-  }
-}
+const PAGE_SIZE = 100;
 
 // Rialto appends a screening label after a dash on the title: subtitles
-// ("Blue Heron - eng subs"), previews ("Yellow Letters - Cineville Preview"),
-// or a retrospective series ("Dead Man - Jim Jarmusch Revisited"). None of these
-// are part of the film's real title. Since the feed has no structured field for
+// ("Gohan - eng subs"), previews ("Woman and Child - Cineville Preview"), or a
+// retrospective series ("Dead Man - Jim Jarmusch Revisited"). None of these are
+// part of the film's real title. Since the feed has no structured field for
 // them, treat any trailing " - <suffix>" as a label: strip it, and if it's a
 // subtitle hint, surface that as the subtitles code. Returns { title, subtitles }.
 const SUBTITLE_SUFFIX = /^(eng?|nl|dutch|english)\s*subs?$/i;
@@ -75,78 +47,81 @@ function parseTitle(rawTitle) {
   return { title: base.trim(), subtitles };
 }
 
-// Rialto's two venues share one JSON program feed, keyed by "building" id.
-// The feed returns ~28 days of programming: an array of days, each with a
-// `programs` array of individual screenings.
-// Endpoint shape comes from the site's bundle: /feed/{lang}/program/{building}/28
-//
-// This is an internal (undocumented) endpoint that powers the site's own JS,
-// not a public API. We fetch it directly for now (like Eye) since it has no bot
-// protection today. If Rialto starts blocking the CI runner IP, route it through
-// the Cloudflare worker by adding `rialto-de-pijp`/`rialto-vu` targets there and
-// switching to `${CF_SCRAPER_URL}?target=...` (see kriterion.mjs / rss-feeds.mjs).
-const VENUES = [
-  { building: 1, name: 'Rialto De Pijp' },
-  { building: 7, name: 'Rialto VU' },
-];
-
-const feedUrl = (building) =>
-  `https://rialtofilm.nl/feed/nl/program/${building}/28`;
-
-async function fetchVenue({ building, name }) {
-  const response = await fetchWithRetry(feedUrl(building), {
-    headers: {
-      Accept: 'application/json',
-      'User-Agent': 'Mozilla/5.0 (compatible; FilmListingsFetcher/1.0)',
-    },
+// Fetch every page of the events/programs feed for a venue and return the flat
+// list of screening entries.
+async function fetchPrograms(apiBase) {
+  const url = `${apiBase}/nl/api/events/programs`;
+  const body = (page) => ({
+    filters: { startAt: `${toDateStamp()}T00:00:00.000Z`, searchTerm: '' },
+    pagination: { page, pageSize: PAGE_SIZE },
+    sortings: [],
   });
-  const days = await response.json();
+  const post = (page) =>
+    fetchWithRetry(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'User-Agent': 'Mozilla/5.0 (compatible; FilmListingsFetcher/1.0)',
+      },
+      body: JSON.stringify(body(page)),
+    });
+
+  const first = await (await post(1)).json();
+  const entries = [...(first.events ?? [])];
+  const pages = first.pagination?.pages ?? 1;
+  for (let page = 2; page <= pages; page++) {
+    const next = await (await post(page)).json();
+    entries.push(...(next.events ?? []));
+  }
+  return entries;
+}
+
+async function fetchVenue({ name, apiBase }) {
+  const entries = await fetchPrograms(apiBase);
 
   const filmMap = new Map();
-  for (const day of days) {
-    for (const show of day.programs ?? []) {
-      const { title, subtitles } = parseTitle(decodeAndTrim(show.title));
+  for (const entry of entries) {
+    const program = entry.program;
+    if (!program || program.isCanceled) continue;
+    // "verwacht" (expected) placeholder screenings have no real time and come
+    // through as midnight; skip them so we only list bookable showtimes.
+    const startAt = program.startAt || entry.startAt;
+    if (!startAt) continue;
+    const [date, timePart] = startAt.split('T');
+    const time = timePart?.slice(0, 5);
+    if (!date || !time || time === '00:00') continue;
 
-      // Group screenings of the same film. film_id is stable; fall back to
-      // title. Separate the subtitle variant so an "eng subs" screening is its
-      // own group (and renders its own subtitles badge) but still shares the
-      // clean title with the plain version for cross-cinema grouping.
-      const key = `${show.film_id ?? title}-${subtitles ?? ''}`;
-      if (!filmMap.has(key)) {
-        filmMap.set(key, {
-          title,
-          director: null,
-          runtime: null,
-          posterUrl: '',
-          subtitles,
-          showtimes: [],
-          _filmId: show.film_id ?? null,
-          _filmUrl: show.film_url ?? null,
-        });
-      }
+    const { title, subtitles } = parseTitle(decodeAndTrim(entry.title));
 
-      if (!show.date || !show.starts_at) continue;
-      filmMap.get(key).showtimes.push({
-        date: show.date, // already YYYY-MM-DD
-        time: show.starts_at, // HH:MM
-        ticketUrl: show.selected_time_url || show.film_url,
-        screen: '',
+    // Group screenings of the same film. The event `id` is stable; fall back to
+    // title. Separate the subtitle variant so an "eng subs" screening is its own
+    // group (and renders its own subtitles badge) but still shares the clean
+    // title with the plain version for cross-cinema grouping.
+    const key = `${entry.id ?? title}-${subtitles ?? ''}`;
+    if (!filmMap.has(key)) {
+      const fields = entry.fields ?? {};
+      filmMap.set(key, {
+        title,
+        director: null, // Not exposed by the new API; TMDB fills this in later.
+        year: fields.releaseDate
+          ? new Date(fields.releaseDate).getFullYear()
+          : null,
+        runtime: parseFilmLength(fields.duration),
+        // Prefer Rialto's poster only as a fallback; TMDB art usually wins later.
+        posterUrl: entry.image1?.url || '',
+        subtitles,
+        showtimes: [],
       });
     }
-  }
 
-  // Enrich each film with director/year/runtime/poster from its SSR detail page
-  // (cached on disk by film_id, so only new films are fetched each build).
-  await Promise.all(
-    [...filmMap.values()].map(async (film) => {
-      const meta = await fetchFilmMetadata(film._filmId, film._filmUrl);
-      film.director = meta.director;
-      film.year = meta.year;
-      film.runtime = meta.runtime;
-      // Prefer Rialto's poster only as a fallback; TMDB art usually wins later.
-      film.posterUrl = meta.posterUrl || '';
-    })
-  );
+    filmMap.get(key).showtimes.push({
+      date, // YYYY-MM-DD
+      time, // HH:MM
+      ticketUrl: program.button?.link || entry.url || '',
+      screen: program.location?.name || '',
+    });
+  }
 
   return finalizeFilms(filmMap, name);
 }
@@ -155,7 +130,13 @@ async function fetchVenue({ building, name }) {
 // can treat each venue as its own cinema.
 async function fetchRialto() {
   console.log('Fetching Rialto...');
-  return Promise.all(VENUES.map(fetchVenue));
+  // Fetch venues independently so one being offline doesn't take down the other.
+  const results = await Promise.allSettled(VENUES.map(fetchVenue));
+  return results.map((result, i) => {
+    if (result.status === 'fulfilled') return result.value;
+    console.error(`  ${VENUES[i].name} failed: ${result.reason?.message}`);
+    return { name: VENUES[i].name, films: [] };
+  });
 }
 
 export { fetchRialto };

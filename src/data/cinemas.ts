@@ -67,14 +67,21 @@ export const cinemas: Record<string, Cinema> = {
     name: 'Rialto De Pijp',
     slug: 'rialto-de-pijp',
     address: 'Ceintuurbaan 338, 1072 GN Amsterdam',
-    websiteUrl: 'https://rialtofilm.nl',
+    websiteUrl: 'https://depijp.rialtofilm.nl',
+    adsMinutes: 20,
+  },
+  'Rialto Silo': {
+    name: 'Rialto Silo',
+    slug: 'rialto-silo',
+    address: 'Faas Wilkesstraat 102, 1095 MD Amsterdam',
+    websiteUrl: 'https://silo.rialtofilm.nl',
     adsMinutes: 20,
   },
   'Rialto VU': {
     name: 'Rialto VU',
     slug: 'rialto-vu',
     address: 'De Boelelaan 1111, 1081 HV Amsterdam',
-    websiteUrl: 'https://rialtofilm.nl',
+    websiteUrl: 'https://griffioen.vu.nl',
     adsMinutes: 20,
   },
 };
@@ -84,7 +91,9 @@ export function getCinema(name: string): Cinema | undefined {
 }
 
 export function getCinemaSlug(cinemaKey: string): string {
-  return cinemas[cinemaKey]?.slug ?? cinemaKey.toLowerCase().replace(/\s+/g, '-');
+  return (
+    cinemas[cinemaKey]?.slug ?? cinemaKey.toLowerCase().replace(/\s+/g, '-')
+  );
 }
 
 export function getCinemaBySlug(

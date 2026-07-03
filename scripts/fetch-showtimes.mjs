@@ -5,6 +5,7 @@ import { fetchFcHyena } from './scrapers/fc-hyena.mjs';
 import { fetchEye } from './scrapers/eye.mjs';
 import { fetchKriterion } from './scrapers/kriterion.mjs';
 import { fetchRialto } from './scrapers/rialto.mjs';
+import { fetchGriffioen } from './scrapers/griffioen.mjs';
 import { toDateStamp } from './scrapers/utils.mjs';
 import {
   searchTmdbMovieDetails,
@@ -41,14 +42,21 @@ async function mapWithConcurrency(items, fn, concurrency = 10) {
 // Returns { cinemas, failedCinemaNames }
 async function fetchAllCinemas() {
   // Fetch all sources in parallel
-  const [rssResult, fcHyenaResult, eyeResult, kriterionResult, rialtoResult] =
-    await Promise.allSettled([
-      fetchAllRssFeeds(),
-      fetchFcHyena(),
-      fetchEye(),
-      fetchKriterion(),
-      fetchRialto(),
-    ]);
+  const [
+    rssResult,
+    fcHyenaResult,
+    eyeResult,
+    kriterionResult,
+    rialtoResult,
+    griffioenResult,
+  ] = await Promise.allSettled([
+    fetchAllRssFeeds(),
+    fetchFcHyena(),
+    fetchEye(),
+    fetchKriterion(),
+    fetchRialto(),
+    fetchGriffioen(),
+  ]);
 
   const cinemas = [];
   const failedCinemaNames = [];
@@ -67,6 +75,7 @@ async function fetchAllCinemas() {
     { name: 'FC Hyena', result: fcHyenaResult },
     { name: 'Eye Filmmuseum', result: eyeResult },
     { name: 'Kriterion', result: kriterionResult },
+    { name: 'Rialto VU', result: griffioenResult },
   ];
 
   for (const { name, result } of namedResults) {
@@ -80,7 +89,8 @@ async function fetchAllCinemas() {
   }
 
   // Rialto returns multiple venues (one { name, films } per location).
-  const RIALTO_VENUE_NAMES = ['Rialto De Pijp', 'Rialto VU'];
+  // (Rialto VU has its own source — see fetchGriffioen above.)
+  const RIALTO_VENUE_NAMES = ['Rialto De Pijp', 'Rialto Silo'];
   if (rialtoResult.status === 'fulfilled') {
     for (const venue of rialtoResult.value) {
       if (venue.films.length > 0) cinemas.push(venue);

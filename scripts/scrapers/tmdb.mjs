@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { cleanTitle } from '../../src/utils/filmTitle.mjs';
 import { fetchWithRetry } from './utils.mjs';
-import { fetchWikidataIds } from './wikidata.mjs'
+import { fetchWikidataIds } from './wikidata.mjs';
 
 // Read from the environment (set via .env locally, CI secrets in Actions).
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
@@ -117,7 +117,6 @@ function buildResult(movie, fetched) {
     letterboxdId: fetched.letterboxdId || null,
   };
 }
-
 
 async function fetchDetails(movieId) {
   const data = await tmdbGet(`movie/${movieId}`, {
@@ -240,15 +239,53 @@ async function findByDirectorInResults(movies, targets, limit) {
   return null;
 }
 
+// Directorless fallback: some sources don't expose a structured director, so we
+// can't validate matches by credits. Match strictly instead — an exact
+// cleaned-title match plus a release year within
+// ±1 of the source year — which is safe enough to enrich without risking the wrong
+// film. The ±1 tolerance absorbs the usual skew between a cinema's local release
+// year and TMDB's premiere year. Anything less certain returns null.
+async function searchTmdbByTitleYear(title, year) {
+  const searchTitle = cleanTitle(title);
+  const cacheKey = `${searchTitle}||${year}`; // empty director slot
+  if (cache[cacheKey]) return cache[cacheKey];
+  console.log(`TMDB cache miss (title+year): "${cacheKey}"`);
+
+  // Search by title only (no year param) so the ±1 filtering below can see
+  // candidates a year either side of the source year.
+  const search = await tmdbGet('search/movie', { query: searchTitle });
+  const exact = (search?.results || []).find((m) => {
+    const titleMatch =
+      cleanTitle(m.title || '') === searchTitle ||
+      cleanTitle(m.original_title || '') === searchTitle;
+    const movieYear = parseInt(m.release_date?.slice(0, 4), 10);
+    return titleMatch && Math.abs(movieYear - year) <= 1;
+  });
+  if (!exact) {
+    console.warn(
+      `TMDB: no exact title+year match for "${title}" (${year}) — skipping`
+    );
+    return null;
+  }
+
+  const result = buildResult(exact, await fetchDetails(exact.id));
+  cache[cacheKey] = result;
+  saveCache();
+  return result;
+}
+
 export async function searchTmdbMovieDetails(
   title,
   { director = null, year = null, originalTitle = null } = {}
 ) {
   if (!TMDB_API_KEY) return null;
   if (!title) return null;
-  // Without a director we can't validate a match, and title-only matching is too
-  // unreliable — skip enrichment entirely rather than risk attaching a wrong film.
-  if (!director) return null;
+  // Without a director we can't validate a match by credits. Fall back to a
+  // strict title+year match if we have a year; otherwise skip rather than risk
+  // attaching a wrong film on title alone.
+  if (!director) {
+    return year ? searchTmdbByTitleYear(title, year) : null;
+  }
 
   const cacheKey = `${cleanTitle(title)}|${director?.toLowerCase() || ''}|${year || ''}`;
   if (cache[cacheKey]) return cache[cacheKey];
@@ -332,7 +369,11 @@ export async function searchTmdbMovieDetails(
       const orig = await tmdbGet('search/movie', {
         query: cleanTitle(originalTitle),
       });
-      const found = await findByDirectorInResults(orig?.results || [], targets, 5);
+      const found = await findByDirectorInResults(
+        orig?.results || [],
+        targets,
+        5
+      );
       if (found) ({ movie: bestMatch, fetched: fetchedDetails } = found);
     }
     if (!bestMatch && year) {
