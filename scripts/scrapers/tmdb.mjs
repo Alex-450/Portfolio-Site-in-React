@@ -167,6 +167,17 @@ function stripProgrammePrefix(searchTitle) {
   return m ? m[1].trim() : null;
 }
 
+// Some cinemas append a series/programme label after a spaced dash
+// ("y tu mama tambien - hot town, summer in the city"). We can't tell a series
+// label from a real subtitle by text alone, so callers try the full title first
+// and fall back to this suffix-stripped form; the director/credit validation
+// downstream ensures a stripped retry can't attach the wrong film. Returns the
+// part before the last spaced dash, or null if there's no dash.
+function stripProgrammeSuffix(searchTitle) {
+  const m = searchTitle.match(/^(.+?)\s[-–—]\s.+$/);
+  return m ? m[1].trim() : null;
+}
+
 const titlesOverlap = (a, b) => a === b || a.includes(b) || b.includes(a);
 
 // Score a search result against the wanted title(s). Exact full-title match wins;
@@ -331,6 +342,10 @@ export async function searchTmdbMovieDetails(
   try {
     const searchTitle = cleanTitle(title);
     const postColonTitle = stripProgrammePrefix(searchTitle);
+    // A trailing series/programme label ("... - hot town, summer in the city")
+    // that we couldn't safely strip at scrape time — retried below if the full
+    // title finds no credit-validated match.
+    const suffixTitle = stripProgrammeSuffix(searchTitle);
 
     const search = await tmdbGet('search/movie', { query: searchTitle });
     if (!search) {
@@ -339,10 +354,18 @@ export async function searchTmdbMovieDetails(
     }
     const results = search.results || [];
 
-    // No results: retry with the stripped programme title if we have one.
-    // With no stripped title but a director, fall through — the filmography
-    // lookup can still find the film (e.g. a Dutch title TMDB lists in English).
+    // No results: retry with a stripped programme title if we have one. Prefer
+    // stripping a trailing label (real title is usually BEFORE a spaced dash,
+    // e.g. "Y tu mamá también - Hot Town...") over a colon prefix. With no
+    // stripped title but a director, fall through — the filmography lookup can
+    // still find the film (e.g. a Dutch title TMDB lists in English).
     if (!results.length) {
+      if (suffixTitle && suffixTitle !== searchTitle) {
+        console.log(
+          `TMDB: no results for "${title}", retrying with suffix stripped "${suffixTitle}"`
+        );
+        return retryAndCache(suffixTitle);
+      }
       if (postColonTitle) {
         console.log(
           `TMDB: no results for "${title}", retrying with post-colon title "${postColonTitle}"`
@@ -403,6 +426,12 @@ export async function searchTmdbMovieDetails(
         `TMDB: no director match for "${title}", retrying with post-colon title "${postColonTitle}"`
       );
       return retryAndCache(postColonTitle);
+    }
+    if (!bestMatch && suffixTitle && suffixTitle !== searchTitle) {
+      console.log(
+        `TMDB: no director match for "${title}", retrying with suffix stripped "${suffixTitle}"`
+      );
+      return retryAndCache(suffixTitle);
     }
     if (!bestMatch) {
       console.warn(

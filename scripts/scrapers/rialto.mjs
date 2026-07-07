@@ -29,12 +29,15 @@ const VENUES = [
 
 const PAGE_SIZE = 100;
 
-// Rialto appends a screening label after a dash on the title: subtitles
-// ("Gohan - eng subs"), previews ("Woman and Child - Cineville Preview"), or a
-// retrospective series ("Dead Man - Jim Jarmusch Revisited"). None of these are
-// part of the film's real title. Since the feed has no structured field for
-// them, treat any trailing " - <suffix>" as a label: strip it, and if it's a
-// subtitle hint, surface that as the subtitles code. Returns { title, subtitles }.
+// Rialto appends things after a dash on the title. Some are screening labels
+// that aren't part of the film ("Gohan - eng subs", "Dead Man - Jim Jarmusch
+// Revisited", "... - Hot Town, Summer in the City"); others are the film's real
+// subtitle ("Rally - van Parijs naar de Piramides"). No text rule reliably tells
+// a series label from a genuine subtitle, so we DON'T strip the general suffix
+// here — we keep the full title (correct for display, grouping, and slugs) and
+// let the TMDB matcher retry with the suffix removed (see tmdb.mjs). The one
+// exception is the subtitle-language hint, which is a tight, safe pattern and
+// also carries the `subtitles` code, so we still split that off.
 const SUBTITLE_SUFFIX = /^(eng?|nl|dutch|english)\s*subs?$/i;
 
 // Some Rialto entries append the film's original year in brackets ("Vertigo
@@ -57,16 +60,17 @@ function extractYear(title) {
 
 function parseTitle(rawTitle) {
   const match = rawTitle.match(/^(.+?)\s+[-–—]\s+(.+)$/);
-  if (!match) {
-    const { title, year } = extractYear(rawTitle);
-    return { title, subtitles: null, year };
+  // Only split off a subtitle-language hint; every other suffix is kept as part
+  // of the title (the TMDB matcher strips it as a fallback if needed).
+  if (match && SUBTITLE_SUFFIX.test(match[2].trim())) {
+    const subtitles = normalizeSubtitles(
+      match[2].trim().replace(/\s*subs?$/i, '')
+    );
+    const { title, year } = extractYear(match[1]);
+    return { title, subtitles, year };
   }
-  const [, base, suffix] = match;
-  const subtitles = SUBTITLE_SUFFIX.test(suffix.trim())
-    ? normalizeSubtitles(suffix.trim().replace(/\s*subs?$/i, ''))
-    : null;
-  const { title, year } = extractYear(base);
-  return { title, subtitles, year };
+  const { title, year } = extractYear(rawTitle);
+  return { title, subtitles: null, year };
 }
 
 // Rialto's `cast` field is inconsistent: for new releases it lists the actual
@@ -145,14 +149,11 @@ async function fetchVenue({ name, apiBase }) {
         // A lone name in `cast` is really the director for repertory titles;
         // otherwise leave null and let TMDB fill it in later.
         director: directorFromCast(fields.cast),
-        // A "(YYYY)" in the title is the film's original year and takes
-        // precedence: Rialto's releaseDate field is the re-release date for
-        // repertory titles, which would send TMDB to the wrong (or no) film.
-        year:
-          titleYear ??
-          (fields.releaseDate
-            ? new Date(fields.releaseDate).getFullYear()
-            : null),
+        // Only trust a "(YYYY)" explicitly in the title. Rialto's `releaseDate`
+        // field is the screening / re-release date, not the film's production
+        // year — passing it to TMDB caused false matches (e.g. a generic title
+        // colliding with an unrelated same-year film), so we never use it.
+        year: titleYear,
         runtime: parseFilmLength(fields.duration),
         // Prefer Rialto's poster only as a fallback; TMDB art usually wins later.
         posterUrl: entry.image1?.url || '',
