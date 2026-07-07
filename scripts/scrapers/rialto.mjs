@@ -37,21 +37,51 @@ const PAGE_SIZE = 100;
 // subtitle hint, surface that as the subtitles code. Returns { title, subtitles }.
 const SUBTITLE_SUFFIX = /^(eng?|nl|dutch|english)\s*subs?$/i;
 
-// Some Rialto entries append the release year in brackets ("Vertigo (1958)")
-// to disambiguate re-releases. That's not part of the film's real title, so
-// strip a trailing "(YYYY)" for 19xx/20xx years.
-const YEAR_SUFFIX = /\s*\((?:19|20)\d{2}\)\s*$/;
+// Some Rialto entries append the film's original year in brackets ("Vertigo
+// (1958)") to disambiguate re-releases. That year is not part of the real title,
+// but it IS the authoritative year for the film — Rialto's own `releaseDate`
+// field holds the *re-release* year, which sends TMDB looking for a film that
+// doesn't exist. So strip a trailing "(YYYY)" (19xx/20xx) from the title and
+// surface the captured year separately.
+const YEAR_SUFFIX = /\s*\(((?:19|20)\d{2})\)\s*$/;
+
+// Strip a trailing "(YYYY)" from a title, returning { title, year } where year
+// is a number or null.
+function extractYear(title) {
+  const match = title.match(YEAR_SUFFIX);
+  return {
+    title: title.replace(YEAR_SUFFIX, '').trim(),
+    year: match ? Number(match[1]) : null,
+  };
+}
 
 function parseTitle(rawTitle) {
   const match = rawTitle.match(/^(.+?)\s+[-–—]\s+(.+)$/);
   if (!match) {
-    return { title: rawTitle.replace(YEAR_SUFFIX, '').trim(), subtitles: null };
+    const { title, year } = extractYear(rawTitle);
+    return { title, subtitles: null, year };
   }
   const [, base, suffix] = match;
   const subtitles = SUBTITLE_SUFFIX.test(suffix.trim())
     ? normalizeSubtitles(suffix.trim().replace(/\s*subs?$/i, ''))
     : null;
-  return { title: base.replace(YEAR_SUFFIX, '').trim(), subtitles };
+  const { title, year } = extractYear(base);
+  return { title, subtitles, year };
+}
+
+// Rialto's `cast` field is inconsistent: for new releases it lists the actual
+// cast (several comma-separated names), but for repertory/classic re-releases
+// it holds a single name — the director. When it's a lone name, treat it as the
+// director. That gives TMDB a credit-validated match (far safer than title-only)
+// for old films whose Rialto releaseDate is just the re-release date. A wrong
+// guess simply fails TMDB's credit check and is skipped — no bad data attaches.
+function directorFromCast(cast) {
+  if (!cast) return null;
+  const names = cast
+    .split(',')
+    .map((n) => n.trim())
+    .filter(Boolean);
+  return names.length === 1 ? names[0] : null;
 }
 
 // Fetch every page of the events/programs feed for a venue and return the flat
@@ -99,7 +129,9 @@ async function fetchVenue({ name, apiBase }) {
     const time = timePart?.slice(0, 5);
     if (!date || !time || time === '00:00') continue;
 
-    const { title, subtitles } = parseTitle(decodeAndTrim(entry.title));
+    const { title, subtitles, year: titleYear } = parseTitle(
+      decodeAndTrim(entry.title)
+    );
 
     // Group screenings of the same film. The event `id` is stable; fall back to
     // title. Separate the subtitle variant so an "eng subs" screening is its own
@@ -110,10 +142,17 @@ async function fetchVenue({ name, apiBase }) {
       const fields = entry.fields ?? {};
       filmMap.set(key, {
         title,
-        director: null, // Not exposed by the new API; TMDB fills this in later.
-        year: fields.releaseDate
-          ? new Date(fields.releaseDate).getFullYear()
-          : null,
+        // A lone name in `cast` is really the director for repertory titles;
+        // otherwise leave null and let TMDB fill it in later.
+        director: directorFromCast(fields.cast),
+        // A "(YYYY)" in the title is the film's original year and takes
+        // precedence: Rialto's releaseDate field is the re-release date for
+        // repertory titles, which would send TMDB to the wrong (or no) film.
+        year:
+          titleYear ??
+          (fields.releaseDate
+            ? new Date(fields.releaseDate).getFullYear()
+            : null),
         runtime: parseFilmLength(fields.duration),
         // Prefer Rialto's poster only as a fallback; TMDB art usually wins later.
         posterUrl: entry.image1?.url || '',

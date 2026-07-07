@@ -254,13 +254,27 @@ async function searchTmdbByTitleYear(title, year) {
   // Search by title only (no year param) so the ±1 filtering below can see
   // candidates a year either side of the source year.
   const search = await tmdbGet('search/movie', { query: searchTitle });
-  const exact = (search?.results || []).find((m) => {
-    const titleMatch =
+  const titleMatches = (search?.results || []).filter(
+    (m) =>
       cleanTitle(m.title || '') === searchTitle ||
-      cleanTitle(m.original_title || '') === searchTitle;
+      cleanTitle(m.original_title || '') === searchTitle
+  );
+
+  let exact = titleMatches.find((m) => {
     const movieYear = parseInt(m.release_date?.slice(0, 4), 10);
-    return titleMatch && Math.abs(movieYear - year) <= 1;
+    return Math.abs(movieYear - year) <= 1;
   });
+
+  // The source year can be unreliable (e.g. Rialto reports the re-release date
+  // for repertory titles). If the year match fails but exactly one film carries
+  // this exact title, there's no ambiguity — trust the title alone.
+  if (!exact && titleMatches.length === 1) {
+    exact = titleMatches[0];
+    console.log(
+      `TMDB: no year match for "${title}" (${year}), but unique title match "${exact.title}" (${exact.release_date?.slice(0, 4)}) — using it`
+    );
+  }
+
   if (!exact) {
     console.warn(
       `TMDB: no exact title+year match for "${title}" (${year}) — skipping`
