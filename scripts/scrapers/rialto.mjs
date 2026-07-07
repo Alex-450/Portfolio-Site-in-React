@@ -37,14 +37,21 @@ const PAGE_SIZE = 100;
 // subtitle hint, surface that as the subtitles code. Returns { title, subtitles }.
 const SUBTITLE_SUFFIX = /^(eng?|nl|dutch|english)\s*subs?$/i;
 
+// Some Rialto entries append the release year in brackets ("Vertigo (1958)")
+// to disambiguate re-releases. That's not part of the film's real title, so
+// strip a trailing "(YYYY)" for 19xx/20xx years.
+const YEAR_SUFFIX = /\s*\((?:19|20)\d{2}\)\s*$/;
+
 function parseTitle(rawTitle) {
   const match = rawTitle.match(/^(.+?)\s+[-–—]\s+(.+)$/);
-  if (!match) return { title: rawTitle, subtitles: null };
+  if (!match) {
+    return { title: rawTitle.replace(YEAR_SUFFIX, '').trim(), subtitles: null };
+  }
   const [, base, suffix] = match;
   const subtitles = SUBTITLE_SUFFIX.test(suffix.trim())
     ? normalizeSubtitles(suffix.trim().replace(/\s*subs?$/i, ''))
     : null;
-  return { title: base.trim(), subtitles };
+  return { title: base.replace(YEAR_SUFFIX, '').trim(), subtitles };
 }
 
 // Fetch every page of the events/programs feed for a venue and return the flat
