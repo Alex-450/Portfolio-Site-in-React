@@ -124,7 +124,6 @@ async function fetchCinecenter() {
   }
 
   const filmMap = new Map();
-  let totalScreenings = 0;
 
   for (const production of schedule.productions) {
     const title = stripLabelPrefix(decodeAndTrim(production.title));
@@ -132,7 +131,6 @@ async function fetchCinecenter() {
 
     for (const screening of production.screenings ?? []) {
       if (!screening.startAtUtc) continue;
-      totalScreenings++;
 
       // Separate subtitle variants into their own group so each renders its own
       // badge, matching how the other scrapers key films.
@@ -159,11 +157,7 @@ async function fetchCinecenter() {
     }
   }
 
-  return finalizeFilms(
-    filmMap,
-    'Cinecenter',
-    ` (${totalScreenings} total screenings)`
-  );
+  return finalizeFilms(filmMap, 'Cinecenter');
 }
 
 export { fetchCinecenter };
