@@ -335,6 +335,10 @@
     color: var(--dark-text-secondary);
   }
 
+  .upcoming-release-date {
+    color: var(--dark-text-primary);
+  }
+
   .top-films-bar {
     scrollbar-color: var(--hover-bg) var(--dark-bg-primary);
   }

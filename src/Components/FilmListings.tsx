@@ -8,6 +8,8 @@ import { FilmWithCinemasLite, FilmsIndexLite } from '../types';
 import FilmCard from './FilmCard';
 import PosterCarousel from './PosterCarousel';
 import TopFilmsBar from './TopFilmsBar';
+import ComingSoonBar from './ComingSoonBar';
+import FilmBarToggle, { FilmBarTab } from './FilmBarToggle';
 import ViewToggle from './ViewToggle';
 import GenreCarouselRow from './GenreCarouselRow';
 import CinemaFilter from './filters/CinemaFilter';
@@ -230,6 +232,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     (watchlistFilter ? 1 : 0);
 
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filmBarTab, setFilmBarTab] = useState<FilmBarTab>('this-week');
 
   // Films filtered by everything except day - used for computing day options
   const { dayOptions, hasShowtimesToday, hasEveningShowtimesToday } =
@@ -354,7 +357,26 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
           </h1>
         </header>
 
-        {!hasActiveFilters && <TopFilmsBar films={allFilms} today={today} />}
+        {!hasActiveFilters && (
+          <div className="film-bar-section">
+            <FilmBarToggle tab={filmBarTab} onChange={setFilmBarTab} />
+            {filmBarTab === 'this-week' ? (
+              <TopFilmsBar
+                films={allFilms}
+                today={today}
+                showLabel={false}
+                emptyMessage="No showings scheduled this week"
+              />
+            ) : (
+              <ComingSoonBar
+                films={allFilms}
+                today={today}
+                showLabel={false}
+                emptyMessage="No upcoming releases in the next month"
+              />
+            )}
+          </div>
+        )}
 
         <h2 className="film-listings-section-heading">All Films</h2>
 

@@ -1,4 +1,54 @@
-import { Showtime } from '../types';
+import { Showtime, FilmWithCinemasLite } from '../types';
+
+// Date `days` days after `from` (YYYY-MM-DD), as YYYY-MM-DD.
+export function addDays(from: string, days: number): string {
+  const d = new Date(from);
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
+// Earliest showtime date for a film (YYYY-MM-DD), or null if it has none.
+export function firstShowtimeDate(
+  film: FilmWithCinemasLite
+): string | null {
+  let earliest: string | null = null;
+  for (const cs of film.cinemaShowtimes) {
+    for (const s of cs.showtimes) {
+      if (earliest === null || s.date < earliest) earliest = s.date;
+    }
+  }
+  return earliest;
+}
+
+// Number of a film's showtimes falling within [start, end] inclusive.
+export function countShowtimesInRange(
+  film: FilmWithCinemasLite,
+  start: string,
+  end: string
+): number {
+  return film.cinemaShowtimes.reduce(
+    (total, cs) =>
+      total +
+      cs.showtimes.filter((s) => s.date >= start && s.date <= end).length,
+    0
+  );
+}
+
+// The "This Week" set: up to 10 films with the most showtimes over the next 7
+// days (today inclusive), ranked descending. Shared by TopFilmsBar (to render)
+// and ComingSoonBar (to exclude), so both agree on what "This Week" contains.
+export function topFilmsThisWeek(
+  films: FilmWithCinemasLite[],
+  today: string,
+  limit = 10
+): { film: FilmWithCinemasLite; count: number }[] {
+  const weekEnd = addDays(today, 7);
+  return films
+    .map((film) => ({ film, count: countShowtimesInRange(film, today, weekEnd) }))
+    .filter(({ count }) => count > 0)
+    .sort((a, b) => b.count - a.count)
+    .slice(0, limit);
+}
 
 export function getToday(): string {
   const now = new Date();
