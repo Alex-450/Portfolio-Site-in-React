@@ -37,7 +37,7 @@ const ComingSoonBar = ({
   return (
     <FilmBar
       label={showLabel ? 'Coming Soon' : undefined}
-      explainer="Upcoming releases not yet in this week's top films"
+      explainer="Upcoming releases this month"
       emptyMessage={emptyMessage}
       films={comingSoon}
       renderBadge={(film) => {
