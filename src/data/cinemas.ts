@@ -63,6 +63,13 @@ export const cinemas: Record<string, Cinema> = {
     websiteUrl: 'https://kriterion.nl',
     adsMinutes: 20,
   },
+  Cinecenter: {
+    name: 'Cinecenter',
+    slug: 'cinecenter',
+    address: 'Lijnbaansgracht 236, 1017 PH Amsterdam',
+    websiteUrl: 'https://www.cinecenter.nl',
+    adsMinutes: 20,
+  },
   'Rialto De Pijp': {
     name: 'Rialto De Pijp',
     slug: 'rialto-de-pijp',

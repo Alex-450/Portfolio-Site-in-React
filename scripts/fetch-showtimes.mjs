@@ -6,6 +6,7 @@ import { fetchEye } from './scrapers/eye.mjs';
 import { fetchKriterion } from './scrapers/kriterion.mjs';
 import { fetchRialto } from './scrapers/rialto.mjs';
 import { fetchGriffioen } from './scrapers/griffioen.mjs';
+import { fetchCinecenter } from './scrapers/cinecenter.mjs';
 import { toDateStamp } from './scrapers/utils.mjs';
 import {
   searchTmdbMovieDetails,
@@ -49,6 +50,7 @@ async function fetchAllCinemas() {
     kriterionResult,
     rialtoResult,
     griffioenResult,
+    cinecenterResult,
   ] = await Promise.allSettled([
     fetchAllRssFeeds(),
     fetchFcHyena(),
@@ -56,6 +58,7 @@ async function fetchAllCinemas() {
     fetchKriterion(),
     fetchRialto(),
     fetchGriffioen(),
+    fetchCinecenter(),
   ]);
 
   const cinemas = [];
@@ -76,6 +79,7 @@ async function fetchAllCinemas() {
     { name: 'Eye Filmmuseum', result: eyeResult },
     { name: 'Kriterion', result: kriterionResult },
     { name: 'Rialto VU', result: griffioenResult },
+    { name: 'Cinecenter', result: cinecenterResult },
   ];
 
   for (const { name, result } of namedResults) {
