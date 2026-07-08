@@ -5,15 +5,7 @@ Personal portfolio site with a blog and film listings for Amsterdam/Haarlem cine
 ## Features
 
 - Personal blog with MDX support
-- Film listings aggregated from local cinema RSS feeds:
-  - LAB111
-  - Eye Filmmuseum
-  - Studio K
-  - FilmHallen
-  - The Movies
-  - FilmKoepel
-  - FC Hyena
-  - Kriterion
+- Film listings aggregated from local cinemas
 - Film filtering by cinema, genre, director, day, and release year
 - Watchlist functionality (stored in local storage)
 - Dark mode support
