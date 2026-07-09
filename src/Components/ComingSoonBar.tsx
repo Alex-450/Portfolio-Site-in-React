@@ -27,7 +27,10 @@ const ComingSoonBar = ({
       (film) =>
         !!film.releaseDate &&
         film.releaseDate > today &&
-        !thisWeekSlugs.has(film.slug)
+        !thisWeekSlugs.has(film.slug) &&
+        // Require a wide-ish release: films showing in fewer than 3 cinemas are
+        // usually very limited runs that won't interest most people.
+        film.cinemaShowtimes.length >= 3
     )
     .sort((a, b) =>
       (firstShowtimeDate(a) ?? '').localeCompare(firstShowtimeDate(b) ?? '')
