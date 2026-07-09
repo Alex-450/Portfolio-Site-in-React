@@ -82,7 +82,7 @@ async function fetchProductionMetadata(productionId) {
     for (const [, label, value] of html.matchAll(
       /<h2[^>]*>([^<]+)<\/h2><p[^>]*>([^<]*)<\/p>/g
     )) {
-      pairs[label.trim()] = value.trim();
+      pairs[label.trim()] = decodeAndTrim(value);
     }
     const result = {
       director: pairs['Director'] || null,

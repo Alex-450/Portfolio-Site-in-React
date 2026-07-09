@@ -139,7 +139,9 @@ async function fetchCinecenter() {
       if (!filmMap.has(key)) {
         filmMap.set(key, {
           title,
-          director: production.directedBy || null,
+          director: production.directedBy
+            ? decodeAndTrim(production.directedBy)
+            : null,
           runtime: production.durationInMinutes || null,
           posterUrl: production.thumbnail || '',
           subtitles,
