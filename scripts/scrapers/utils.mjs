@@ -12,10 +12,12 @@ if (!CF_SCRAPER_URL) {
 }
 
 export function decodeAndTrim(string) {
-  if (!string) return '';
+  if (string == null || string === '') return '';
+  // Coerce to a string: fast-xml-parser parses a purely numeric CDATA value
+  // (e.g. a film titled "1984") as a JS number, and he.decode expects a string.
+  let decoded = String(string);
   // Decode repeatedly to handle double-encoded entities (e.g. WordPress feeds
   // that emit "&amp;amp;"), stopping once the string is stable.
-  let decoded = string;
   for (let i = 0; i < 3; i++) {
     const next = he.decode(decoded);
     if (next === decoded) break;
