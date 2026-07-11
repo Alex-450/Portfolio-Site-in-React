@@ -10,6 +10,7 @@ import YouTubeEmbed from '../../Components/YouTubeEmbed';
 import FilmShowtimes from '../../Components/FilmShowtimes';
 import WatchlistButton from '../../Components/WatchlistButton';
 import { useWatchlist } from '../../hooks/useWatchlist';
+import { formatDate, getToday } from '../../utils/date';
 import { ArrowUpRight } from 'lucide-react';
 
 interface Props {
@@ -29,6 +30,11 @@ export default function FilmDetailPage({ film }: Props) {
   const language = film.tmdb?.originalLanguage
     ? getLanguageName(film.tmdb.originalLanguage)
     : null;
+  // Show the Dutch release date only when it's still upcoming, so preview
+  // screenings are clearly labelled without cluttering already-released films.
+  const nlRelease = film.tmdb?.releaseDateNl;
+  const nlReleaseLabel =
+    nlRelease && nlRelease > getToday() ? formatDate(nlRelease) : null;
   const { isInWatchlist, toggleWatchlist } = useWatchlist();
 
   const hasTrailer = !!film.tmdb?.youtubeTrailerId;
@@ -61,6 +67,9 @@ export default function FilmDetailPage({ film }: Props) {
                     {film.director}
                   </Link>
                 </p>
+              )}
+              {nlReleaseLabel && (
+                <p className="film-nl-release">NL release: {nlReleaseLabel}</p>
               )}
               <div className="film-hero-meta">
                 {year && <span className="film-hero-badge">{year}</span>}
@@ -129,6 +138,9 @@ export default function FilmDetailPage({ film }: Props) {
                     {film.director}
                   </Link>
                 </p>
+              )}
+              {nlReleaseLabel && (
+                <p className="film-nl-release">NL release: {nlReleaseLabel}</p>
               )}
               {film.tmdb && (
                 <div className="film-detail-meta">

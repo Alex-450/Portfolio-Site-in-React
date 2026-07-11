@@ -120,6 +120,7 @@ export const getStaticProps: GetStaticProps<CinemaPageProps> = async ({
       cinemaShowtimes: matchingShowtimes,
       dateAdded: film.dateAdded,
       releaseDate: film.tmdb?.releaseDate ?? null,
+      releaseDateNl: film.tmdb?.releaseDateNl ?? null,
       releaseYear: film.tmdb?.releaseDate?.split('-')[0] ?? null,
       overview: film.tmdb?.overview ?? null,
     };

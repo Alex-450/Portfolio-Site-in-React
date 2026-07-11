@@ -1170,20 +1170,20 @@ code {
   cursor: pointer;
 }
 
-.view-toggle-button:first-child {
-  border-right: 1px solid var(--border-primary);
+/* Collapse the shared edge between adjacent buttons into a single line: each
+   button after the first overlaps its left border onto the previous button's
+   right border. Works for any number of segments (This Week / Previews /
+   Coming Soon). */
+.view-toggle-button:not(:first-child) {
+  margin-left: -2px;
 }
 
-.view-toggle-button:last-child {
-  border-left: 1px solid var(--border-primary);
-}
-
-.view-toggle-button:hover {
-  background-color: var(--hover-bg);
-  color: var(--color-white);
-}
-
+/* Lift hovered/active buttons above their neighbors so the overlapped borders
+   don't clip their edges. */
+.view-toggle-button:hover,
 .view-toggle-button-active {
+  position: relative;
+  z-index: 1;
   background-color: var(--hover-bg);
   color: var(--color-white);
 }
@@ -1229,6 +1229,17 @@ code {
 .film-hero-director {
   font-size: 1rem;
   color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+/* Sits directly under the director line; smaller and dimmer so it recedes as
+   secondary metadata rather than competing with the director. The negative top
+   margin tightens it against the director so the two read as one group. */
+.film-nl-release {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  opacity: 0.75;
+  margin-top: -0.25rem;
   margin-bottom: 0.5rem;
 }
 

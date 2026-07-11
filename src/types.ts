@@ -152,6 +152,9 @@ export interface FilmWithCinemasLite extends FilmBase {
   genres: string[];
   dateAdded?: string | null;
   releaseDate?: string | null;
+  // Dutch cinema release date, used to detect preview screenings (showtimes
+  // that fall before a film's local release).
+  releaseDateNl?: string | null;
   releaseYear?: string | null;
   overview?: string | null;
 }

@@ -9,6 +9,7 @@ import FilmCard from './FilmCard';
 import PosterCarousel from './PosterCarousel';
 import TopFilmsBar from './TopFilmsBar';
 import ComingSoonBar from './ComingSoonBar';
+import PreviewsBar from './PreviewsBar';
 import FilmBarToggle, { FilmBarTab } from './FilmBarToggle';
 import ViewToggle from './ViewToggle';
 import GenreCarouselRow from './GenreCarouselRow';
@@ -23,7 +24,13 @@ import ReleaseFilter, {
 } from './filters/ReleaseFilter';
 import TimeFilter from './filters/TimeFilter';
 import WatchlistFilter from './filters/WatchlistFilter';
-import { getToday, getCurrentTime, formatDate } from '../utils/date';
+import {
+  getToday,
+  getCurrentTime,
+  formatDate,
+  previewFilms,
+  comingSoonFilms,
+} from '../utils/date';
 import { filterFilms, filterFilmsBySearch } from '../utils/filmFilters';
 import { useWatchlist } from '../hooks/useWatchlist';
 import { cinemas, getCinemaSlug } from '../data/cinemas';
@@ -234,6 +241,26 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [filmBarTab, setFilmBarTab] = useState<FilmBarTab>('this-week');
 
+  const hasPreviews = useMemo(
+    () => previewFilms(allFilms, today).length > 0,
+    [allFilms, today]
+  );
+  const hasComingSoon = useMemo(
+    () => comingSoonFilms(allFilms, today).length > 0,
+    [allFilms, today]
+  );
+
+  // If the selected tab has nothing to show, fall back to This Week so an empty
+  // tab is never displayed.
+  useEffect(() => {
+    if (
+      (filmBarTab === 'previews' && !hasPreviews) ||
+      (filmBarTab === 'coming-soon' && !hasComingSoon)
+    ) {
+      setFilmBarTab('this-week');
+    }
+  }, [filmBarTab, hasPreviews, hasComingSoon]);
+
   // Films filtered by everything except day - used for computing day options
   const { dayOptions, hasShowtimesToday, hasEveningShowtimesToday } =
     useMemo(() => {
@@ -359,20 +386,36 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
 
         {!hasActiveFilters && (
           <div className="film-bar-section">
-            <FilmBarToggle tab={filmBarTab} onChange={setFilmBarTab} />
-            {filmBarTab === 'this-week' ? (
+            {(hasPreviews || hasComingSoon) && (
+              <FilmBarToggle
+                tab={filmBarTab}
+                onChange={setFilmBarTab}
+                showPreviews={hasPreviews}
+                showComingSoon={hasComingSoon}
+              />
+            )}
+            {filmBarTab === 'this-week' && (
               <TopFilmsBar
                 films={allFilms}
                 today={today}
                 showLabel={false}
                 emptyMessage="No showings scheduled this week"
               />
-            ) : (
+            )}
+            {filmBarTab === 'coming-soon' && (
               <ComingSoonBar
                 films={allFilms}
                 today={today}
                 showLabel={false}
                 emptyMessage="No upcoming releases in the next month"
+              />
+            )}
+            {filmBarTab === 'previews' && (
+              <PreviewsBar
+                films={allFilms}
+                today={today}
+                showLabel={false}
+                emptyMessage="No preview screenings scheduled"
               />
             )}
           </div>

@@ -1,28 +1,30 @@
 import { FilmWithCinemasLite } from '../types';
-import { comingSoonFilms, firstShowtimeDate, formatDate } from '../utils/date';
+import { firstShowtimeDate, formatDate, previewFilms } from '../utils/date';
 import FilmBar from './FilmBar';
 
-interface ComingSoonBarProps {
+interface PreviewsBarProps {
   films: FilmWithCinemasLite[];
   today: string;
   showLabel?: boolean;
   emptyMessage?: string;
 }
 
-const ComingSoonBar = ({
+const PreviewsBar = ({
   films,
   today,
   showLabel = true,
   emptyMessage,
-}: ComingSoonBarProps) => {
-  const comingSoon = comingSoonFilms(films, today);
+}: PreviewsBarProps) => {
+  // Films with showtimes ahead of their Dutch release date (preview screenings),
+  // sorted by earliest showtime.
+  const previews = previewFilms(films, today);
 
   return (
     <FilmBar
-      label={showLabel ? 'Coming Soon' : undefined}
-      explainer="Upcoming releases this month"
+      label={showLabel ? 'Previews' : undefined}
+      explainer="Preview screenings ahead of their release"
       emptyMessage={emptyMessage}
-      films={comingSoon}
+      films={previews}
       renderBadge={(film) => {
         const firstDate = firstShowtimeDate(film);
         return firstDate ? (
@@ -33,4 +35,4 @@ const ComingSoonBar = ({
   );
 };
 
-export default ComingSoonBar;
+export default PreviewsBar;

@@ -423,6 +423,10 @@
     color: var(--dark-text-secondary);
   }
 
+  .film-nl-release {
+    color: var(--dark-text-secondary);
+  }
+
   .film-hero-overview {
     color: var(--dark-text-body);
   }
