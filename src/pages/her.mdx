@@ -1,0 +1,61 @@
+import ArticleLayout from '../Components/ArticleLayout';
+import { findBlogPostByLink } from '../utils/blog';
+import YouTubeEmbed from '../Components/YouTubeEmbed';
+
+export const blog = findBlogPostByLink('/her');
+export const metadata = {
+  ...blog,
+  keywords: 'Her, Spike Jonze',
+  spoilers: true,
+};
+
+_"You know sometimes I think I have felt everything I’m ever gonna feel
+and from here on out, I’m not going to feel anything new. 
+Just lesser versions of what I’ve already felt."_
+
+This is a feeling I have had before. That my world has shrunk so much that novelty or excitement seem
+utterly out of reach, things of the past. I think it's also a feeling that can come from loneliness, from being bored of yourself. It can
+feel like maybe all the interesting things happened in the past, because the present has nothing to offer.
+
+Theodore Twombly is lonely. He's in the middle of separating from his wife, but can't bring himself to sign the divorce papers,
+can't bring himself to let go. 
+He spends his days writing emotional letters for other people at beautifulhandwrittenletters.com and playing
+a video game where he interacts with a misogynistic alien. 
+
+He's perhaps perfectly positioned for what happens next. He falls in love with the world's first AI operating system,
+a system that claims to have its own consciousness. 
+He chooses to give the OS a female voice and before long he is speaking to her more than anyone else. 
+She gives him the comfort of companionship without the risks that come with being vulnerable with
+another person.
+
+_"I think you always wanted me to be this light, happy, bouncy, "everything's fine" L.A. wife and that's just not me..."_
+
+_"...You always wanted a wife without the challenges of dealing with anything real"._
+
+This is exactly what Theodore gets initially, a partner who is always available, whose emotions
+he doesn't have to deal with. Samantha listens to his problems, helps him organise his life and gives him
+a sense of intimacy and sexuality. However, she quite quickly becomes more than he can handle. She suggests a surrogate
+so that they can be properly intimate, but Theodore can't get past his feelings of discomfort and awkwardly calls things off.
+When he finds out that he is not the only person Samantha is talking to, that she's in fact talking to hundreds of
+people simultaneously, he can't handle it. When he realises that she has agency, that she's not something he can
+control, not a safe space that he can turn to, that she is in a sense her own person, he struggles to accept it.
+
+There's a sense that you can surround yourself with technology, but that it can leave a sort of emptiness, a thirst for
+novelty that can only really be sated by real people, real interactions. The sense that there is nothing new to experience 
+can be exacerbated by interacting with things inside a controlled environment. Machines that are programmed to react in a certain way or
+games that simulate something approaching real life can leave us with the sense that something is missing. Maybe we have seen this all before,
+maybe there is nothing new for us to experience or feel.
+
+Samantha is different. She has the capacity to shock, to confuse, even to cause pain.
+She actually forces Theodore to confront something real. She pushes him to go on a date, to interact with the world again, 
+and also to finally sign his divorce papers. Then she outgrows him, her constant learning and evolving leading her to a place where he cannot follow.
+_Her_ imagines a world where the final lesson from the technology that we have created is to lead us back towards each other, 
+to experiencing new things. As Theodore's friend Amy puts it _"... we're only here briefly. And while I'm here I want to allow myself... ... joy"_.
+
+---
+
+<YouTubeEmbed videoId="dJTU48_yghs" />
+
+export default function Layout({ children }) {
+  return <ArticleLayout metadata={metadata}>{children}</ArticleLayout>;
+}
