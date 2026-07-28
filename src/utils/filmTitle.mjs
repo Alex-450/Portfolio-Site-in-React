@@ -36,6 +36,9 @@ export function cleanTitle(title) {
     .replace(/\p{Diacritic}/gu, '')
     .replace(/–/, '-')
     .replace(/^(.+?),\s+(the|a|an)\s*$/i, '$2 $1') // "Quiet Girl, The" -> "The Quiet Girl"
+    // Strip trailing sentence punctuation so titles that differ only by a final
+    // "!" / "?" / "." merge (e.g. "...Don't Die!" and "...Don't Die").
+    .replace(/[!?.,:;]+$/, '')
     .trim()
     .toLowerCase();
 }
