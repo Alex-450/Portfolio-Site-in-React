@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   pageExtensions: ['ts', 'tsx', 'md', 'mdx'],
   experimental: {
-    useTypeScriptCli: true, // TODO: revisit once Typescript 7 is properly supported
+    useTypeScriptCli: true, // Required for TypeScript 7 (the legacy compiler API it needs was removed)
   },
 };
 

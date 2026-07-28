@@ -6,14 +6,16 @@ const createFilm = (overrides: Partial<FilmWithCinemasLite> = {}): FilmWithCinem
   title: 'Test Film',
   genres: ['Drama'],
   director: 'Test Director',
+  runtime: null,
+  posterUrl: '',
   releaseDate: '2024-01-01',
   dateAdded: '2024-03-01',
   cinemaShowtimes: [
     {
       cinema: 'Cinema A',
       showtimes: [
-        { date: '2024-03-15', time: '14:00', url: 'http://example.com/1' },
-        { date: '2024-03-15', time: '18:00', url: 'http://example.com/2' },
+        { date: '2024-03-15', time: '14:00', ticketUrl: 'http://example.com/1', screen: '' },
+        { date: '2024-03-15', time: '18:00', ticketUrl: 'http://example.com/2', screen: '' },
       ],
     },
   ],
@@ -46,6 +48,7 @@ describe('filterFilms', () => {
   const baseOptions = {
     cinemaFilter: [],
     dayFilter: [],
+    timeFilter: null,
     filmFilter: '',
     genreFilter: [],
     directorFilter: '',
@@ -65,7 +68,10 @@ describe('filterFilms', () => {
       createFilm({
         slug: 'film-2',
         cinemaShowtimes: [
-          { cinema: 'Cinema B', showtimes: [{ date: '2024-03-15', time: '14:00', url: 'http://b.com' }] },
+          {
+            cinema: 'Cinema B',
+            showtimes: [{ date: '2024-03-15', time: '14:00', ticketUrl: 'http://b.com', screen: '' }],
+          },
         ],
       }),
     ];
@@ -105,13 +111,19 @@ describe('filterFilms', () => {
     const films = [
       createFilm({
         cinemaShowtimes: [
-          { cinema: 'Cinema A', showtimes: [{ date: '2024-03-15', time: '14:00', url: 'http://a.com' }] },
+          {
+            cinema: 'Cinema A',
+            showtimes: [{ date: '2024-03-15', time: '14:00', ticketUrl: 'http://a.com', screen: '' }],
+          },
         ],
       }),
       createFilm({
         slug: 'film-2',
         cinemaShowtimes: [
-          { cinema: 'Cinema A', showtimes: [{ date: '2024-03-16', time: '14:00', url: 'http://b.com' }] },
+          {
+            cinema: 'Cinema A',
+            showtimes: [{ date: '2024-03-16', time: '14:00', ticketUrl: 'http://b.com', screen: '' }],
+          },
         ],
       }),
     ];
@@ -123,7 +135,10 @@ describe('filterFilms', () => {
     const films = [
       createFilm({
         cinemaShowtimes: [
-          { cinema: 'Cinema A', showtimes: [{ date: '2024-03-15', time: '14:00', url: 'http://a.com' }] },
+          {
+            cinema: 'Cinema A',
+            showtimes: [{ date: '2024-03-15', time: '14:00', ticketUrl: 'http://a.com', screen: '' }],
+          },
         ],
       }),
     ];
