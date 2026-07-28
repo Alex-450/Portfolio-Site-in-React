@@ -1,0 +1,26 @@
+import ArticleLayout from '../Components/ArticleLayout';
+import { findBlogPostByLink } from '../utils/blog';
+
+export const blog = findBlogPostByLink('/nana-at-hove');
+export const metadata = {
+  ...blog,
+  keywords: 'hove',
+};
+
+The water is clear and blue, I can see my whole body when I look down, suspended by the salt.
+The waves are high, I feel myself being lifted up and then pulled back down.
+
+As I reach the top of a wave I look back to the shore and I see you sitting on the bench, where we left you.
+It took you a long time to get here but you made it, holding onto our arms and stopping every
+now and then to catch your breath. 
+
+You're waving at us, I wasn't sure if you'd be able to see us from so far away but you can. From this distance
+I can't tell that you struggle to walk now, or that you don't always know what is happening, to me it seems like 
+you're watching over us, like you used to when we were young, protecting us whilst we swim.
+
+"You're both very brave" you say as we dry off in the sun and you sit there quietly whilst we lie
+down and close our eyes. I think you are the brave one really.
+
+export default function Layout({ children }) {
+  return <ArticleLayout metadata={metadata}>{children}</ArticleLayout>;
+}
