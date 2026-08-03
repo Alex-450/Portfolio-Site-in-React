@@ -8,9 +8,7 @@ export function addDays(from: string, days: number): string {
 }
 
 // Earliest showtime date for a film (YYYY-MM-DD), or null if it has none.
-export function firstShowtimeDate(
-  film: FilmWithCinemasLite
-): string | null {
+export function firstShowtimeDate(film: FilmWithCinemasLite): string | null {
   let earliest: string | null = null;
   for (const cs of film.cinemaShowtimes) {
     for (const s of cs.showtimes) {
@@ -18,6 +16,37 @@ export function firstShowtimeDate(
     }
   }
   return earliest;
+}
+
+// Earliest showtime of a film as a sortable "YYYY-MM-DD HH:MM" key, or null if
+// it has none. Showtimes are already filtered to upcoming ones by the time they
+// reach here, so the earliest remaining showtime is the next one to start.
+export function nextShowtimeKey(film: FilmWithCinemasLite): string | null {
+  let earliest: string | null = null;
+  for (const cs of film.cinemaShowtimes) {
+    for (const s of cs.showtimes) {
+      const key = `${s.date} ${s.time}`;
+      if (earliest === null || key < earliest) earliest = key;
+    }
+  }
+  return earliest;
+}
+
+// Order films by whatever starts soonest, ties broken by title. Films with no
+// remaining showtimes sort last (they're normally filtered out before this).
+export function sortByNextShowtime(
+  films: FilmWithCinemasLite[]
+): FilmWithCinemasLite[] {
+  return [...films].sort((a, b) => {
+    const keyA = nextShowtimeKey(a);
+    const keyB = nextShowtimeKey(b);
+    if (keyA === null)
+      return keyB === null ? a.title.localeCompare(b.title) : 1;
+    if (keyB === null) return -1;
+    return keyA === keyB
+      ? a.title.localeCompare(b.title)
+      : keyA.localeCompare(keyB);
+  });
 }
 
 // Whether a film has at least one showtime on the given date (YYYY-MM-DD).
@@ -88,7 +117,10 @@ export function topFilmsThisWeek(
         !(film.releaseDate && film.releaseDate > today) ||
         hasShowtimeOn(film, today)
     )
-    .map((film) => ({ film, count: countShowtimesInRange(film, today, weekEnd) }))
+    .map((film) => ({
+      film,
+      count: countShowtimesInRange(film, today, weekEnd),
+    }))
     .filter(({ count }) => count > 0)
     .sort((a, b) => b.count - a.count)
     .slice(0, limit);

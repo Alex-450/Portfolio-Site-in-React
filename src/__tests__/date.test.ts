@@ -7,6 +7,7 @@ import {
   topFilmsThisWeek,
   isPreview,
   previewFilms,
+  sortByNextShowtime,
 } from '../utils/date';
 import { Showtime, FilmWithCinemasLite } from '../types';
 
@@ -39,9 +40,24 @@ const makeFilm = (
 
 describe('filterPastShowtimes', () => {
   const showtimes: Showtime[] = [
-    { date: '2024-03-15', time: '14:00', ticketUrl: 'http://example.com/1', screen: '' },
-    { date: '2024-03-15', time: '18:00', ticketUrl: 'http://example.com/2', screen: '' },
-    { date: '2024-03-16', time: '10:00', ticketUrl: 'http://example.com/3', screen: '' },
+    {
+      date: '2024-03-15',
+      time: '14:00',
+      ticketUrl: 'http://example.com/1',
+      screen: '',
+    },
+    {
+      date: '2024-03-15',
+      time: '18:00',
+      ticketUrl: 'http://example.com/2',
+      screen: '',
+    },
+    {
+      date: '2024-03-16',
+      time: '10:00',
+      ticketUrl: 'http://example.com/3',
+      screen: '',
+    },
   ];
 
   it('keeps all showtimes for future dates', () => {
@@ -95,11 +111,15 @@ describe('hasShowtimeOn', () => {
       cinemaShowtimes: [
         {
           cinema: 'A',
-          showtimes: [{ date: '2024-03-16', time: '18:00', ticketUrl: '', screen: '' }],
+          showtimes: [
+            { date: '2024-03-16', time: '18:00', ticketUrl: '', screen: '' },
+          ],
         },
         {
           cinema: 'B',
-          showtimes: [{ date: '2024-03-15', time: '20:00', ticketUrl: '', screen: '' }],
+          showtimes: [
+            { date: '2024-03-15', time: '20:00', ticketUrl: '', screen: '' },
+          ],
         },
       ],
     };
@@ -117,7 +137,12 @@ describe('isPreview', () => {
 
   it('is false when all showtimes are on or after the NL release', () => {
     // The Odyssey case: first showtime is on release day, none before it.
-    const film = makeFilm('f', ['2024-03-20', '2024-03-21'], null, '2024-03-20');
+    const film = makeFilm(
+      'f',
+      ['2024-03-20', '2024-03-21'],
+      null,
+      '2024-03-20'
+    );
     expect(isPreview(film, today)).toBe(false);
   });
 
@@ -225,9 +250,24 @@ describe('formatDate', () => {
 describe('groupShowtimesByDate', () => {
   it('groups showtimes by date', () => {
     const showtimes: Showtime[] = [
-      { date: '2024-03-15', time: '14:00', ticketUrl: 'http://example.com/1', screen: '' },
-      { date: '2024-03-15', time: '18:00', ticketUrl: 'http://example.com/2', screen: '' },
-      { date: '2024-03-16', time: '10:00', ticketUrl: 'http://example.com/3', screen: '' },
+      {
+        date: '2024-03-15',
+        time: '14:00',
+        ticketUrl: 'http://example.com/1',
+        screen: '',
+      },
+      {
+        date: '2024-03-15',
+        time: '18:00',
+        ticketUrl: 'http://example.com/2',
+        screen: '',
+      },
+      {
+        date: '2024-03-16',
+        time: '10:00',
+        ticketUrl: 'http://example.com/3',
+        screen: '',
+      },
     ];
 
     const result = groupShowtimesByDate(showtimes);
@@ -245,9 +285,24 @@ describe('groupShowtimesByDate', () => {
 
   it('sorts dates in ascending order', () => {
     const showtimes: Showtime[] = [
-      { date: '2024-03-20', time: '14:00', ticketUrl: 'http://example.com/1', screen: '' },
-      { date: '2024-03-15', time: '14:00', ticketUrl: 'http://example.com/2', screen: '' },
-      { date: '2024-03-18', time: '14:00', ticketUrl: 'http://example.com/3', screen: '' },
+      {
+        date: '2024-03-20',
+        time: '14:00',
+        ticketUrl: 'http://example.com/1',
+        screen: '',
+      },
+      {
+        date: '2024-03-15',
+        time: '14:00',
+        ticketUrl: 'http://example.com/2',
+        screen: '',
+      },
+      {
+        date: '2024-03-18',
+        time: '14:00',
+        ticketUrl: 'http://example.com/3',
+        screen: '',
+      },
     ];
 
     const result = groupShowtimesByDate(showtimes);
@@ -259,9 +314,39 @@ describe('groupShowtimesByDate', () => {
 
 describe('filterByDay', () => {
   const grouped: [string, Showtime[]][] = [
-    ['2024-03-15', [{ date: '2024-03-15', time: '14:00', ticketUrl: 'http://a.com', screen: '' }]],
-    ['2024-03-16', [{ date: '2024-03-16', time: '10:00', ticketUrl: 'http://b.com', screen: '' }]],
-    ['2024-03-17', [{ date: '2024-03-17', time: '12:00', ticketUrl: 'http://c.com', screen: '' }]],
+    [
+      '2024-03-15',
+      [
+        {
+          date: '2024-03-15',
+          time: '14:00',
+          ticketUrl: 'http://a.com',
+          screen: '',
+        },
+      ],
+    ],
+    [
+      '2024-03-16',
+      [
+        {
+          date: '2024-03-16',
+          time: '10:00',
+          ticketUrl: 'http://b.com',
+          screen: '',
+        },
+      ],
+    ],
+    [
+      '2024-03-17',
+      [
+        {
+          date: '2024-03-17',
+          time: '12:00',
+          ticketUrl: 'http://c.com',
+          screen: '',
+        },
+      ],
+    ],
   ];
 
   it('returns all when dayFilter is empty', () => {
@@ -270,7 +355,11 @@ describe('filterByDay', () => {
   });
 
   it('filters to specific dates', () => {
-    const result = filterByDay(grouped, ['2024-03-15', '2024-03-17'], '2024-03-15');
+    const result = filterByDay(
+      grouped,
+      ['2024-03-15', '2024-03-17'],
+      '2024-03-15'
+    );
     expect(result).toHaveLength(2);
     expect(result[0][0]).toBe('2024-03-15');
     expect(result[1][0]).toBe('2024-03-17');
@@ -280,5 +369,90 @@ describe('filterByDay', () => {
     const result = filterByDay(grouped, ['today'], '2024-03-16');
     expect(result).toHaveLength(1);
     expect(result[0][0]).toBe('2024-03-16');
+  });
+});
+
+describe('sortByNextShowtime', () => {
+  // Films here need per-showtime times, which makeFilm doesn't vary.
+  const filmAt = (
+    title: string,
+    slots: [string, string][]
+  ): FilmWithCinemasLite => ({
+    slug: title.toLowerCase(),
+    title,
+    director: null,
+    runtime: null,
+    posterUrl: '',
+    genres: [],
+    releaseDate: null,
+    releaseDateNl: null,
+    cinemaShowtimes: [
+      {
+        cinema: 'Cinema',
+        showtimes: slots.map(([date, time]) => ({
+          date,
+          time,
+          ticketUrl: '',
+          screen: '',
+        })),
+      },
+    ],
+  });
+
+  it('orders films by their soonest showtime', () => {
+    const later = filmAt('Later', [['2024-03-15', '21:30']]);
+    const sooner = filmAt('Sooner', [['2024-03-15', '19:00']]);
+    expect(sortByNextShowtime([later, sooner]).map((f) => f.title)).toEqual([
+      'Sooner',
+      'Later',
+    ]);
+  });
+
+  it("puts today's showings above later days", () => {
+    const tomorrowEarly = filmAt('Tomorrow', [['2024-03-16', '10:00']]);
+    const todayLate = filmAt('Today', [['2024-03-15', '23:00']]);
+    expect(
+      sortByNextShowtime([tomorrowEarly, todayLate]).map((f) => f.title)
+    ).toEqual(['Today', 'Tomorrow']);
+  });
+
+  it('uses the earliest showtime across all of a film’s showings', () => {
+    const spread = filmAt('Spread', [
+      ['2024-03-17', '12:00'],
+      ['2024-03-15', '14:00'],
+    ]);
+    const single = filmAt('Single', [['2024-03-15', '16:00']]);
+    expect(sortByNextShowtime([single, spread]).map((f) => f.title)).toEqual([
+      'Spread',
+      'Single',
+    ]);
+  });
+
+  it('breaks ties on title', () => {
+    const b = filmAt('B Film', [['2024-03-15', '18:00']]);
+    const a = filmAt('A Film', [['2024-03-15', '18:00']]);
+    expect(sortByNextShowtime([b, a]).map((f) => f.title)).toEqual([
+      'A Film',
+      'B Film',
+    ]);
+  });
+
+  it('sorts films with no showtimes last', () => {
+    const none = filmAt('None', []);
+    const some = filmAt('Some', [['2024-03-15', '18:00']]);
+    expect(sortByNextShowtime([none, some]).map((f) => f.title)).toEqual([
+      'Some',
+      'None',
+    ]);
+  });
+
+  it('does not mutate the input array', () => {
+    const films = [
+      filmAt('B', [['2024-03-15', '21:00']]),
+      filmAt('A', [['2024-03-15', '19:00']]),
+    ];
+    const original = [...films];
+    sortByNextShowtime(films);
+    expect(films).toEqual(original);
   });
 });

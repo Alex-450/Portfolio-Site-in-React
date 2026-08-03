@@ -30,6 +30,7 @@ import {
   formatDate,
   previewFilms,
   comingSoonFilms,
+  sortByNextShowtime,
 } from '../utils/date';
 import { filterFilms, filterFilmsBySearch } from '../utils/filmFilters';
 import { useWatchlist } from '../hooks/useWatchlist';
@@ -93,7 +94,12 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     () => cinemaRaw.split(',').filter(Boolean),
     [cinemaRaw]
   );
-  const dayFilter = useMemo(() => dayRaw.split(',').filter(Boolean), [dayRaw]);
+  // A `day` param the user actually chose. Empty means "no explicit choice",
+  // which we default to today below.
+  const explicitDayFilter = useMemo(
+    () => dayRaw.split(',').filter(Boolean),
+    [dayRaw]
+  );
   const genreFilter = useMemo(
     () => genresRaw.split(',').filter(Boolean),
     [genresRaw]
@@ -103,8 +109,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const releaseFilter = (str(q.release) || null) as ReleaseFilterValue;
   const timeFilter = str(q.time) || null;
   const viewMode = (str(q.view) === 'carousel' ? 'carousel' : 'list') as
-    | 'list'
-    | 'carousel';
+    'list' | 'carousel';
   const watchlistFilter = str(q.watchlist) === 'true';
 
   // Local search input state
@@ -132,6 +137,24 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const today = useMemo(() => getToday(), []);
   const currentTime = useMemo(() => getCurrentTime(), []);
   const allFilms = useMemo(() => filmsIndexToList(filmsIndex), [filmsIndex]);
+
+  // Listings land on today by default. Only fall back to showing every day when
+  // nothing is left screening today (e.g. late at night), so the default never
+  // produces an empty list.
+  const anyShowtimesToday = useMemo(
+    () =>
+      allFilms.some((film) =>
+        film.cinemaShowtimes.some((cs) =>
+          cs.showtimes.some((s) => s.date === today && s.time >= currentTime)
+        )
+      ),
+    [allFilms, today, currentTime]
+  );
+  const isDefaultDay = explicitDayFilter.length === 0 && anyShowtimesToday;
+  const dayFilter = useMemo(
+    () => (isDefaultDay ? ['today'] : explicitDayFilter),
+    [isDefaultDay, explicitDayFilter]
+  );
   const cinemaNames = useMemo(() => getCinemaNames(filmsIndex), [filmsIndex]);
   const allGenres = useMemo(
     () => [...new Set(allFilms.flatMap((f) => f.genres || []))].sort(),
@@ -180,6 +203,9 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
       films = [...films].sort((a, b) =>
         (a.releaseDate ?? '').localeCompare(b.releaseDate ?? '')
       );
+    } else {
+      // Default ordering: what's starting soonest comes first.
+      films = sortByNextShowtime(films);
     }
 
     return films;
@@ -216,9 +242,11 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     [baseFilms, filmFilter, dayFilter]
   );
 
+  // The default "today" isn't a user choice, so it doesn't count as an active
+  // filter: the film bars stay visible and no chip is shown for it.
   const hasActiveFilters =
     cinemaFilter.length > 0 ||
-    dayFilter.length > 0 ||
+    explicitDayFilter.length > 0 ||
     !!timeFilter ||
     genreFilter.length > 0 ||
     !!filmFilter ||
@@ -231,7 +259,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   // composed of the day + time filters, which are already counted below.
   const advancedFilterCount =
     cinemaFilter.length +
-    dayFilter.length +
+    explicitDayFilter.length +
     (timeFilter ? 1 : 0) +
     genreFilter.length +
     (directorFilter ? 1 : 0) +
@@ -320,12 +348,12 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   }, [dayOptions, hasShowtimesToday]);
 
   useEffect(() => {
-    const invalidDays = dayFilter.filter((d) => !validDayValues.has(d));
+    const invalidDays = explicitDayFilter.filter((d) => !validDayValues.has(d));
     if (invalidDays.length > 0) {
-      const validDays = dayFilter.filter((d) => validDayValues.has(d));
+      const validDays = explicitDayFilter.filter((d) => validDayValues.has(d));
       setFilter('day', validDays.length > 0 ? validDays : undefined);
     }
-  }, [dayFilter, validDayValues, setFilter]);
+  }, [explicitDayFilter, validDayValues, setFilter]);
 
   // Group films by genre for carousel view
   const filmsByGenre = useMemo(
@@ -334,8 +362,8 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   );
 
   const isTonightActive =
-    dayFilter.length === 1 &&
-    dayFilter[0] === 'today' &&
+    explicitDayFilter.length === 1 &&
+    explicitDayFilter[0] === 'today' &&
     timeFilter === '18:00';
 
   const toggleTonight = useCallback(() => {
@@ -466,7 +494,10 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
         </div>
 
         {filtersOpen && (
-          <div id="advanced-filters" className="film-filters film-filters-panel">
+          <div
+            id="advanced-filters"
+            className="film-filters film-filters-panel"
+          >
             {hasEveningShowtimesToday && (
               <button
                 className={`filter-select${isTonightActive ? ' filter-toggle-active' : ''}`}
@@ -538,14 +569,14 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
                 {cinema} <span className="chip-remove">×</span>
               </button>
             ))}
-            {dayFilter.map((day) => (
+            {explicitDayFilter.map((day) => (
               <button
                 key={day}
                 className="filter-chip"
                 onClick={() =>
                   setFilter(
                     'day',
-                    dayFilter.filter((d) => d !== day)
+                    explicitDayFilter.filter((d) => d !== day)
                   )
                 }
               >
