@@ -80,9 +80,16 @@ export async function fetchWithRetry(url, options = {}, retries = 3) {
         signal: AbortSignal.timeout(timeoutMs),
       });
       if (response.ok) return response;
-      lastError = new Error(`HTTP ${response.status}`);
+      // Error bodies often explain the failure (the CF worker proxy reports
+      // which upstream failed and why); without this only the status shows up.
+      const detail = (await response.text().catch(() => ''))
+        .slice(0, 500)
+        .trim();
+      lastError = new Error(
+        `HTTP ${response.status}${detail ? ` — ${detail}` : ''}`
+      );
       console.warn(
-        `  Attempt ${attempt}/${retries} failed: ${response.status} for: ${url}`
+        `  Attempt ${attempt}/${retries} failed: ${response.status} for: ${url}${detail ? `\n    ${detail.replace(/\n/g, '\n    ')}` : ''}`
       );
     } catch (err) {
       // Network-level failure (connect timeout, DNS, reset, abort) — retry too.
