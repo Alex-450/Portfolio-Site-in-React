@@ -20,7 +20,7 @@ import {
 //
 // If Rialto starts blocking the CI runner IP, route these through the Cloudflare
 // worker by adding `rialto-de-pijp`/`rialto-silo` targets there and switching to
-// `${CF_SCRAPER_URL}?target=...` (see kriterion.mjs / rss-feeds.mjs).
+// `${CF_SCRAPER_URL}?target=...` (see rss-feeds.mjs).
 const VENUES = [
   { name: 'Rialto De Pijp', apiBase: 'https://depijp.rialtofilm.nl/prod' },
   // Rialto VU is a separate venue served from griffioen.vu.nl (see griffioen.mjs).

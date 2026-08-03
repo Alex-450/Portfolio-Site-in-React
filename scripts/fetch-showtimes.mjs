@@ -3,7 +3,6 @@ import { dirname } from 'path';
 import { fetchAllRssFeeds, RSS_FEED_NAMES } from './scrapers/rss-feeds.mjs';
 import { fetchFcHyena } from './scrapers/fc-hyena.mjs';
 import { fetchEye } from './scrapers/eye.mjs';
-import { fetchKriterion } from './scrapers/kriterion.mjs';
 import { fetchRialto } from './scrapers/rialto.mjs';
 import { fetchGriffioen } from './scrapers/griffioen.mjs';
 import { fetchCinecenter } from './scrapers/cinecenter.mjs';
@@ -47,7 +46,6 @@ async function fetchAllCinemas() {
     rssResult,
     fcHyenaResult,
     eyeResult,
-    kriterionResult,
     rialtoResult,
     griffioenResult,
     cinecenterResult,
@@ -55,7 +53,6 @@ async function fetchAllCinemas() {
     fetchAllRssFeeds(),
     fetchFcHyena(),
     fetchEye(),
-    fetchKriterion(),
     fetchRialto(),
     fetchGriffioen(),
     fetchCinecenter(),
@@ -77,7 +74,6 @@ async function fetchAllCinemas() {
   const namedResults = [
     { name: 'FC Hyena', result: fcHyenaResult },
     { name: 'Eye Filmmuseum', result: eyeResult },
-    { name: 'Kriterion', result: kriterionResult },
     { name: 'Rialto VU', result: griffioenResult },
     { name: 'Cinecenter', result: cinecenterResult },
   ];
