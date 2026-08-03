@@ -8,6 +8,7 @@ import {
   isPreview,
   previewFilms,
   sortByNextShowtime,
+  defaultListingDate,
 } from '../utils/date';
 import { Showtime, FilmWithCinemasLite } from '../types';
 
@@ -454,5 +455,79 @@ describe('sortByNextShowtime', () => {
     const original = [...films];
     sortByNextShowtime(films);
     expect(films).toEqual(original);
+  });
+});
+
+describe('defaultListingDate', () => {
+  const at = (
+    title: string,
+    slots: [string, string][]
+  ): FilmWithCinemasLite => ({
+    slug: title,
+    title,
+    director: null,
+    runtime: null,
+    posterUrl: '',
+    genres: [],
+    releaseDate: null,
+    releaseDateNl: null,
+    cinemaShowtimes: [
+      {
+        cinema: 'Cinema',
+        showtimes: slots.map(([date, time]) => ({
+          date,
+          time,
+          ticketUrl: '',
+          screen: '',
+        })),
+      },
+    ],
+  });
+
+  it('returns today when a showtime remains today', () => {
+    const films = [at('a', [['2024-03-15', '21:00']])];
+    expect(defaultListingDate(films, '2024-03-15', '18:00')).toBe('2024-03-15');
+  });
+
+  it("returns the next day with showtimes once today's have passed", () => {
+    const films = [
+      at('a', [
+        ['2024-03-15', '14:00'],
+        ['2024-03-17', '20:00'],
+      ]),
+    ];
+    expect(defaultListingDate(films, '2024-03-15', '23:00')).toBe('2024-03-17');
+  });
+
+  it('picks the earliest future date across all films', () => {
+    const films = [
+      at('later', [['2024-03-20', '20:00']]),
+      at('sooner', [['2024-03-16', '20:00']]),
+    ];
+    expect(defaultListingDate(films, '2024-03-15', '23:00')).toBe('2024-03-16');
+  });
+
+  it('ignores dates in the past', () => {
+    const films = [
+      at('a', [
+        ['2024-03-01', '20:00'],
+        ['2024-03-18', '20:00'],
+      ]),
+    ];
+    expect(defaultListingDate(films, '2024-03-15', '10:00')).toBe('2024-03-18');
+  });
+
+  it('returns null when nothing is upcoming', () => {
+    const films = [at('a', [['2024-03-01', '20:00']])];
+    expect(defaultListingDate(films, '2024-03-15', '10:00')).toBeNull();
+  });
+
+  it('returns null for an empty film list', () => {
+    expect(defaultListingDate([], '2024-03-15', '10:00')).toBeNull();
+  });
+
+  it('keeps a showtime starting exactly now', () => {
+    const films = [at('a', [['2024-03-15', '18:00']])];
+    expect(defaultListingDate(films, '2024-03-15', '18:00')).toBe('2024-03-15');
   });
 });

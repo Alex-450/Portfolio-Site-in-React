@@ -49,6 +49,29 @@ export function sortByNextShowtime(
   });
 }
 
+// The date the listings should land on: today if anything is still screening
+// today, otherwise the next date that has showtimes. Returns null only when no
+// film has an upcoming showtime at all. Keeps the initial view scoped to a
+// single day rather than dumping every future date on the user.
+export function defaultListingDate(
+  films: FilmWithCinemasLite[],
+  today: string,
+  currentTime: string
+): string | null {
+  let soonest: string | null = null;
+  for (const film of films) {
+    for (const cs of film.cinemaShowtimes) {
+      for (const s of cs.showtimes) {
+        if (s.date < today) continue;
+        if (s.date === today && s.time < currentTime) continue;
+        if (s.date === today) return today;
+        if (soonest === null || s.date < soonest) soonest = s.date;
+      }
+    }
+  }
+  return soonest;
+}
+
 // Whether a film has at least one showtime on the given date (YYYY-MM-DD).
 export function hasShowtimeOn(
   film: FilmWithCinemasLite,

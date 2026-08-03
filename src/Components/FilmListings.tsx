@@ -31,6 +31,7 @@ import {
   previewFilms,
   comingSoonFilms,
   sortByNextShowtime,
+  defaultListingDate,
 } from '../utils/date';
 import { filterFilms, filterFilmsBySearch } from '../utils/filmFilters';
 import { useWatchlist } from '../hooks/useWatchlist';
@@ -138,22 +139,18 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const currentTime = useMemo(() => getCurrentTime(), []);
   const allFilms = useMemo(() => filmsIndexToList(filmsIndex), [filmsIndex]);
 
-  // Listings land on today by default. Only fall back to showing every day when
-  // nothing is left screening today (e.g. late at night), so the default never
-  // produces an empty list.
-  const anyShowtimesToday = useMemo(
-    () =>
-      allFilms.some((film) =>
-        film.cinemaShowtimes.some((cs) =>
-          cs.showtimes.some((s) => s.date === today && s.time >= currentTime)
-        )
-      ),
-    [allFilms, today, currentTime]
-  );
-  const isDefaultDay = explicitDayFilter.length === 0 && anyShowtimesToday;
+  // Listings land on a single day: today, or the next day with showtimes once
+  // today is over. Showing every future date at once is overwhelming on load.
+  const defaultDay = useMemo(() => {
+    const date = defaultListingDate(allFilms, today, currentTime);
+    if (date === null) return null;
+    return date === today ? 'today' : date;
+  }, [allFilms, today, currentTime]);
+
+  const isDefaultDay = explicitDayFilter.length === 0 && defaultDay !== null;
   const dayFilter = useMemo(
-    () => (isDefaultDay ? ['today'] : explicitDayFilter),
-    [isDefaultDay, explicitDayFilter]
+    () => (isDefaultDay ? [defaultDay as string] : explicitDayFilter),
+    [isDefaultDay, defaultDay, explicitDayFilter]
   );
   const cinemaNames = useMemo(() => getCinemaNames(filmsIndex), [filmsIndex]);
   const allGenres = useMemo(
