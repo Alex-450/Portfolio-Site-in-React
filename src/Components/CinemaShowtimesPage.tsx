@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { Calendar } from 'lucide-react';
 import { FilmWithCinemasLite } from '../types';
@@ -19,12 +19,18 @@ interface ShowtimeWithFilm {
 interface CinemaShowtimesPageProps {
   films: FilmWithCinemasLite[];
   cinemaKey: string;
+  selectedDay: string | null;
+  onSelectDay: (date: string) => void;
 }
 
-function CinemaShowtimesPage({ films, cinemaKey }: CinemaShowtimesPageProps) {
+function CinemaShowtimesPage({
+  films,
+  cinemaKey,
+  selectedDay,
+  onSelectDay,
+}: CinemaShowtimesPageProps) {
   const today = useMemo(getToday, []);
   const currentTime = useMemo(getCurrentTime, []);
-  const [selectedDay, setSelectedDay] = useState<string | null>(null);
 
   const showtimesByDate = useMemo(() => {
     const byDate = new Map<string, ShowtimeWithFilm[]>();
@@ -67,9 +73,16 @@ function CinemaShowtimesPage({ films, cinemaKey }: CinemaShowtimesPageProps) {
   const activeDay =
     selectedDay && dates.includes(selectedDay) ? selectedDay : dates[0];
 
-  const activeShowtimes = activeDay
-    ? showtimesByDate.get(activeDay) || []
-    : [];
+  const activeShowtimes = activeDay ? showtimesByDate.get(activeDay) || [] : [];
+
+  // The first available date is only known once showtimes have been grouped
+  // (which happens client-side, since it depends on the current time), so tell
+  // the parent what day is actually active to keep the posters above in sync.
+  useEffect(() => {
+    if (activeDay && activeDay !== selectedDay) {
+      onSelectDay(activeDay);
+    }
+  }, [activeDay, selectedDay, onSelectDay]);
 
   if (dates.length === 0) {
     return <p className="no-results">No upcoming showtimes</p>;
@@ -82,7 +95,7 @@ function CinemaShowtimesPage({ films, cinemaKey }: CinemaShowtimesPageProps) {
           <button
             key={date}
             className={`day-tab${date === activeDay ? ' day-tab-active' : ''}`}
-            onClick={() => setSelectedDay(date)}
+            onClick={() => onSelectDay(date)}
           >
             {formatDate(date)}
           </button>

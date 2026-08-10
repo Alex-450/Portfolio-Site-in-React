@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { useMemo, useState } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -9,7 +10,7 @@ import { FilmsIndex, FilmWithCinemasLite } from '../../types';
 import { cinemas, getCinemaBySlug, Cinema } from '../../data/cinemas';
 import PosterCarousel from '../../Components/PosterCarousel';
 import CinemaShowtimesPage from '../../Components/CinemaShowtimesPage';
-import { getToday } from '../../utils/date';
+import { formatDate, getToday, getCurrentTime } from '../../utils/date';
 
 interface CinemaPageProps {
   cinemaKey: string;
@@ -24,6 +25,31 @@ export default function CinemaPage({
   films,
   todayFilms,
 }: CinemaPageProps) {
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  const today = useMemo(getToday, []);
+  const currentTime = useMemo(getCurrentTime, []);
+
+  // Until the day tabs below resolve their active date, fall back to the films
+  // baked in at build time so the posters aren't empty on first paint.
+  const dayFilms = useMemo(() => {
+    if (!selectedDay) return todayFilms;
+    // Mirror the day tabs, which drop showings that have already started, so a
+    // film whose last screening today is over doesn't linger in the posters.
+    return films.filter((film) =>
+      film.cinemaShowtimes.some((cs) =>
+        cs.showtimes.some(
+          (s) =>
+            s.date === selectedDay && (s.date > today || s.time >= currentTime)
+        )
+      )
+    );
+  }, [films, todayFilms, selectedDay, today, currentTime]);
+
+  const posterHeading =
+    selectedDay && selectedDay !== today
+      ? `Showing ${formatDate(selectedDay)} at ${cinema.name}`
+      : `Showing today at ${cinema.name}`;
+
   return (
     <>
       <Head>
@@ -56,16 +82,21 @@ export default function CinemaPage({
           </a>
         </div>
 
-        {todayFilms.length > 0 && (
+        {dayFilms.length > 0 && (
           <div className="cinema-poster-section">
-            <h2>Showing today at {cinema.name}</h2>
-            <PosterCarousel films={todayFilms} linkToDetail />
+            <h2>{posterHeading}</h2>
+            <PosterCarousel films={dayFilms} linkToDetail today={today} />
           </div>
         )}
 
         <div className="film-detail-showtimes">
           <h2>Showtimes</h2>
-          <CinemaShowtimesPage films={films} cinemaKey={cinemaKey} />
+          <CinemaShowtimesPage
+            films={films}
+            cinemaKey={cinemaKey}
+            selectedDay={selectedDay}
+            onSelectDay={setSelectedDay}
+          />
         </div>
 
         <Link href="/film-listings/" className="back-link">
