@@ -111,6 +111,14 @@
     color: var(--dark-text-primary);
   }
 
+  .film-listings-cinemas-link {
+    color: var(--dark-text-secondary);
+  }
+
+  .film-listings-cinemas-link:hover {
+    color: var(--dark-text-primary);
+  }
+
   .filter-select {
     background-color: var(--dark-bg-primary);
     color: var(--dark-text-primary);

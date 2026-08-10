@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
 import { Container } from 'react-bootstrap';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { FilmWithCinemasLite, FilmsIndexLite } from '../types';
 import FilmCard from './FilmCard';
 import PosterCarousel from './PosterCarousel';
@@ -509,6 +509,11 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
             )}
           </button>
         </div>
+
+        <Link href="/cinemas/" className="film-listings-cinemas-link">
+          Browse by cinema
+          <ArrowRight size={14} />
+        </Link>
 
         {filtersOpen && (
           <div

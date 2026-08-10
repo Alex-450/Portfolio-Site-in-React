@@ -388,6 +388,26 @@ code {
   text-decoration: underline;
 }
 
+.film-listings-cinemas-link {
+  /* Own row under the filters, sized to its text rather than full width. */
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  gap: 4px;
+  /* The filter row above already carries a 1.5rem bottom margin, so pull up to
+     keep this visually attached to the filters. */
+  margin-top: -0.75rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.film-listings-cinemas-link:hover {
+  color: var(--text-primary);
+  text-decoration: underline;
+}
+
 .film-listings-section-heading {
   font-size: 1rem;
   font-weight: 700;
