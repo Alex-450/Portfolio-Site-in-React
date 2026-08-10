@@ -60,6 +60,40 @@ export function parseFilmLength(filmLength) {
 export const toDateStamp = (date = new Date()) =>
   new Date(date).toISOString().split('T')[0];
 
+const MONTHS = {
+  january: '01',
+  february: '02',
+  march: '03',
+  april: '04',
+  may: '05',
+  june: '06',
+  july: '07',
+  august: '08',
+  september: '09',
+  october: '10',
+  november: '11',
+  december: '12',
+};
+
+// Parse an English "Mon 10 August 2026, 20:45" timestamp — the format the
+// ticketing platform shared by Kriterion and FC Hyena renders. The leading
+// weekday is ignored. Returns { date, time } or null if it doesn't match.
+export function parseEventDateTime(text) {
+  const match = String(text ?? '').match(
+    /(\d{1,2})\s+([A-Za-z]+)\s+(\d{4}),\s*(\d{1,2}):(\d{2})/
+  );
+  if (!match) return null;
+
+  const [, day, monthName, year, hour, minute] = match;
+  const month = MONTHS[monthName.toLowerCase()];
+  if (!month) return null;
+
+  return {
+    date: `${year}-${month}-${day.padStart(2, '0')}`,
+    time: `${hour.padStart(2, '0')}:${minute}`,
+  };
+}
+
 // Finalize a scraper's filmMap: drop films with no showtimes, log the count,
 // and return the standard { name, films } result.
 export function finalizeFilms(filmMap, name, extraLog = '') {

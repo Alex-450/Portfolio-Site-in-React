@@ -4,6 +4,7 @@ import {
   finalizeFilms,
   normalizeSubtitles,
   parseFilmLength,
+  parseEventDateTime,
 } from './utils.mjs';
 
 const TICKETS_BASE = 'https://tickets.fchyena.nl/fchyena/en/flow_configs/1';
@@ -19,21 +20,6 @@ const BROWSER_HEADERS = {
   'Accept-Language': 'en-US,en;q=0.9',
 };
 
-const MONTHS = {
-  january: '01',
-  february: '02',
-  march: '03',
-  april: '04',
-  may: '05',
-  june: '06',
-  july: '07',
-  august: '08',
-  september: '09',
-  october: '10',
-  november: '11',
-  december: '12',
-};
-
 function parseEventRows(html) {
   const rows = [];
   for (const [, row] of html.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/g)) {
@@ -42,20 +28,16 @@ function parseEventRows(html) {
     const showId = row.match(/\/show\/(\d+)/)?.[1];
     if (!title || !when || !showId) continue;
 
-    const when_ = decodeAndTrim(when.replace(/<[^>]+>/g, ' '));
-    const match = when_.match(
-      /(\d{1,2})\s+([A-Za-z]+)\s+(\d{4}),\s*(\d{1,2}):(\d{2})/
+    const when_ = parseEventDateTime(
+      decodeAndTrim(when.replace(/<[^>]+>/g, ' '))
     );
-    if (!match) continue;
-    const [, day, monthName, year, hour, minute] = match;
-    const month = MONTHS[monthName.toLowerCase()];
-    if (!month) continue;
+    if (!when_) continue;
 
     rows.push({
       title: decodeAndTrim(title.replace(/<[^>]+>/g, ' ')),
       showId,
-      date: `${year}-${month}-${day.padStart(2, '0')}`,
-      time: `${hour.padStart(2, '0')}:${minute}`,
+      date: when_.date,
+      time: when_.time,
     });
   }
   return rows;

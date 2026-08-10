@@ -56,6 +56,13 @@ export const cinemas: Record<string, Cinema> = {
     websiteUrl: 'https://fchyena.nl',
     adsMinutes: 20,
   },
+  Kriterion: {
+    name: 'Kriterion',
+    slug: 'kriterion',
+    address: 'Roetersstraat 170, 1018 WE Amsterdam',
+    websiteUrl: 'https://kriterion.nl',
+    adsMinutes: 20,
+  },
   Cinecenter: {
     name: 'Cinecenter',
     slug: 'cinecenter',
