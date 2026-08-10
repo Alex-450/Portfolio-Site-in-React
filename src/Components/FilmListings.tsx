@@ -78,6 +78,9 @@ function groupFilmsByGenre(
   );
 }
 
+// URL sentinel for "user explicitly cleared the day filter".
+const ALL_DAYS = 'all';
+
 interface FilmListingsProps {
   filmsIndex: FilmsIndexLite;
 }
@@ -95,10 +98,13 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     () => cinemaRaw.split(',').filter(Boolean),
     [cinemaRaw]
   );
-  // A `day` param the user actually chose. Empty means "no explicit choice",
-  // which we default to today below.
+  // A `day` param the user actually chose. Missing means "no explicit choice",
+  // which we default to today below. The `all` sentinel means the user actively
+  // cleared the day filter — distinct from missing, which would re-apply the
+  // default and make the default day impossible to remove.
+  const dayCleared = dayRaw === ALL_DAYS;
   const explicitDayFilter = useMemo(
-    () => dayRaw.split(',').filter(Boolean),
+    () => (dayRaw === ALL_DAYS ? [] : dayRaw.split(',').filter(Boolean)),
     [dayRaw]
   );
   const genreFilter = useMemo(
@@ -135,6 +141,14 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     [router]
   );
 
+  // Emptying the day filter has to be recorded as the `all` sentinel rather than
+  // by dropping the param, or the implicit default day comes straight back and
+  // the selection can't be removed.
+  const setDayFilter = useCallback(
+    (days: string[]) => setFilter('day', days.length ? days : ALL_DAYS),
+    [setFilter]
+  );
+
   const today = useMemo(() => getToday(), []);
   const currentTime = useMemo(() => getCurrentTime(), []);
   const allFilms = useMemo(() => filmsIndexToList(filmsIndex), [filmsIndex]);
@@ -147,7 +161,8 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     return date === today ? 'today' : date;
   }, [allFilms, today, currentTime]);
 
-  const isDefaultDay = explicitDayFilter.length === 0 && defaultDay !== null;
+  const isDefaultDay =
+    !dayCleared && explicitDayFilter.length === 0 && defaultDay !== null;
   const dayFilter = useMemo(
     () => (isDefaultDay ? [defaultDay as string] : explicitDayFilter),
     [isDefaultDay, defaultDay, explicitDayFilter]
@@ -244,6 +259,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const hasActiveFilters =
     cinemaFilter.length > 0 ||
     explicitDayFilter.length > 0 ||
+    dayCleared ||
     !!timeFilter ||
     genreFilter.length > 0 ||
     !!filmFilter ||
@@ -256,6 +272,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   // composed of the day + time filters, which are already counted below.
   const advancedFilterCount =
     cinemaFilter.length +
+    (dayCleared ? 1 : 0) +
     explicitDayFilter.length +
     (timeFilter ? 1 : 0) +
     genreFilter.length +
@@ -347,6 +364,9 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   useEffect(() => {
     const invalidDays = explicitDayFilter.filter((d) => !validDayValues.has(d));
     if (invalidDays.length > 0) {
+      // Dropping the param here is right: a filter that went stale (e.g. the
+      // date rolled over) isn't the user clearing it, so the default should
+      // apply again.
       const validDays = explicitDayFilter.filter((d) => validDayValues.has(d));
       setFilter('day', validDays.length > 0 ? validDays : undefined);
     }
@@ -510,7 +530,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
             />
             <DayFilter
               selectedDays={dayFilter}
-              onChange={(v) => setFilter('day', v)}
+              onChange={setDayFilter}
               dayOptions={dayOptions}
               showToday={hasShowtimesToday}
             />
@@ -571,15 +591,20 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
                 key={day}
                 className="filter-chip"
                 onClick={() =>
-                  setFilter(
-                    'day',
-                    explicitDayFilter.filter((d) => d !== day)
-                  )
+                  setDayFilter(explicitDayFilter.filter((d) => d !== day))
                 }
               >
                 {getDayLabel(day)} <span className="chip-remove">×</span>
               </button>
             ))}
+            {dayCleared && (
+              <button
+                className="filter-chip"
+                onClick={() => setFilter('day', undefined)}
+              >
+                All Days <span className="chip-remove">×</span>
+              </button>
+            )}
             {timeFilter && (
               <button
                 className="filter-chip"
