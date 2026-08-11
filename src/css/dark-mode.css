@@ -111,12 +111,18 @@
     color: var(--dark-text-primary);
   }
 
-  .film-listings-cinemas-link {
+  .cinema-bar-label {
     color: var(--dark-text-secondary);
   }
 
-  .film-listings-cinemas-link:hover {
+  .cinema-bar-item {
+    border-color: var(--hover-bg);
     color: var(--dark-text-primary);
+  }
+
+  .cinema-bar-item:hover {
+    background: var(--hover-bg);
+    color: var(--dark-bg-primary);
   }
 
   .filter-select {

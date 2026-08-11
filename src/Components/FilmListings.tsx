@@ -3,10 +3,10 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
 import { Container } from 'react-bootstrap';
-import { ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { FilmWithCinemasLite, FilmsIndexLite } from '../types';
 import FilmCard from './FilmCard';
-import PosterCarousel from './PosterCarousel';
+import CinemaBar from './CinemaBar';
 import TopFilmsBar from './TopFilmsBar';
 import ComingSoonBar from './ComingSoonBar';
 import PreviewsBar from './PreviewsBar';
@@ -243,17 +243,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     return films;
   }, [baseFilms, filmSearch, watchlistFilter, watchlist]);
 
-  // Carousel ignores film search so users can click posters to filter.
-  // Exception: when a day filter is active alongside a film filter, keep the film filter
-  // so the carousel highlights only films showing on that specific day.
-  const carouselFilms = useMemo(
-    () =>
-      filmFilter && dayFilter.length > 0
-        ? filterFilmsBySearch(baseFilms, filmFilter)
-        : baseFilms,
-    [baseFilms, filmFilter, dayFilter]
-  );
-
   // The default "today" isn't a user choice, so it doesn't count as an active
   // filter: the film bars stay visible and no chip is shown for it.
   const hasActiveFilters =
@@ -466,6 +455,8 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
           </div>
         )}
 
+        <CinemaBar />
+
         <h2 className="film-listings-section-heading">All Films</h2>
 
         <div className="film-filters">
@@ -474,10 +465,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
             onChange={(v) => setFilter('view', v === 'list' ? undefined : v)}
           />
         </div>
-
-        {viewMode === 'list' && (
-          <PosterCarousel films={carouselFilms} today={today} linkToDetail />
-        )}
 
         <div className="film-filters film-filters-primary">
           {viewMode === 'list' && (
@@ -509,11 +496,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
             )}
           </button>
         </div>
-
-        <Link href="/cinemas/" className="film-listings-cinemas-link">
-          Browse by cinema
-          <ArrowRight size={14} />
-        </Link>
 
         {filtersOpen && (
           <div

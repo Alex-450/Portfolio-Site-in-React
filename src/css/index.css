@@ -388,24 +388,63 @@ code {
   text-decoration: underline;
 }
 
-.film-listings-cinemas-link {
-  /* Own row under the filters, sized to its text rather than full width. */
-  display: flex;
-  align-items: center;
-  width: fit-content;
-  gap: 4px;
-  /* The filter row above already carries a 1.5rem bottom margin, so pull up to
-     keep this visually attached to the filters. */
-  margin-top: -0.75rem;
+/* Compact name-only row of links to the per-cinema pages. Kept to a single
+   short line so it doesn't add much scroll depth above the listings. */
+.cinema-bar {
   margin-bottom: 1.5rem;
-  color: var(--text-secondary);
-  text-decoration: none;
-  font-size: 0.85rem;
 }
 
-.film-listings-cinemas-link:hover {
+.cinema-bar-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.cinema-bar-track {
+  display: flex;
+  gap: 8px;
+  /* Single line that scrolls sideways rather than wrapping, to keep the
+     listings as close to the top of the page as possible on mobile. */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--text-secondary) var(--bg-primary);
+  padding-bottom: 4px;
+}
+
+.cinema-bar-track::-webkit-scrollbar {
+  height: 6px;
+}
+
+.cinema-bar-track::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+.cinema-bar-track::-webkit-scrollbar-thumb {
+  background: var(--text-secondary);
+}
+
+/* Sized to match the film bar tabs and Filters button: same type scale, same
+   2px border, and vertical padding that lands the pills on the same height, so
+   the controls above the listings read as one set. */
+.cinema-bar-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  padding: 5px 10px;
+  border: 2px solid var(--border-primary);
   color: var(--text-primary);
-  text-decoration: underline;
+  text-decoration: none;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+.cinema-bar-item:hover {
+  background: var(--hover-bg);
+  color: var(--color-white);
+  border-color: var(--hover-bg);
 }
 
 .film-listings-section-heading {
@@ -1718,6 +1757,15 @@ code {
     flex-direction: column;
   }
 
+  /* One type scale for every control between the film bars and the listings —
+     film bar tabs, cinema pills, List/Grid, search and Filters — so the stack
+     reads as a single group rather than three competing weights. Declared here,
+     ahead of .filter-select-film, so that rule's larger input size wins. */
+  .view-toggle-button,
+  .filter-select {
+    font-size: 0.8125rem;
+  }
+
   .filter-select {
     width: 100%;
   }
@@ -1742,9 +1790,12 @@ code {
     right: 0;
   }
 
+  /* Text inputs stay at 16px: iOS Safari zooms the viewport on focus for
+     anything smaller, so the search box can't join the 0.8125rem scale. */
   .filter-select-film {
     max-width: none;
     width: 100%;
+    font-size: 1rem;
   }
 
   .poster-carousel-image {
@@ -1763,6 +1814,13 @@ code {
     flex: 1;
   }
 
+  /* Three tabs share the width here, so "Coming Soon" wraps to two lines and
+     doubles the row height without the tighter horizontal padding. */
+  .film-bar-toggle .view-toggle-button {
+    padding: 4px 8px;
+    white-space: nowrap;
+  }
+
   .film-detail-header {
     flex-direction: column;
     align-items: center;
@@ -1778,5 +1836,22 @@ code {
   .film-detail-genres,
   .film-external-links {
     justify-content: center;
+  }
+
+  /* Keep the cinema bar visually quiet on mobile, where vertical space above
+     the listings is tightest. */
+  .cinema-bar-label {
+    font-size: 0.7rem;
+  }
+
+  /* Match the film bar tabs so the two rows read as one control group. */
+  .cinema-bar-item {
+    font-size: 0.8125rem;
+    padding: 4px 8px;
+  }
+
+  .cinema-bar-item svg {
+    width: 12px;
+    height: 12px;
   }
 }
