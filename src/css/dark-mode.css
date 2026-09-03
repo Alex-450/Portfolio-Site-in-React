@@ -249,14 +249,8 @@
     background-color: var(--hover-bg);
   }
 
-  .showtimes-show-more {
-    color: var(--dark-text-primary);
-    border-color: var(--hover-bg);
-  }
-
   .showtimes-show-more:hover {
-    background-color: var(--hover-bg);
-    color: var(--dark-bg-primary);
+    color: var(--dark-text-secondary);
   }
 
   /* Watchlist Button dark mode */
@@ -468,12 +462,21 @@
     border-bottom-color: var(--dark-bg-tertiary);
   }
 
+  .showtimes-show-more {
+    border-top-color: var(--dark-bg-tertiary);
+    color: var(--dark-text-primary);
+  }
+
   /* On mobile, lighten the per-row dividers so they recede (matches the mobile
      override in index.css; placed here so it wins over the dark rule above).
      The day-tabs underline is already faint at all widths. */
   @media (max-width: 600px) {
     .film-card .showtime-row {
       border-bottom-color: rgba(128, 128, 128, 0.3);
+    }
+
+    .film-card .showtimes-show-more {
+      border-top-color: rgba(128, 128, 128, 0.3);
     }
   }
 

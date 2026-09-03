@@ -1531,6 +1531,8 @@ code {
   border-bottom: 1px solid var(--border-secondary);
 }
 
+/* The bottom rule of the final row is redundant, but keep it when a
+   "Show more" button follows so the two do not double up. */
 .showtime-row:last-child {
   border-bottom: none;
 }
@@ -1552,19 +1554,24 @@ code {
 }
 
 .showtimes-show-more {
-  margin-top: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
   font-family: inherit;
   font-size: 0.85rem;
-  padding: 4px 12px;
+  padding: 0.6rem 0;
   background-color: transparent;
-  border: 2px solid var(--border-primary);
+  border: none;
+  border-top: 1px solid var(--border-secondary);
   color: var(--text-primary);
+  font-weight: 600;
   cursor: pointer;
 }
 
 .showtimes-show-more:hover {
-  background-color: var(--hover-bg);
-  color: var(--color-white);
+  color: var(--text-secondary);
 }
 
 /* Cinema index page */
@@ -1751,6 +1758,10 @@ code {
   .film-card .day-tabs,
   .film-card .showtime-row {
     border-bottom-color: rgba(128, 128, 128, 0.3);
+  }
+
+  .film-card .showtimes-show-more {
+    border-top-color: rgba(128, 128, 128, 0.3);
   }
 
   .film-filters {

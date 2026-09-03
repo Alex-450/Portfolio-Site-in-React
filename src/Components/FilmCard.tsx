@@ -75,7 +75,7 @@ function FilmCard({
           filmTitle={film.title}
           filmLength={film.runtime}
           dayFilter={dayFilter}
-          maxPerDay={5}
+          maxPerDay={2}
         />
       </div>
     </div>
