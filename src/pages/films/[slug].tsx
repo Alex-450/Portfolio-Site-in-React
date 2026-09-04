@@ -4,7 +4,6 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { Container } from 'react-bootstrap';
-import { ArrowLeft } from 'lucide-react';
 import { FilmDetail, FilmsIndex } from '../../types';
 import YouTubeEmbed from '../../Components/YouTubeEmbed';
 import FilmShowtimes from '../../Components/FilmShowtimes';
@@ -233,10 +232,6 @@ export default function FilmDetailPage({ film }: Props) {
             filmLength={film.runtime}
           />
         </div>
-
-        <Link href="/film-listings/" className="back-link">
-          <ArrowLeft size={16} /> Back to Film Listings
-        </Link>
 
         {film.tmdb && (
           <div className="film-detail-tmdb">
