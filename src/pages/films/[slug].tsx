@@ -24,17 +24,6 @@ function getLanguageName(code: string): string {
   }
 }
 
-// Posters are stored at w342, which is small for a link preview card. TMDB
-// serves the same image at any width, so ask for a bigger one. Non-TMDB
-// posters (scraped from cinema sites) are used as-is.
-function getOgPosterUrl(posterUrl: string | undefined): string | null {
-  if (!posterUrl) return null;
-  return posterUrl.replace(
-    /^https:\/\/image\.tmdb\.org\/t\/p\/w\d+\//,
-    'https://image.tmdb.org/t/p/w780/',
-  );
-}
-
 export default function FilmDetailPage({ film }: Props) {
   const year = film.tmdb?.releaseDate?.split('-')[0];
   const language = film.tmdb?.originalLanguage
@@ -52,7 +41,11 @@ export default function FilmDetailPage({ film }: Props) {
   const pageTitle = `${film.title} | Film Listings | a-450`;
   const description = film.tmdb?.overview || `Showtimes for ${film.title}`;
   const pageUrl = `https://a-450.com/films/${film.slug}/`;
-  const ogImage = getOgPosterUrl(film.posterUrl);
+  // Posters are portrait (2:3) and served at w342. Link-preview unfurlers
+  // switch to a full-width card for larger images, which makes a portrait
+  // poster dominate the message, so keep the small size and omit the
+  // dimension tags — clients read the real dimensions from the image itself.
+  const ogImage = film.posterUrl || null;
 
   return (
     <>
@@ -67,19 +60,9 @@ export default function FilmDetailPage({ film }: Props) {
           <>
             <meta property="og:image" content={ogImage} />
             <meta property="og:image:alt" content={`${film.title} poster`} />
-            {ogImage.startsWith('https://image.tmdb.org/') && (
-              <>
-                <meta property="og:image:width" content="780" />
-                <meta property="og:image:height" content="1170" />
-              </>
-            )}
             <meta name="twitter:image" content={ogImage} />
           </>
         )}
-        {/* Posters are portrait (2:3), so a summary_large_image card would
-            centre-crop them. `summary` shows a square thumbnail beside the
-            text instead, which suits the shape. */}
-        <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={description} />
       </Head>
