@@ -133,9 +133,11 @@ async function fetchVenue({ name, apiBase }) {
     const time = timePart?.slice(0, 5);
     if (!date || !time || time === '00:00') continue;
 
-    const { title, subtitles, year: titleYear } = parseTitle(
-      decodeAndTrim(entry.title)
-    );
+    const {
+      title,
+      subtitles,
+      year: titleYear,
+    } = parseTitle(decodeAndTrim(entry.title));
 
     // Group screenings of the same film. The event `id` is stable; fall back to
     // title. Separate the subtitle variant so an "eng subs" screening is its own
@@ -146,9 +148,10 @@ async function fetchVenue({ name, apiBase }) {
       const fields = entry.fields ?? {};
       filmMap.set(key, {
         title,
-        // A lone name in `cast` is really the director for repertory titles;
-        // otherwise leave null and let TMDB fill it in later.
-        director: directorFromCast(fields.cast),
+        // Prefer the explicit director field; fall back to the cast heuristic
+        // (a lone name in `cast` is really the director for repertory titles)
+        // for the older entries that leave `director` empty.
+        director: fields.director?.trim() || directorFromCast(fields.cast),
         // Only trust a "(YYYY)" explicitly in the title. Rialto's `releaseDate`
         // field is the screening / re-release date, not the film's production
         // year — passing it to TMDB caused false matches (e.g. a generic title

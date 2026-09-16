@@ -3,7 +3,16 @@ import {
   decodeAndTrim,
   finalizeFilms,
   parseEventDateTime,
+  parseFilmLength,
+  normalizeSubtitles,
 } from './utils.mjs';
+import { cleanTitle } from '../../src/utils/filmTitle.mjs';
+
+// The ticketing system carries no metadata, so directors come from the website's
+// Strapi API instead. Without a director TMDB can't credit-validate a match and
+// skips the film entirely, so this is what gets Kriterion films enriched.
+const FILMS_API_URL =
+  'https://www.kriterion.nl/api/films?pagination[pageSize]=200';
 
 const TICKETS_BASE = 'https://tickets.kriterion.nl/kriterion/en/flow_configs';
 const EVENTS_LIST_URL = `${TICKETS_BASE}/1/z_events_list`;
@@ -86,6 +95,37 @@ async function fetchScreens(shows, concurrency = 8) {
   return screens;
 }
 
+// Map cleanTitle(title) -> { director, runtime, subtitles } from the site API.
+// Ticket titles and API titles differ in their annotations ("Los Tigres (ENG
+// subs)" vs "Los Tigres | Moderne Klassieker"), so key on the cleaned title,
+// which strips both parentheticals and pipe suffixes.
+async function fetchFilmMetadata() {
+  const byTitle = new Map();
+  try {
+    const res = await fetchWithRetry(FILMS_API_URL, {
+      headers: { ...BROWSER_HEADERS, Accept: 'application/json' },
+    });
+    const { data } = await res.json();
+    for (const entry of data || []) {
+      const a = entry?.attributes;
+      if (!a?.titel) continue;
+      const key = cleanTitle(a.titel);
+      // Keep the first entry with a director: the API lists near-duplicate rows
+      // per subtitle variant, and a later one may have an empty regie field.
+      if (byTitle.get(key)?.director) continue;
+      byTitle.set(key, {
+        director: a.regie?.trim() || null,
+        runtime: a.speelduur ? parseFilmLength(a.speelduur) : null,
+        subtitles: a.ondertitels ? normalizeSubtitles(a.ondertitels) : null,
+      });
+    }
+  } catch {
+    // Metadata is an enhancement; a failure here must not lose the showtimes.
+    console.warn('Kriterion: film metadata API failed — continuing without it');
+  }
+  return byTitle;
+}
+
 async function fetchKriterion() {
   console.log('Fetching Kriterion...');
 
@@ -102,15 +142,20 @@ async function fetchKriterion() {
   const upcoming = shows.filter((show) => show.date >= today);
   const skippedPast = shows.length - upcoming.length;
 
-  const screens = await fetchScreens(upcoming);
+  const [screens, metadata] = await Promise.all([
+    fetchScreens(upcoming),
+    fetchFilmMetadata(),
+  ]);
 
   const filmMap = new Map();
   for (const show of upcoming) {
     if (!filmMap.has(show.title)) {
+      const meta = metadata.get(cleanTitle(show.title));
       filmMap.set(show.title, {
         title: show.title,
-        director: null,
-        runtime: null,
+        director: meta?.director || null,
+        runtime: meta?.runtime || null,
+        subtitles: meta?.subtitles || null,
         posterUrl: '',
         showtimes: [],
       });

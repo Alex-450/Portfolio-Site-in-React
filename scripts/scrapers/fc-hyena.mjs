@@ -7,6 +7,8 @@ import {
   parseEventDateTime,
 } from './utils.mjs';
 
+import { cleanTitle } from '../../src/utils/filmTitle.mjs';
+
 const TICKETS_BASE = 'https://tickets.fchyena.nl/fchyena/en/flow_configs/1';
 const EVENTS_LIST_URL = `${TICKETS_BASE}/z_events_list`;
 const TICKET_URL_BASE =
@@ -190,6 +192,12 @@ async function fetchFcHyena() {
     timeZone: 'Europe/Amsterdam',
   });
 
+  // Title index over the same metadata, for shows with no production id.
+  const metadataByTitle = new Map();
+  for (const details of metadata.values()) {
+    if (details?.title) metadataByTitle.set(cleanTitle(details.title), details);
+  }
+
   const filmMap = new Map();
   let skippedPast = 0;
 
@@ -200,7 +208,14 @@ async function fetchFcHyena() {
     }
 
     const productionId = showToProduction.get(show.showId);
-    const details = productionId ? metadata.get(productionId) : null;
+    // A film only gets a production id if it's linked on the homepage; the
+    // search index carries entries that aren't (e.g. a regular screening whose
+    // homepage tile points at a themed one instead). Fall back to matching the
+    // index by title so those still get their director.
+    const details =
+      (productionId ? metadata.get(productionId) : null) ??
+      metadataByTitle.get(cleanTitle(show.title)) ??
+      null;
 
     const key = productionId ?? show.title;
     if (!filmMap.has(key)) {

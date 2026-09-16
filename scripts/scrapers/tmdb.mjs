@@ -56,6 +56,16 @@ function parseDirectors(director) {
   return { names, words };
 }
 
+// Whether two normalized person names refer to the same person, tolerating word
+// order. Sources credit Japanese names surname-first ("HIROTA Yusuke") while
+// TMDB lists them given-name-first ("Yusuke Hirota"), so an equality check alone
+// rejects a correct director. Compare the sorted word sets instead.
+const sameName = (a, b) => {
+  if (a === b) return true;
+  const words = (n) => n.split(/\s+/).filter(Boolean).sort().join(' ');
+  return Boolean(a) && Boolean(b) && words(a) === words(b);
+};
+
 // The directors credited on a TMDB movie-details payload, normalized.
 const creditedDirectors = (details) =>
   (details?.credits?.crew || [])
@@ -69,7 +79,7 @@ function directorMatches(targets, movieDirectors) {
     d.split(/\s+/).filter((w) => w.length > 1)
   );
   return (
-    targets.names.some((n) => movieDirectors.includes(n)) ||
+    targets.names.some((n) => movieDirectors.some((d) => sameName(n, d))) ||
     targets.words.some((w) => movieWords.includes(w))
   );
 }
@@ -178,6 +188,19 @@ function stripProgrammeSuffix(searchTitle) {
   return m ? m[1].trim() : null;
 }
 
+// Double bills pair two films in one listing ("At the Lovehotel + Fusion",
+// "When You Open the Door +The Tree of Sinners"). TMDB has no entry for the
+// pairing, only for each film, so split on "+" and let the callers try each
+// part. The director check downstream keeps a part from matching a wrong film.
+// Returns the parts, or [] when the title isn't a double bill.
+function splitDoubleBill(searchTitle) {
+  if (!searchTitle.includes('+')) return [];
+  return searchTitle
+    .split('+')
+    .map((p) => p.trim())
+    .filter((p) => p.length >= 3);
+}
+
 const titlesOverlap = (a, b) => a === b || a.includes(b) || b.includes(a);
 
 // Score a search result against the wanted title(s). Exact full-title match wins;
@@ -210,7 +233,8 @@ async function findInFilmography(targets, titles) {
   const people = (await tmdbGet('search/person', { query: targets.names[0] }))
     ?.results;
   for (const person of (people || []).slice(0, 3)) {
-    if (!targets.names.includes(normalizeName(person.name))) continue;
+    const personName = normalizeName(person.name);
+    if (!targets.names.some((n) => sameName(n, personName))) continue;
     const credits = await tmdbGet(`person/${person.id}/movie_credits`);
     const directed = (credits?.crew || []).filter((c) => c.job === 'Director');
 
@@ -386,7 +410,14 @@ export async function searchTmdbMovieDetails(
     let fetchedDetails = null;
 
     const targets = parseDirectors(director);
-    const wantedTitles = [searchTitle, postColonTitle];
+    // Include each half of a double bill so the filmography lookup can match the
+    // one film of the pair that TMDB actually lists.
+    const wantedTitles = [
+      searchTitle,
+      postColonTitle,
+      ...splitDoubleBill(searchTitle),
+      ...(postColonTitle ? splitDoubleBill(postColonTitle) : []),
+    ];
 
     // Try each strategy in turn until one yields a match (director must agree).
     bestMatch = await findInFilmography(targets, wantedTitles);

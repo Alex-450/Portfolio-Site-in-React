@@ -74,20 +74,29 @@ async function fetchFilmMetadata(slug) {
     });
     const html = await res.text();
 
+    // Labels vary across the site: the colon sits inside or outside the closing
+    // </strong>, and the value runs to the next tag (usually <br>, but the last
+    // field in a block ends at </p>). Capture the label and value loosely, then
+    // strip a leading colon off either side.
     const pairs = {};
     for (const [, label, value] of html.matchAll(
-      /<strong>([^<]+?)\s*<\/strong>\s*([^<]+?)\s*<br/g
+      /<strong>\s*([^<]+?)\s*<\/strong>\s*:?\s*([^<]*?)\s*</g
     )) {
-      pairs[label.trim()] = decodeAndTrim(value);
+      pairs[label.trim().replace(/:$/, '')] = decodeAndTrim(value);
     }
 
+    // The site uses both "Regie" and "Regisseur" (and "Speelduur"/"Duur") for
+    // the same field depending on the page template, so accept either.
+    const pick = (...labels) =>
+      labels.map((l) => pairs[l]).find(Boolean) || null;
+
+    const runtime = pick('Speelduur', 'Duur');
+    const subtitles = pick('Ondertiteling', 'Ondertitels');
     const result = {
-      director: pairs['Regie'] || null,
-      runtime: pairs['Speelduur'] ? parseFilmLength(pairs['Speelduur']) : null,
+      director: pick('Regie', 'Regisseur'),
+      runtime: runtime ? parseFilmLength(runtime) : null,
       // "Ondertiteling" (subtitles) is a language name like "Nederlands".
-      subtitles: pairs['Ondertiteling']
-        ? normalizeSubtitles(pairs['Ondertiteling'])
-        : null,
+      subtitles: subtitles ? normalizeSubtitles(subtitles) : null,
     };
     griffioenCache[slug] = result;
     saveGriffioenCache();
