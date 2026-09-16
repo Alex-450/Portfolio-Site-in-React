@@ -27,14 +27,13 @@ import WatchlistFilter from './filters/WatchlistFilter';
 import {
   getToday,
   getCurrentTime,
-  formatDate,
   previewFilms,
   comingSoonFilms,
   sortByNextShowtime,
-  defaultListingDate,
 } from '../utils/date';
 import { filterFilms, filterFilmsBySearch } from '../utils/filmFilters';
 import { useWatchlist } from '../hooks/useWatchlist';
+import { useDayFilter, ALL_DAYS } from '../hooks/useDayFilter';
 import { cinemas, getCinemaSlug } from '../data/cinemas';
 
 function filmsIndexToList(filmsIndex: FilmsIndexLite): FilmWithCinemasLite[] {
@@ -78,9 +77,6 @@ function groupFilmsByGenre(
   );
 }
 
-// URL sentinel for "user explicitly cleared the day filter".
-const ALL_DAYS = 'all';
-
 interface FilmListingsProps {
   filmsIndex: FilmsIndexLite;
 }
@@ -92,20 +88,10 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
 
   // URL-synced filters — memoized to keep stable references for useMemo deps
   const cinemaRaw = str(q.cinema);
-  const dayRaw = str(q.day);
   const genresRaw = str(q.genres);
   const cinemaFilter = useMemo(
     () => cinemaRaw.split(',').filter(Boolean),
     [cinemaRaw]
-  );
-  // A `day` param the user actually chose. Missing means "no explicit choice",
-  // which we default to today below. The `all` sentinel means the user actively
-  // cleared the day filter — distinct from missing, which would re-apply the
-  // default and make the default day impossible to remove.
-  const dayCleared = dayRaw === ALL_DAYS;
-  const explicitDayFilter = useMemo(
-    () => (dayRaw === ALL_DAYS ? [] : dayRaw.split(',').filter(Boolean)),
-    [dayRaw]
   );
   const genreFilter = useMemo(
     () => genresRaw.split(',').filter(Boolean),
@@ -141,32 +127,67 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     [router]
   );
 
-  // Emptying the day filter has to be recorded as the `all` sentinel rather than
-  // by dropping the param, or the implicit default day comes straight back and
-  // the selection can't be removed.
-  const setDayFilter = useCallback(
-    (days: string[]) => setFilter('day', days.length ? days : ALL_DAYS),
-    [setFilter]
-  );
-
   const today = useMemo(() => getToday(), []);
   const currentTime = useMemo(() => getCurrentTime(), []);
   const allFilms = useMemo(() => filmsIndexToList(filmsIndex), [filmsIndex]);
 
-  // Listings land on a single day: today, or the next day with showtimes once
-  // today is over. Showing every future date at once is overwhelming on load.
-  const defaultDay = useMemo(() => {
-    const date = defaultListingDate(allFilms, today, currentTime);
-    if (date === null) return null;
-    return date === today ? 'today' : date;
-  }, [allFilms, today, currentTime]);
-
-  const isDefaultDay =
-    !dayCleared && explicitDayFilter.length === 0 && defaultDay !== null;
-  const dayFilter = useMemo(
-    () => (isDefaultDay ? [defaultDay as string] : explicitDayFilter),
-    [isDefaultDay, defaultDay, explicitDayFilter]
+  // Films matching every filter *except* day/time — the set the day dropdown
+  // offers days from, so it never lists a day the other filters can't satisfy.
+  const filmsIgnoringDay = useMemo(
+    () =>
+      filterFilms(allFilms, {
+        cinemaFilter,
+        dayFilter: [],
+        timeFilter: null,
+        filmFilter,
+        genreFilter,
+        directorFilter,
+        today,
+        currentTime,
+        recentlyAdded: releaseFilter === 'recently-added',
+        upcomingRelease: releaseFilter === 'upcoming',
+        recentlyReleased: releaseFilter === 'recently-released',
+        reRelease: releaseFilter === 're-releases',
+      }),
+    [
+      allFilms,
+      cinemaFilter,
+      filmFilter,
+      genreFilter,
+      directorFilter,
+      today,
+      currentTime,
+      releaseFilter,
+    ]
   );
+
+  // Any filter other than day/time. Narrowing by one of these is a deliberate
+  // "show me this" that shouldn't stay pinned to a single day.
+  const hasNonDayFilters =
+    cinemaFilter.length > 0 ||
+    genreFilter.length > 0 ||
+    !!filmFilter ||
+    !!directorFilter ||
+    !!releaseFilter ||
+    watchlistFilter;
+
+  const {
+    dayFilter,
+    selectedDays,
+    defaultDay,
+    isDefaultDay,
+    dayOptions,
+    hasShowtimesToday,
+    hasEveningShowtimesToday,
+    setDayFilter,
+    getDayLabel,
+  } = useDayFilter({
+    filmsIgnoringDay,
+    hasNonDayFilters,
+    today,
+    currentTime,
+  });
+
   const cinemaNames = useMemo(() => getCinemaNames(filmsIndex), [filmsIndex]);
   const allGenres = useMemo(
     () => [...new Set(allFilms.flatMap((f) => f.genres || []))].sort(),
@@ -243,12 +264,14 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     return films;
   }, [baseFilms, filmSearch, watchlistFilter, watchlist]);
 
-  // The default "today" isn't a user choice, so it doesn't count as an active
-  // filter: the film bars stay visible and no chip is shown for it.
+  // The default day doesn't count as a *user-chosen* filter, so it alone
+  // doesn't replace the film bars with a filtered view. It is still surfaced
+  // as a chip below, so a narrowed list is never unexplained.
+  // `dayCleared` is likewise not a narrowing — it widens to all days — so it
+  // doesn't belong here either.
   const hasActiveFilters =
     cinemaFilter.length > 0 ||
-    explicitDayFilter.length > 0 ||
-    dayCleared ||
+    selectedDays.length > 0 ||
     !!timeFilter ||
     genreFilter.length > 0 ||
     !!filmFilter ||
@@ -259,10 +282,12 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   // Count of filters tucked behind the collapsible "Filters" panel.
   // Film search stays at the top level, so it's excluded here. Tonight is
   // composed of the day + time filters, which are already counted below.
+  // The default day counts too — it's constraining the results, so the badge
+  // should say so. Clearing it isn't a filter, so it adds nothing.
   const advancedFilterCount =
     cinemaFilter.length +
-    (dayCleared ? 1 : 0) +
-    explicitDayFilter.length +
+    (isDefaultDay ? 1 : 0) +
+    selectedDays.length +
     (timeFilter ? 1 : 0) +
     genreFilter.length +
     (directorFilter ? 1 : 0) +
@@ -292,75 +317,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     }
   }, [filmBarTab, hasPreviews, hasComingSoon]);
 
-  // Films filtered by everything except day - used for computing day options
-  const { dayOptions, hasShowtimesToday, hasEveningShowtimesToday } =
-    useMemo(() => {
-      const filmsForDayOptions = filterFilms(allFilms, {
-        cinemaFilter,
-        dayFilter: [],
-        timeFilter: null,
-        filmFilter,
-        genreFilter,
-        directorFilter,
-        today,
-        currentTime,
-        recentlyAdded: releaseFilter === 'recently-added',
-        upcomingRelease: releaseFilter === 'upcoming',
-        recentlyReleased: releaseFilter === 'recently-released',
-        reRelease: releaseFilter === 're-releases',
-      });
-      const allDates = new Set<string>();
-      filmsForDayOptions.forEach((film) => {
-        film.cinemaShowtimes.forEach((cs) => {
-          cs.showtimes.forEach((s) => {
-            if (s.date !== today) allDates.add(s.date);
-          });
-        });
-      });
-      const hasShowtimesToday = filmsForDayOptions.some((film) =>
-        film.cinemaShowtimes.some((cs) =>
-          cs.showtimes.some((s) => s.date === today)
-        )
-      );
-      const hasEveningShowtimesToday = filmsForDayOptions.some((film) =>
-        film.cinemaShowtimes.some((cs) =>
-          cs.showtimes.some((s) => s.date === today && s.time >= '18:00')
-        )
-      );
-      const dayOptions = Array.from(allDates)
-        .sort()
-        .map((date) => ({ value: date, label: formatDate(date) }));
-      return { dayOptions, hasShowtimesToday, hasEveningShowtimesToday };
-    }, [
-      allFilms,
-      cinemaFilter,
-      timeFilter,
-      filmFilter,
-      genreFilter,
-      directorFilter,
-      today,
-      currentTime,
-      releaseFilter,
-    ]);
-
-  // Clear invalid day filters
-  const validDayValues = useMemo(() => {
-    const values = new Set(['today', ...dayOptions.map((d) => d.value)]);
-    if (!hasShowtimesToday) values.delete('today');
-    return values;
-  }, [dayOptions, hasShowtimesToday]);
-
-  useEffect(() => {
-    const invalidDays = explicitDayFilter.filter((d) => !validDayValues.has(d));
-    if (invalidDays.length > 0) {
-      // Dropping the param here is right: a filter that went stale (e.g. the
-      // date rolled over) isn't the user clearing it, so the default should
-      // apply again.
-      const validDays = explicitDayFilter.filter((d) => validDayValues.has(d));
-      setFilter('day', validDays.length > 0 ? validDays : undefined);
-    }
-  }, [explicitDayFilter, validDayValues, setFilter]);
-
   // Group films by genre for carousel view
   const filmsByGenre = useMemo(
     () => groupFilmsByGenre(filteredFilms),
@@ -368,8 +324,8 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   );
 
   const isTonightActive =
-    explicitDayFilter.length === 1 &&
-    explicitDayFilter[0] === 'today' &&
+    selectedDays.length === 1 &&
+    selectedDays[0] === 'today' &&
     timeFilter === '18:00';
 
   const toggleTonight = useCallback(() => {
@@ -388,13 +344,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
       });
     }
   }, [isTonightActive, router]);
-
-  // Helper to get day label
-  const getDayLabel = (day: string) => {
-    if (day === 'today') return 'Today';
-    const option = dayOptions.find((d) => d.value === day);
-    return option ? option.label : day;
-  };
 
   return (
     <>
@@ -557,8 +506,14 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
           </div>
         )}
 
-        {hasActiveFilters && (
+        {(hasActiveFilters || isDefaultDay) && (
           <div className="active-filters">
+            {isDefaultDay && (
+              <button className="filter-chip" onClick={() => setDayFilter([])}>
+                {getDayLabel(defaultDay as string)}{' '}
+                <span className="chip-remove">×</span>
+              </button>
+            )}
             {cinemaFilter.map((cinema) => (
               <button
                 key={cinema}
@@ -573,25 +528,17 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
                 {cinema} <span className="chip-remove">×</span>
               </button>
             ))}
-            {explicitDayFilter.map((day) => (
+            {selectedDays.map((day) => (
               <button
                 key={day}
                 className="filter-chip"
                 onClick={() =>
-                  setDayFilter(explicitDayFilter.filter((d) => d !== day))
+                  setDayFilter(selectedDays.filter((d) => d !== day))
                 }
               >
                 {getDayLabel(day)} <span className="chip-remove">×</span>
               </button>
             ))}
-            {dayCleared && (
-              <button
-                className="filter-chip"
-                onClick={() => setFilter('day', undefined)}
-              >
-                All Days <span className="chip-remove">×</span>
-              </button>
-            )}
             {timeFilter && (
               <button
                 className="filter-chip"
@@ -659,10 +606,16 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
               onClick={() => {
                 setFilmSearch('');
                 setDirectorSearch('');
+                // Clearing everything has to include the default day, so the
+                // `all` sentinel goes in explicitly — an empty query would let
+                // the default re-apply and leave a Today chip standing.
                 router.push(
                   {
                     pathname: router.pathname,
-                    query: viewMode === 'carousel' ? { view: 'carousel' } : {},
+                    query: {
+                      day: ALL_DAYS,
+                      ...(viewMode === 'carousel' ? { view: 'carousel' } : {}),
+                    },
                   },
                   undefined,
                   { shallow: true }
