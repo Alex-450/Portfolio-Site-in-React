@@ -170,13 +170,15 @@
     accent-color: var(--dark-text-primary);
   }
 
-  .filter-chip {
+  .filter-chip,
+  .no-results-action {
     background-color: var(--dark-bg-secondary);
     color: var(--dark-text-primary);
     border-color: var(--hover-bg);
   }
 
-  .filter-chip:hover {
+  .filter-chip:hover,
+  .no-results-action:hover {
     background-color: var(--hover-bg);
     color: var(--dark-bg-primary);
   }

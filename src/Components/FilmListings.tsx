@@ -641,11 +641,26 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
         )}
 
         {filteredFilms.length === 0 && allFilms.length > 0 && (
-          <p className="no-results">
-            {filmSearch
-              ? `No showtimes found for "${filmSearch}"`
-              : 'No showtimes found for selected filters'}
-          </p>
+          <div className="no-results">
+            <p>
+              {filmSearch
+                ? `No showtimes found for "${filmSearch}"`
+                : 'No showtimes found for selected filters'}
+              {dayFilter.length > 0 &&
+                ` on ${dayFilter.map(getDayLabel).join(', ')}`}
+            </p>
+            {/* The day filter is the likeliest cause of an empty list — it can
+                be the default rather than something the user picked — so offer
+                the widening that keeps every other filter intact. */}
+            {dayFilter.length > 0 && (
+              <button
+                className="no-results-action"
+                onClick={() => setDayFilter([])}
+              >
+                Show all days
+              </button>
+            )}
+          </div>
         )}
 
         {viewMode === 'list' ? (
