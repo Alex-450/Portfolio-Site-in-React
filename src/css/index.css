@@ -51,7 +51,7 @@ html {
 }
 
 .nav-link:hover {
-  color: var(--dark-text-secondary)
+  color: var(--dark-text-secondary);
 }
 
 .skip-link {
@@ -232,7 +232,9 @@ button.footer-link {
   flex-shrink: 0;
   margin-left: 20px;
   opacity: 0.5;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
 }
 
 .home-nav-link:hover .home-nav-arrow {
@@ -513,7 +515,10 @@ code {
   color: inherit;
   border: 2px solid var(--border-primary);
   flex-shrink: 0;
-  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .listing-card:hover {
@@ -664,7 +669,6 @@ code {
   align-items: center;
   gap: 8px;
 }
-
 
 .active-filters {
   display: flex;

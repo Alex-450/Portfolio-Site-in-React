@@ -27,20 +27,22 @@ export function generateSlug(title) {
  * e.g., "Film (ENG subs) | Event" -> "film"; "Film - eng subs" -> "film"
  */
 export function cleanTitle(title) {
-  return stripDashAnnotation(title.split(/[|•]/)[0])
-    .replace(/\s*\[[^\]]*\]\s*/g, ' ') // strip [35mm], [OV], etc.
-    .replace(/\s*\([^)]*\)\s*/g, ' ')
-    .replace(/\s+incl\..*$/i, '') // strip "incl. panel talk" etc.
-    .replace(/[\u00B4\u2018\u2019\u0027]/g, "'")
-    .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '')
-    .replace(/–/, '-')
-    .replace(/^(.+?),\s+(the|a|an)\s*$/i, '$2 $1') // "Quiet Girl, The" -> "The Quiet Girl"
-    // Strip trailing sentence punctuation so titles that differ only by a final
-    // "!" / "?" / "." merge (e.g. "...Don't Die!" and "...Don't Die").
-    .replace(/[!?.,:;]+$/, '')
-    .trim()
-    .toLowerCase();
+  return (
+    stripDashAnnotation(title.split(/[|•]/)[0])
+      .replace(/\s*\[[^\]]*\]\s*/g, ' ') // strip [35mm], [OV], etc.
+      .replace(/\s*\([^)]*\)\s*/g, ' ')
+      .replace(/\s+incl\..*$/i, '') // strip "incl. panel talk" etc.
+      .replace(/[\u00B4\u2018\u2019\u0027]/g, "'")
+      .normalize('NFD')
+      .replace(/\p{Diacritic}/gu, '')
+      .replace(/–/, '-')
+      .replace(/^(.+?),\s+(the|a|an)\s*$/i, '$2 $1') // "Quiet Girl, The" -> "The Quiet Girl"
+      // Strip trailing sentence punctuation so titles that differ only by a final
+      // "!" / "?" / "." merge (e.g. "...Don't Die!" and "...Don't Die").
+      .replace(/[!?.,:;]+$/, '')
+      .trim()
+      .toLowerCase()
+  );
 }
 
 // Subtitle-related parentheticals — handled by the subtitles field, not shown

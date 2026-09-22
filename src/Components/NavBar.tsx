@@ -14,7 +14,9 @@ const NavBar = () => {
     <div className="navbar-container">
       <Container>
         <Navbar variant="dark" sticky="top">
-          <Link className="navbar-brand" href="/">a-450</Link>
+          <Link className="navbar-brand" href="/">
+            a-450
+          </Link>
           <button
             className="header-menu-button"
             onClick={() => setMenuOpen(!menuOpen)}

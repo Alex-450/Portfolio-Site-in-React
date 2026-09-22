@@ -9,7 +9,6 @@ interface CalendarEventParams {
   variant?: string | null;
 }
 
-
 function formatDateTimeForCalendar(date: string, time: string): string {
   // Convert YYYY-MM-DD and HH:MM to YYYYMMDDTHHmmSS format
   const [year, month, day] = date.split('-');

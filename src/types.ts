@@ -34,10 +34,7 @@ export interface BookBlogPost extends BaseBlogPost {
 }
 
 export type BlogPost =
-  | FilmBlogPost
-  | CreativeWritingBlogPost
-  | TechBlogPost
-  | BookBlogPost;
+  FilmBlogPost | CreativeWritingBlogPost | TechBlogPost | BookBlogPost;
 
 // Article metadata types for the layout
 interface BaseMetadata {
@@ -73,10 +70,7 @@ export interface BookMetadata extends BaseMetadata {
 }
 
 export type ArticleMetadata =
-  | FilmMetadata
-  | CreativeWritingMetadata
-  | TechMetadata
-  | BookMetadata;
+  FilmMetadata | CreativeWritingMetadata | TechMetadata | BookMetadata;
 
 export interface ArticleLayoutProps {
   metadata: ArticleMetadata;

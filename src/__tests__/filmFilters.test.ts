@@ -1,7 +1,9 @@
 import { filterFilms, filterFilmsBySearch } from '../utils/filmFilters';
 import { FilmWithCinemasLite } from '../types';
 
-const createFilm = (overrides: Partial<FilmWithCinemasLite> = {}): FilmWithCinemasLite => ({
+const createFilm = (
+  overrides: Partial<FilmWithCinemasLite> = {}
+): FilmWithCinemasLite => ({
   slug: 'test-film',
   title: 'Test Film',
   genres: ['Drama'],
@@ -14,8 +16,18 @@ const createFilm = (overrides: Partial<FilmWithCinemasLite> = {}): FilmWithCinem
     {
       cinema: 'Cinema A',
       showtimes: [
-        { date: '2024-03-15', time: '14:00', ticketUrl: 'http://example.com/1', screen: '' },
-        { date: '2024-03-15', time: '18:00', ticketUrl: 'http://example.com/2', screen: '' },
+        {
+          date: '2024-03-15',
+          time: '14:00',
+          ticketUrl: 'http://example.com/1',
+          screen: '',
+        },
+        {
+          date: '2024-03-15',
+          time: '18:00',
+          ticketUrl: 'http://example.com/2',
+          screen: '',
+        },
       ],
     },
   ],
@@ -57,7 +69,10 @@ describe('filterFilms', () => {
   };
 
   it('returns all films with no filters', () => {
-    const films = [createFilm(), createFilm({ slug: 'film-2', title: 'Film 2' })];
+    const films = [
+      createFilm(),
+      createFilm({ slug: 'film-2', title: 'Film 2' }),
+    ];
     const result = filterFilms(films, baseOptions);
     expect(result).toHaveLength(2);
   });
@@ -70,12 +85,22 @@ describe('filterFilms', () => {
         cinemaShowtimes: [
           {
             cinema: 'Cinema B',
-            showtimes: [{ date: '2024-03-15', time: '14:00', ticketUrl: 'http://b.com', screen: '' }],
+            showtimes: [
+              {
+                date: '2024-03-15',
+                time: '14:00',
+                ticketUrl: 'http://b.com',
+                screen: '',
+              },
+            ],
           },
         ],
       }),
     ];
-    const result = filterFilms(films, { ...baseOptions, cinemaFilter: ['Cinema A'] });
+    const result = filterFilms(films, {
+      ...baseOptions,
+      cinemaFilter: ['Cinema A'],
+    });
     expect(result).toHaveLength(1);
   });
 
@@ -84,7 +109,10 @@ describe('filterFilms', () => {
       createFilm({ genres: ['Drama', 'Action'] }),
       createFilm({ slug: 'film-2', genres: ['Comedy'] }),
     ];
-    const result = filterFilms(films, { ...baseOptions, genreFilter: ['Action'] });
+    const result = filterFilms(films, {
+      ...baseOptions,
+      genreFilter: ['Action'],
+    });
     expect(result).toHaveLength(1);
   });
 
@@ -93,7 +121,10 @@ describe('filterFilms', () => {
       createFilm({ director: 'Christopher Nolan' }),
       createFilm({ slug: 'film-2', director: 'Quentin Tarantino' }),
     ];
-    const result = filterFilms(films, { ...baseOptions, directorFilter: 'christopher nolan' });
+    const result = filterFilms(films, {
+      ...baseOptions,
+      directorFilter: 'christopher nolan',
+    });
     expect(result).toHaveLength(1);
   });
 
@@ -102,7 +133,10 @@ describe('filterFilms', () => {
       createFilm({ title: 'Inception' }),
       createFilm({ slug: 'film-2', title: 'Interstellar' }),
     ];
-    const result = filterFilms(films, { ...baseOptions, filmFilter: 'ception' });
+    const result = filterFilms(films, {
+      ...baseOptions,
+      filmFilter: 'ception',
+    });
     expect(result).toHaveLength(1);
     expect(result[0].title).toBe('Inception');
   });
@@ -113,7 +147,14 @@ describe('filterFilms', () => {
         cinemaShowtimes: [
           {
             cinema: 'Cinema A',
-            showtimes: [{ date: '2024-03-15', time: '14:00', ticketUrl: 'http://a.com', screen: '' }],
+            showtimes: [
+              {
+                date: '2024-03-15',
+                time: '14:00',
+                ticketUrl: 'http://a.com',
+                screen: '',
+              },
+            ],
           },
         ],
       }),
@@ -122,12 +163,22 @@ describe('filterFilms', () => {
         cinemaShowtimes: [
           {
             cinema: 'Cinema A',
-            showtimes: [{ date: '2024-03-16', time: '14:00', ticketUrl: 'http://b.com', screen: '' }],
+            showtimes: [
+              {
+                date: '2024-03-16',
+                time: '14:00',
+                ticketUrl: 'http://b.com',
+                screen: '',
+              },
+            ],
           },
         ],
       }),
     ];
-    const result = filterFilms(films, { ...baseOptions, dayFilter: ['2024-03-15'] });
+    const result = filterFilms(films, {
+      ...baseOptions,
+      dayFilter: ['2024-03-15'],
+    });
     expect(result).toHaveLength(1);
   });
 
@@ -137,12 +188,22 @@ describe('filterFilms', () => {
         cinemaShowtimes: [
           {
             cinema: 'Cinema A',
-            showtimes: [{ date: '2024-03-15', time: '14:00', ticketUrl: 'http://a.com', screen: '' }],
+            showtimes: [
+              {
+                date: '2024-03-15',
+                time: '14:00',
+                ticketUrl: 'http://a.com',
+                screen: '',
+              },
+            ],
           },
         ],
       }),
     ];
-    const result = filterFilms(films, { ...baseOptions, cinemaFilter: ['Cinema Z'] });
+    const result = filterFilms(films, {
+      ...baseOptions,
+      cinemaFilter: ['Cinema Z'],
+    });
     expect(result).toHaveLength(0);
   });
 
@@ -151,7 +212,11 @@ describe('filterFilms', () => {
       createFilm({ dateAdded: '2024-03-12' }), // 2 days ago
       createFilm({ slug: 'film-2', dateAdded: '2024-03-01' }), // 13 days ago
     ];
-    const result = filterFilms(films, { ...baseOptions, today: '2024-03-14', recentlyAdded: true });
+    const result = filterFilms(films, {
+      ...baseOptions,
+      today: '2024-03-14',
+      recentlyAdded: true,
+    });
     expect(result).toHaveLength(1);
   });
 
@@ -160,7 +225,11 @@ describe('filterFilms', () => {
       createFilm({ releaseDate: '2024-03-20' }), // Future
       createFilm({ slug: 'film-2', releaseDate: '2024-03-01' }), // Past
     ];
-    const result = filterFilms(films, { ...baseOptions, today: '2024-03-14', upcomingRelease: true });
+    const result = filterFilms(films, {
+      ...baseOptions,
+      today: '2024-03-14',
+      upcomingRelease: true,
+    });
     expect(result).toHaveLength(1);
     expect(result[0].releaseDate).toBe('2024-03-20');
   });

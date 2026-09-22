@@ -1,8 +1,4 @@
-import {
-  FilmWithCinemasLite,
-  CinemaShowtimes,
-  Showtime,
-} from '../types';
+import { FilmWithCinemasLite, CinemaShowtimes, Showtime } from '../types';
 import { filterPastShowtimes } from './date';
 
 interface FilterOptions {

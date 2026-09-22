@@ -92,9 +92,7 @@ function FilmShowtimes({
   const activeDay =
     selectedDay && dates.includes(selectedDay) ? selectedDay : dates[0];
 
-  const activeShowtimes = activeDay
-    ? showtimesByDate.get(activeDay) || []
-    : [];
+  const activeShowtimes = activeDay ? showtimesByDate.get(activeDay) || [] : [];
 
   const isCapped =
     maxPerDay != null && !expanded && activeShowtimes.length > maxPerDay;
@@ -133,10 +131,10 @@ function FilmShowtimes({
           >
             <span className="showtime-time">{s.time}</span>
             <span className="showtime-cinema">
-              <Link href={`/cinemas/${getCinemaSlug(s.cinema)}/`}>{s.cinema}</Link>
-              {s.screen && (
-                <span className="cinema-screen"> - {s.screen}</span>
-              )}
+              <Link href={`/cinemas/${getCinemaSlug(s.cinema)}/`}>
+                {s.cinema}
+              </Link>
+              {s.screen && <span className="cinema-screen"> - {s.screen}</span>}
               {s.variant && (
                 <span className="cinema-variant"> ({s.variant})</span>
               )}

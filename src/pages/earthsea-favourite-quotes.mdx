@@ -5,9 +5,8 @@ export const blog = findBlogPostByLink('/earthsea-favourite-quotes');
 export const metadata = {
   ...blog,
   bookAuthor: blog.type === 'book' ? blog.author : '',
-  keywords: "Earthsea: The First Four Books favourite quotes",
+  keywords: 'Earthsea: The First Four Books favourite quotes',
 };
-
 
 “Thus to Ged who had lost faith in himself, Vetch had given that gift only a friend can give, the proof of unshaken, unshakable trust.” - p.70-71
 
@@ -19,7 +18,6 @@ She did feel it. A dark hand had let go its lifelong hold upon her heart. But sh
 “But I am old. I have made my choices, I have done what I must do. I stand in daylight facing my own death. And I know that there is only one power worth having. And that is the power, not to take, but to accept. Not to have, but to give” - p. 424
 
 ---
-
 
 export default function Layout({ children }) {
   return <ArticleLayout metadata={metadata}>{children}</ArticleLayout>;

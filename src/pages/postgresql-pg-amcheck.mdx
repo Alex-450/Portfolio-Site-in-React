@@ -7,11 +7,11 @@ export const metadata = {
   keywords: 'PostgreSQL, pg_amcheck',
 };
 
-A recent Ubuntu upgrade on machines hosting PostgreSQL databases had the unintended 
+A recent Ubuntu upgrade on machines hosting PostgreSQL databases had the unintended
 side effect of corrupting a number of indexes. Note that this post does not look into the root causes,
 but just at methods for assessing impact and fixing issues.
 
-We got some alerts for specific indexes that were corrupted, but I wanted to audit all of our databases to check how widespread the issue was 
+We got some alerts for specific indexes that were corrupted, but I wanted to audit all of our databases to check how widespread the issue was
 and which indexes in particular had been impacted. This is when I came across a PostgreSQL extension that I had not used before: `pg_amcheck`.
 It allows you to check for corruption issues in your database, and you can specify whether you'd like to check a specific
 database, index, schema or table. It can be called like so:

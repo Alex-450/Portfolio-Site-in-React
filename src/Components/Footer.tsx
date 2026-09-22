@@ -9,7 +9,9 @@ const Footer = () => (
     <Container>
       <Row>
         <Col xs={12} md={4} className="footer-explainer">
-          <p>External Links <ArrowDown size={16} /></p>
+          <p>
+            External Links <ArrowDown size={16} />
+          </p>
         </Col>
       </Row>
 
@@ -48,7 +50,9 @@ const Footer = () => (
 
       <Row>
         <Col xs={12} md={{ span: 4, offset: 4 }} className="footer-explainer">
-          <p>Options <ArrowDown size={16} /></p>
+          <p>
+            Options <ArrowDown size={16} />
+          </p>
         </Col>
       </Row>
 
@@ -60,7 +64,9 @@ const Footer = () => (
 
       <Row className="d-flex">
         <Col xs={12} md={{ span: 4, offset: 8 }} className="footer-explainer">
-          <p>Sitemap <ArrowDown size={16} /></p>
+          <p>
+            Sitemap <ArrowDown size={16} />
+          </p>
         </Col>
       </Row>
 

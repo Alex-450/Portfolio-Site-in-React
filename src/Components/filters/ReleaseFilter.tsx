@@ -1,11 +1,7 @@
 import SingleSelectDropdown from './SingleSelectDropdown';
 
 type ReleaseFilterValue =
-  | 'recently-added'
-  | 'upcoming'
-  | 'recently-released'
-  | 're-releases'
-  | null;
+  'recently-added' | 'upcoming' | 'recently-released' | 're-releases' | null;
 
 interface ReleaseFilterProps {
   value: ReleaseFilterValue;

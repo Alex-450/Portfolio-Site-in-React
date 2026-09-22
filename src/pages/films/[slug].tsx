@@ -81,7 +81,9 @@ export default function FilmDetailPage({ film }: Props) {
               {film.director && (
                 <p className="film-hero-director">
                   Directed by{' '}
-                  <Link href={`/film-listings?director=${encodeURIComponent(film.director)}&day=all`}>
+                  <Link
+                    href={`/film-listings?director=${encodeURIComponent(film.director)}&day=all`}
+                  >
                     {film.director}
                   </Link>
                 </p>
@@ -92,9 +94,13 @@ export default function FilmDetailPage({ film }: Props) {
               <div className="film-hero-meta">
                 {year && <span className="film-hero-badge">{year}</span>}
                 {film.runtime && (
-                  <span className="film-hero-badge">{film.runtime} minutes</span>
+                  <span className="film-hero-badge">
+                    {film.runtime} minutes
+                  </span>
                 )}
-                {language && <span className="film-hero-badge">{language}</span>}
+                {language && (
+                  <span className="film-hero-badge">{language}</span>
+                )}
               </div>
               {film.tmdb?.genres && film.tmdb.genres.length > 0 && (
                 <div className="film-hero-genres">
@@ -110,21 +116,51 @@ export default function FilmDetailPage({ film }: Props) {
               )}
               <div className="film-external-links">
                 {film.tmdb?.imdbId && (
-                  <a href={`https://www.imdb.com/title/${film.tmdb.imdbId}/`} target="_blank" rel="noopener noreferrer" className="film-external-link">IMDb<ArrowUpRight size={14} /></a>
+                  <a
+                    href={`https://www.imdb.com/title/${film.tmdb.imdbId}/`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="film-external-link"
+                  >
+                    IMDb
+                    <ArrowUpRight size={14} />
+                  </a>
                 )}
                 {film.tmdb?.rtId && (
-                  <a href={`https://www.rottentomatoes.com/${film.tmdb.rtId}`} target="_blank" rel="noopener noreferrer" className="film-external-link">
-                    Rotten Tomatoes{film.tmdb.rtScore ? ` ${film.tmdb.rtScore}` : ''}<ArrowUpRight size={14} />
+                  <a
+                    href={`https://www.rottentomatoes.com/${film.tmdb.rtId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="film-external-link"
+                  >
+                    Rotten Tomatoes
+                    {film.tmdb.rtScore ? ` ${film.tmdb.rtScore}` : ''}
+                    <ArrowUpRight size={14} />
                   </a>
                 )}
                 {film.tmdb?.metacriticId && (
-                  <a href={`https://www.metacritic.com/${film.tmdb.metacriticId}`} target="_blank" rel="noopener noreferrer" className="film-external-link">
-                    Metacritic{film.tmdb.metacriticScore ? ` ${film.tmdb.metacriticScore}` : ''}<ArrowUpRight size={14} />
+                  <a
+                    href={`https://www.metacritic.com/${film.tmdb.metacriticId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="film-external-link"
+                  >
+                    Metacritic
+                    {film.tmdb.metacriticScore
+                      ? ` ${film.tmdb.metacriticScore}`
+                      : ''}
+                    <ArrowUpRight size={14} />
                   </a>
                 )}
                 {film.tmdb?.letterboxdId && (
-                  <a href={`https://letterboxd.com/film/${film.tmdb.letterboxdId}/`} target="_blank" rel="noopener noreferrer" className="film-external-link">
-                    Letterboxd<ArrowUpRight size={14} />
+                  <a
+                    href={`https://letterboxd.com/film/${film.tmdb.letterboxdId}/`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="film-external-link"
+                  >
+                    Letterboxd
+                    <ArrowUpRight size={14} />
                   </a>
                 )}
               </div>
@@ -152,7 +188,9 @@ export default function FilmDetailPage({ film }: Props) {
               {film.director && (
                 <p className="film-detail-director">
                   Directed by{' '}
-                  <Link href={`/film-listings?director=${encodeURIComponent(film.director)}&day=all`}>
+                  <Link
+                    href={`/film-listings?director=${encodeURIComponent(film.director)}&day=all`}
+                  >
                     {film.director}
                   </Link>
                 </p>
@@ -164,9 +202,13 @@ export default function FilmDetailPage({ film }: Props) {
                 <div className="film-detail-meta">
                   {year && <span className="film-detail-badge">{year}</span>}
                   {film.runtime && (
-                    <span className="film-detail-badge">{film.runtime} minutes</span>
+                    <span className="film-detail-badge">
+                      {film.runtime} minutes
+                    </span>
                   )}
-                  {language && <span className="film-detail-badge">{language}</span>}
+                  {language && (
+                    <span className="film-detail-badge">{language}</span>
+                  )}
                 </div>
               )}
               {film.tmdb?.genres && film.tmdb.genres.length > 0 && (
@@ -185,21 +227,51 @@ export default function FilmDetailPage({ film }: Props) {
               )}
               <div className="film-external-links">
                 {film.tmdb?.imdbId && (
-                  <a href={`https://www.imdb.com/title/${film.tmdb.imdbId}/`} target="_blank" rel="noopener noreferrer" className="film-external-link">IMDb<ArrowUpRight size={14} /></a>
+                  <a
+                    href={`https://www.imdb.com/title/${film.tmdb.imdbId}/`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="film-external-link"
+                  >
+                    IMDb
+                    <ArrowUpRight size={14} />
+                  </a>
                 )}
                 {film.tmdb?.rtId && (
-                  <a href={`https://www.rottentomatoes.com/${film.tmdb.rtId}`} target="_blank" rel="noopener noreferrer" className="film-external-link">
-                    Rotten Tomatoes{film.tmdb.rtScore ? ` ${film.tmdb.rtScore}` : ''}<ArrowUpRight size={14} />
+                  <a
+                    href={`https://www.rottentomatoes.com/${film.tmdb.rtId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="film-external-link"
+                  >
+                    Rotten Tomatoes
+                    {film.tmdb.rtScore ? ` ${film.tmdb.rtScore}` : ''}
+                    <ArrowUpRight size={14} />
                   </a>
                 )}
                 {film.tmdb?.metacriticId && (
-                  <a href={`https://www.metacritic.com/${film.tmdb.metacriticId}`} target="_blank" rel="noopener noreferrer" className="film-external-link">
-                    Metacritic{film.tmdb.metacriticScore ? ` ${film.tmdb.metacriticScore}` : ''}<ArrowUpRight size={14} />
+                  <a
+                    href={`https://www.metacritic.com/${film.tmdb.metacriticId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="film-external-link"
+                  >
+                    Metacritic
+                    {film.tmdb.metacriticScore
+                      ? ` ${film.tmdb.metacriticScore}`
+                      : ''}
+                    <ArrowUpRight size={14} />
                   </a>
                 )}
                 {film.tmdb?.letterboxdId && (
-                  <a href={`https://letterboxd.com/film/${film.tmdb.letterboxdId}/`} target="_blank" rel="noopener noreferrer" className="film-external-link">
-                    Letterboxd<ArrowUpRight size={14} />
+                  <a
+                    href={`https://letterboxd.com/film/${film.tmdb.letterboxdId}/`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="film-external-link"
+                  >
+                    Letterboxd
+                    <ArrowUpRight size={14} />
                   </a>
                 )}
               </div>
