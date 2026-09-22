@@ -15,8 +15,6 @@ interface UseDayFilterArgs {
   // Films matching every filter except day/time. Day options are derived from
   // this so the dropdown never offers a day the other filters can't satisfy.
   filmsIgnoringDay: FilmWithCinemasLite[];
-  // Whether any non-day filter (cinema, genre, director, …) is active.
-  hasNonDayFilters: boolean;
   today: string;
   currentTime: string;
 }
@@ -51,14 +49,13 @@ export interface UseDayFilterResult {
  * distinct sentinel, clearing the default day would drop the param, the default
  * would immediately come back, and the filter could never be removed.
  *
- * The default applies only on the unfiltered landing view. Once the user has
- * narrowed by director/genre/cinema/etc the day constraint is dropped, since a
- * director who isn't screening today would otherwise yield an empty list for a
- * reason the user never chose.
+ * The default survives the user adding other filters: it's shown as a removable
+ * chip, so narrowing by genre or cinema on top of it is a deliberate stack, not
+ * a reason to silently widen back to every day. Entry points that mean "start
+ * fresh" (a director link) clear it by passing the sentinel themselves.
  */
 export function useDayFilter({
   filmsIgnoringDay,
-  hasNonDayFilters,
   today,
   currentTime,
 }: UseDayFilterArgs): UseDayFilterResult {
@@ -119,10 +116,7 @@ export function useDayFilter({
   }, [filmsIgnoringDay, today, currentTime]);
 
   const isDefaultDay =
-    !dayCleared &&
-    !hasNonDayFilters &&
-    explicitDayFilter.length === 0 &&
-    defaultDay !== null;
+    !dayCleared && explicitDayFilter.length === 0 && defaultDay !== null;
 
   const dayFilter = useMemo(
     () => (isDefaultDay ? [defaultDay as string] : explicitDayFilter),
@@ -152,18 +146,6 @@ export function useDayFilter({
       shallow: true,
     });
   }, [explicitDayFilter, validDayValues, router]);
-
-  // The sentinel only means anything while the default would otherwise apply.
-  // Once another filter is active the default is already off, so the param is a
-  // no-op — drop it rather than let it trail through shared URLs.
-  useEffect(() => {
-    if (!dayCleared || !hasNonDayFilters) return;
-    const query = { ...router.query };
-    delete query.day;
-    router.replace({ pathname: router.pathname, query }, undefined, {
-      shallow: true,
-    });
-  }, [dayCleared, hasNonDayFilters, router]);
 
   const getDayLabel = useCallback(
     (day: string) => {

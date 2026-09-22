@@ -55,7 +55,7 @@ function FilmCard({
         {film.director && (
           <div className="film-director">
             <Link
-              href={`/film-listings?director=${encodeURIComponent(film.director)}`}
+              href={`/film-listings?director=${encodeURIComponent(film.director)}&day=all`}
             >
               {film.director}
             </Link>

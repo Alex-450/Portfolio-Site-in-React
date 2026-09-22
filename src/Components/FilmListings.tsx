@@ -161,16 +161,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     ]
   );
 
-  // Any filter other than day/time. Narrowing by one of these is a deliberate
-  // "show me this" that shouldn't stay pinned to a single day.
-  const hasNonDayFilters =
-    cinemaFilter.length > 0 ||
-    genreFilter.length > 0 ||
-    !!filmFilter ||
-    !!directorFilter ||
-    !!releaseFilter ||
-    watchlistFilter;
-
   const {
     dayFilter,
     selectedDays,
@@ -183,7 +173,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     getDayLabel,
   } = useDayFilter({
     filmsIgnoringDay,
-    hasNonDayFilters,
     today,
     currentTime,
   });
