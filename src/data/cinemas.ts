@@ -84,6 +84,13 @@ export const cinemas: Record<string, Cinema> = {
     websiteUrl: 'https://silo.rialtofilm.nl',
     adsMinutes: 20,
   },
+  'Filmhuis Den Haag': {
+    name: 'Filmhuis Den Haag',
+    slug: 'filmhuis-den-haag',
+    address: 'Spui 191, 2511 BN Den Haag',
+    websiteUrl: 'https://filmhuisdenhaag.nl',
+    adsMinutes: 20,
+  },
   'Rialto VU': {
     name: 'Rialto VU',
     slug: 'rialto-vu',
