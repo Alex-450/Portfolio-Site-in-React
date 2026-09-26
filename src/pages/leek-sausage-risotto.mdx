@@ -1,0 +1,41 @@
+import ArticleLayout from '../Components/ArticleLayout';
+import { findBlogPostByLink } from '../utils/blog';
+
+export const blog = findBlogPostByLink('/leek-sausage-risotto');
+export const metadata = {
+  ...blog,
+  keywords: 'leek sausage risotto recipe mushrooms parmesan',
+};
+
+## Ingredients
+
+- Leeks
+- Mushrooms
+- Sausages
+- Risotto rice
+- White or red cooking wine
+- Soy sauce
+- Salted butter (optional)
+- Parmesan
+
+## Method
+
+1. Chop half the leeks and mushrooms.
+2. Add them to a pan of boiling water with salt and a splash of soy sauce.
+3. Boil for 10 minutes, then leave to simmer — this is your broth.
+4. In another pan, fry the chopped sausage. Move it to a bowl once cooked.
+5. Chop the rest of the leeks and mushrooms, fry them in the same pan, and add
+   them to the bowl.
+6. Add the risotto rice to the pan and fry briefly, then add a splash of wine.
+7. Start ladling in the broth from the pot, vegetables included, one spoon at a
+   time, adding more each time the liquid has boiled off.
+8. Add a chunk of salted butter along the way if you want it creamier.
+9. Once the rice has softened, stir the vegetables and sausage back in.
+10. Add one last ladle of broth, grate in some parmesan and mix.
+11. Dish into bowls.
+
+---
+
+export default function Layout({ children }) {
+  return <ArticleLayout metadata={metadata}>{children}</ArticleLayout>;
+}

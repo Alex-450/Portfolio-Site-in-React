@@ -1,6 +1,14 @@
 [
   {
     "type": "recipe",
+    "title": "Leek and sausage risotto",
+    "time": "40 mins",
+    "link": "/leek-sausage-risotto",
+    "dateAdded": "26/09/2026",
+    "description": "Risotto built on a quick leek and mushroom broth, with fried sausage"
+  },
+  {
+    "type": "recipe",
     "title": "Granola",
     "time": "45 mins",
     "link": "/granola",

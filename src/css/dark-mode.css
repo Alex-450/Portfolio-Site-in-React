@@ -569,13 +569,4 @@
   .showtime-cinema a:hover {
     color: var(--dark-text-primary);
   }
-
-  article h2 {
-    border-bottom-color: var(--dark-border);
-  }
-
-  article li::marker,
-  article > h1 + p {
-    color: var(--dark-text-secondary);
-  }
 }
