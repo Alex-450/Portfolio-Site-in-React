@@ -8,6 +8,7 @@ import { fetchRialto } from './scrapers/rialto.mjs';
 import { fetchGriffioen } from './scrapers/griffioen.mjs';
 import { fetchCinecenter } from './scrapers/cinecenter.mjs';
 import { fetchFilmhuisDenHaag } from './scrapers/filmhuis-den-haag.mjs';
+import { fetchFlora } from './scrapers/flora.mjs';
 import { toDateStamp } from './scrapers/utils.mjs';
 import {
   searchTmdbMovieDetails,
@@ -53,6 +54,7 @@ async function fetchAllCinemas() {
     griffioenResult,
     cinecenterResult,
     filmhuisDenHaagResult,
+    floraResult,
   ] = await Promise.allSettled([
     fetchAllRssFeeds(),
     fetchFcHyena(),
@@ -62,6 +64,7 @@ async function fetchAllCinemas() {
     fetchGriffioen(),
     fetchCinecenter(),
     fetchFilmhuisDenHaag(),
+    fetchFlora(),
   ]);
 
   const cinemas = [];
@@ -84,6 +87,7 @@ async function fetchAllCinemas() {
     { name: 'Rialto VU', result: griffioenResult },
     { name: 'Cinecenter', result: cinecenterResult },
     { name: 'Filmhuis Den Haag', result: filmhuisDenHaagResult },
+    { name: 'Flora Filmtheater', result: floraResult },
   ];
 
   for (const { name, result } of namedResults) {

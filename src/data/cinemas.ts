@@ -91,6 +91,13 @@ export const cinemas: Record<string, Cinema> = {
     websiteUrl: 'https://filmhuisdenhaag.nl',
     adsMinutes: 20,
   },
+  'Flora Filmtheater': {
+    name: 'Flora Filmtheater',
+    slug: 'flora-filmtheater',
+    address: 'De Constant Rebecquestraat 55, 2518 RC Den Haag',
+    websiteUrl: 'https://florafilmtheater.nl',
+    adsMinutes: 20,
+  },
   'Rialto VU': {
     name: 'Rialto VU',
     slug: 'rialto-vu',
