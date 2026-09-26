@@ -234,3 +234,96 @@ describe('filterFilms', () => {
     expect(result[0].releaseDate).toBe('2024-03-20');
   });
 });
+
+describe('filterFilms — city filter', () => {
+  const baseOptions = {
+    cinemaFilter: [],
+    dayFilter: [],
+    timeFilter: null,
+    filmFilter: '',
+    genreFilter: [],
+    directorFilter: '',
+    today: '2024-03-14',
+    currentTime: '10:00',
+  };
+
+  // Real cinema names, so the city lookup in cinemas.ts is exercised rather
+  // than mocked: Kriterion is Amsterdam, Flora and Filmhuis are Den Haag.
+  const showtimes = [
+    {
+      date: '2024-03-15',
+      time: '20:00',
+      ticketUrl: 'http://example.com/1',
+      screen: '',
+    },
+  ];
+
+  const multiCityFilm = createFilm({
+    slug: 'multi-city',
+    cinemaShowtimes: [
+      { cinema: 'Kriterion', showtimes },
+      { cinema: 'Flora Filmtheater', showtimes },
+    ],
+  });
+
+  const hagueOnlyFilm = createFilm({
+    slug: 'hague-only',
+    cinemaShowtimes: [{ cinema: 'Filmhuis Den Haag', showtimes }],
+  });
+
+  it('returns every city when no city is selected', () => {
+    const result = filterFilms([multiCityFilm, hagueOnlyFilm], baseOptions);
+    expect(result).toHaveLength(2);
+    expect(result[0].cinemaShowtimes).toHaveLength(2);
+  });
+
+  it('keeps only the selected city’s cinemas on a film', () => {
+    const result = filterFilms([multiCityFilm], {
+      ...baseOptions,
+      cityFilter: 'Den Haag',
+    });
+    expect(result).toHaveLength(1);
+    expect(result[0].cinemaShowtimes.map((cs) => cs.cinema)).toEqual([
+      'Flora Filmtheater',
+    ]);
+  });
+
+  it('drops films with no cinema in the selected city', () => {
+    const result = filterFilms([hagueOnlyFilm], {
+      ...baseOptions,
+      cityFilter: 'Amsterdam',
+    });
+    expect(result).toHaveLength(0);
+  });
+
+  it('intersects with the cinema filter rather than overriding it', () => {
+    // Both filters agree — the Amsterdam cinema survives.
+    expect(
+      filterFilms([multiCityFilm], {
+        ...baseOptions,
+        cityFilter: 'Amsterdam',
+        cinemaFilter: ['Kriterion'],
+      })[0].cinemaShowtimes.map((cs) => cs.cinema)
+    ).toEqual(['Kriterion']);
+
+    // They disagree — a Den Haag city with an Amsterdam cinema matches nothing,
+    // rather than one silently winning.
+    expect(
+      filterFilms([multiCityFilm], {
+        ...baseOptions,
+        cityFilter: 'Den Haag',
+        cinemaFilter: ['Kriterion'],
+      })
+    ).toHaveLength(0);
+  });
+
+  it('ignores an unknown cinema name when a city is selected', () => {
+    const unknown = createFilm({
+      slug: 'unknown-venue',
+      cinemaShowtimes: [{ cinema: 'Some Closed Cinema', showtimes }],
+    });
+    expect(
+      filterFilms([unknown], { ...baseOptions, cityFilter: 'Amsterdam' })
+    ).toHaveLength(0);
+  });
+});

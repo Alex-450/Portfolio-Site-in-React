@@ -1,6 +1,6 @@
 ## Description
 
-Personal portfolio site with a blog and film listings for Amsterdam/Haarlem cinemas.
+Personal portfolio site with a blog and film listings for Amsterdam, Haarlem and Den Haag cinemas.
 
 ## Features
 

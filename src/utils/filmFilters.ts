@@ -1,7 +1,9 @@
 import { FilmWithCinemasLite, CinemaShowtimes, Showtime } from '../types';
+import { City, getCinemaNamesInCity } from '../data/cinemas';
 import { filterPastShowtimes } from './date';
 
 interface FilterOptions {
+  cityFilter?: City | null;
   cinemaFilter: string[];
   dayFilter: string[];
   timeFilter: string | null;
@@ -40,13 +42,19 @@ function filterShowtimesByTime(
 
 function filterCinemaShowtimes(
   cinemaShowtimes: CinemaShowtimes[],
+  cityFilter: City | null,
   cinemaFilter: string[],
   dayFilter: string[],
   timeFilter: string | null,
   today: string,
   currentTime: string
 ): CinemaShowtimes[] {
+  // A city restricts the listing to its own venues; an explicit cinema choice
+  // narrows it further, so the two intersect rather than override each other.
+  const cityCinemas = cityFilter ? getCinemaNamesInCity(cityFilter) : null;
+
   return cinemaShowtimes
+    .filter((cs) => !cityCinemas || cityCinemas.includes(cs.cinema))
     .filter(
       (cs) => cinemaFilter.length === 0 || cinemaFilter.includes(cs.cinema)
     )
@@ -115,6 +123,7 @@ export function filterFilms(
   options: FilterOptions
 ): FilmWithCinemasLite[] {
   const {
+    cityFilter = null,
     cinemaFilter,
     dayFilter,
     timeFilter,
@@ -153,6 +162,7 @@ export function filterFilms(
       ...film,
       cinemaShowtimes: filterCinemaShowtimes(
         film.cinemaShowtimes,
+        cityFilter,
         cinemaFilter,
         dayFilter,
         timeFilter,

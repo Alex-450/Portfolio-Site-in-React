@@ -1,6 +1,13 @@
+// The cities the listings cover. Used by the city filter to group cinemas and
+// to narrow the cinema dropdown to one city's venues.
+export const CITIES = ['Amsterdam', 'Haarlem', 'Den Haag'] as const;
+
+export type City = (typeof CITIES)[number];
+
 export interface Cinema {
   name: string;
   slug: string;
+  city: City;
   address: string;
   websiteUrl: string;
   adsMinutes: number;
@@ -10,6 +17,7 @@ export const cinemas: Record<string, Cinema> = {
   LAB111: {
     name: 'LAB111',
     slug: 'lab111',
+    city: 'Amsterdam',
     address: 'Arie Biemondstraat 111, 1054 PD Amsterdam',
     websiteUrl: 'https://lab111.nl',
     adsMinutes: 20,
@@ -17,6 +25,7 @@ export const cinemas: Record<string, Cinema> = {
   Eye: {
     name: 'Eye Filmmuseum',
     slug: 'eye',
+    city: 'Amsterdam',
     address: 'IJpromenade 1, 1031 KT Amsterdam',
     websiteUrl: 'https://www.eyefilm.nl',
     adsMinutes: 20,
@@ -24,6 +33,7 @@ export const cinemas: Record<string, Cinema> = {
   'Studio K': {
     name: 'Studio K',
     slug: 'studio-k',
+    city: 'Amsterdam',
     address: 'Timorplein 62, 1094 CC Amsterdam',
     websiteUrl: 'https://studio-k.nu',
     adsMinutes: 20,
@@ -31,6 +41,7 @@ export const cinemas: Record<string, Cinema> = {
   FilmHallen: {
     name: 'FilmHallen',
     slug: 'filmhallen',
+    city: 'Amsterdam',
     address: 'Hannie Dankbaarpassage 12, 1053 RT Amsterdam',
     websiteUrl: 'https://filmhallen.nl',
     adsMinutes: 20,
@@ -38,6 +49,7 @@ export const cinemas: Record<string, Cinema> = {
   'The Movies': {
     name: 'The Movies',
     slug: 'the-movies',
+    city: 'Amsterdam',
     address: 'Haarlemmerdijk 161, 1013 KH Amsterdam',
     websiteUrl: 'https://themovies.nl',
     adsMinutes: 20,
@@ -45,6 +57,7 @@ export const cinemas: Record<string, Cinema> = {
   FilmKoepel: {
     name: 'FilmKoepel',
     slug: 'filmkoepel',
+    city: 'Haarlem',
     address: 'Haarlemmerplein 7, 2023 AA Haarlem',
     websiteUrl: 'https://filmkoepel.nl',
     adsMinutes: 20,
@@ -52,6 +65,7 @@ export const cinemas: Record<string, Cinema> = {
   'FC Hyena': {
     name: 'FC Hyena',
     slug: 'fc-hyena',
+    city: 'Amsterdam',
     address: 'Aambeeldstraat 24, 1021 KB Amsterdam',
     websiteUrl: 'https://fchyena.nl',
     adsMinutes: 20,
@@ -59,6 +73,7 @@ export const cinemas: Record<string, Cinema> = {
   Kriterion: {
     name: 'Kriterion',
     slug: 'kriterion',
+    city: 'Amsterdam',
     address: 'Roetersstraat 170, 1018 WE Amsterdam',
     websiteUrl: 'https://kriterion.nl',
     adsMinutes: 20,
@@ -66,6 +81,7 @@ export const cinemas: Record<string, Cinema> = {
   Cinecenter: {
     name: 'Cinecenter',
     slug: 'cinecenter',
+    city: 'Amsterdam',
     address: 'Lijnbaansgracht 236, 1017 PH Amsterdam',
     websiteUrl: 'https://www.cinecenter.nl',
     adsMinutes: 20,
@@ -73,6 +89,7 @@ export const cinemas: Record<string, Cinema> = {
   'Rialto De Pijp': {
     name: 'Rialto De Pijp',
     slug: 'rialto-de-pijp',
+    city: 'Amsterdam',
     address: 'Ceintuurbaan 338, 1072 GN Amsterdam',
     websiteUrl: 'https://depijp.rialtofilm.nl',
     adsMinutes: 20,
@@ -80,6 +97,7 @@ export const cinemas: Record<string, Cinema> = {
   'Rialto Silo': {
     name: 'Rialto Silo',
     slug: 'rialto-silo',
+    city: 'Amsterdam',
     address: 'Faas Wilkesstraat 102, 1095 MD Amsterdam',
     websiteUrl: 'https://silo.rialtofilm.nl',
     adsMinutes: 20,
@@ -87,6 +105,7 @@ export const cinemas: Record<string, Cinema> = {
   'Filmhuis Den Haag': {
     name: 'Filmhuis Den Haag',
     slug: 'filmhuis-den-haag',
+    city: 'Den Haag',
     address: 'Spui 191, 2511 BN Den Haag',
     websiteUrl: 'https://filmhuisdenhaag.nl',
     adsMinutes: 20,
@@ -94,6 +113,7 @@ export const cinemas: Record<string, Cinema> = {
   'Flora Filmtheater': {
     name: 'Flora Filmtheater',
     slug: 'flora-filmtheater',
+    city: 'Den Haag',
     address: 'De Constant Rebecquestraat 55, 2518 RC Den Haag',
     websiteUrl: 'https://florafilmtheater.nl',
     adsMinutes: 20,
@@ -101,6 +121,7 @@ export const cinemas: Record<string, Cinema> = {
   'Rialto VU': {
     name: 'Rialto VU',
     slug: 'rialto-vu',
+    city: 'Amsterdam',
     address: 'De Boelelaan 1111, 1081 HV Amsterdam',
     websiteUrl: 'https://griffioen.vu.nl',
     adsMinutes: 20,
@@ -124,4 +145,21 @@ export function getCinemaBySlug(
     if (cinema.slug === slug) return { key, cinema };
   }
   return undefined;
+}
+
+// The cinema names belonging to a city — used to narrow the cinema filter to a
+// selected city's venues.
+export function getCinemaNamesInCity(city: City): string[] {
+  return Object.values(cinemas)
+    .filter((cinema) => cinema.city === city)
+    .map((cinema) => cinema.name);
+}
+
+// The city a cinema name belongs to, or null when the name isn't a known cinema
+// (film data can name a venue that has since been removed from the config).
+export function getCityForCinema(cinemaName: string): City | null {
+  return (
+    Object.values(cinemas).find((cinema) => cinema.name === cinemaName)?.city ??
+    null
+  );
 }

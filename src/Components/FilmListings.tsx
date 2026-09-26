@@ -14,6 +14,7 @@ import FilmBarToggle, { FilmBarTab } from './FilmBarToggle';
 import ViewToggle from './ViewToggle';
 import GenreCarouselRow from './GenreCarouselRow';
 import CinemaFilter from './filters/CinemaFilter';
+import CityFilter from './filters/CityFilter';
 import DayFilter from './filters/DayFilter';
 import DirectorFilter from './filters/DirectorFilter';
 import GenreFilter from './filters/GenreFilter';
@@ -34,7 +35,13 @@ import {
 import { filterFilms, filterFilmsBySearch } from '../utils/filmFilters';
 import { useWatchlist } from '../hooks/useWatchlist';
 import { useDayFilter, ALL_DAYS } from '../hooks/useDayFilter';
-import { cinemas, getCinemaSlug } from '../data/cinemas';
+import {
+  cinemas,
+  getCinemaSlug,
+  getCityForCinema,
+  City,
+  CITIES,
+} from '../data/cinemas';
 
 function filmsIndexToList(filmsIndex: FilmsIndexLite): FilmWithCinemasLite[] {
   return Object.values(filmsIndex).sort((a, b) =>
@@ -99,6 +106,8 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   );
   const filmFilter = str(q.film);
   const directorFilter = str(q.director);
+  const cityFilter = (CITIES.find((c) => c === str(q.city)) ??
+    null) as City | null;
   const releaseFilter = (str(q.release) || null) as ReleaseFilterValue;
   const timeFilter = str(q.time) || null;
   const viewMode = (str(q.view) === 'carousel' ? 'carousel' : 'list') as
@@ -127,6 +136,26 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     [router]
   );
 
+  // Update several filters in one navigation. Two setFilter calls in a row
+  // would both read the same router.query and the second would clobber the
+  // first, so anything that changes two keys at once must go through this.
+  const setFilters = useCallback(
+    (updates: Record<string, string | string[] | undefined>) => {
+      const query = { ...router.query };
+      for (const [key, value] of Object.entries(updates)) {
+        if (!value || (Array.isArray(value) && !value.length)) {
+          delete query[key];
+        } else {
+          query[key] = Array.isArray(value) ? value.join(',') : value;
+        }
+      }
+      router.push({ pathname: router.pathname, query }, undefined, {
+        shallow: true,
+      });
+    },
+    [router]
+  );
+
   const today = useMemo(() => getToday(), []);
   const currentTime = useMemo(() => getCurrentTime(), []);
   const allFilms = useMemo(() => filmsIndexToList(filmsIndex), [filmsIndex]);
@@ -136,6 +165,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const filmsIgnoringDay = useMemo(
     () =>
       filterFilms(allFilms, {
+        cityFilter,
         cinemaFilter,
         dayFilter: [],
         timeFilter: null,
@@ -151,6 +181,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
       }),
     [
       allFilms,
+      cityFilter,
       cinemaFilter,
       filmFilter,
       genreFilter,
@@ -177,7 +208,30 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     currentTime,
   });
 
-  const cinemaNames = useMemo(() => getCinemaNames(filmsIndex), [filmsIndex]);
+  const allCinemaNames = useMemo(
+    () => getCinemaNames(filmsIndex),
+    [filmsIndex]
+  );
+
+  // Only offer cities that actually have cinemas in the current film data.
+  const availableCities = useMemo(() => {
+    const present = new Set(
+      allCinemaNames
+        .map(getCityForCinema)
+        .filter((city): city is City => city !== null)
+    );
+    return CITIES.filter((city) => present.has(city));
+  }, [allCinemaNames]);
+
+  // Selecting a city narrows the cinema dropdown to that city's venues, so the
+  // two filters can't be combined into an empty result.
+  const cinemaNames = useMemo(
+    () =>
+      cityFilter
+        ? allCinemaNames.filter((name) => getCityForCinema(name) === cityFilter)
+        : allCinemaNames,
+    [allCinemaNames, cityFilter]
+  );
   const allGenres = useMemo(
     () => [...new Set(allFilms.flatMap((f) => f.genres || []))].sort(),
     [allFilms]
@@ -200,6 +254,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   // the list view applies film search and watchlist on top.
   const baseFilms = useMemo(() => {
     let films = filterFilms(allFilms, {
+      cityFilter,
       cinemaFilter,
       dayFilter,
       timeFilter,
@@ -233,6 +288,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     return films;
   }, [
     allFilms,
+    cityFilter,
     cinemaFilter,
     dayFilter,
     timeFilter,
@@ -259,6 +315,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   // `dayCleared` is likewise not a narrowing — it widens to all days — so it
   // doesn't belong here either.
   const hasActiveFilters =
+    !!cityFilter ||
     cinemaFilter.length > 0 ||
     selectedDays.length > 0 ||
     !!timeFilter ||
@@ -274,6 +331,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   // The default day counts too — it's constraining the results, so the badge
   // should say so. Clearing it isn't a filter, so it adds nothing.
   const advancedFilterCount =
+    (cityFilter ? 1 : 0) +
     cinemaFilter.length +
     (isDefaultDay ? 1 : 0) +
     selectedDays.length +
@@ -340,12 +398,12 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
         <title>Film Listings | a-450</title>
         <meta
           name="description"
-          content="Amsterdam cinema showtimes from LAB111, Studio K, The Movies & more"
+          content="Cinema showtimes for Amsterdam, Haarlem & Den Haag — LAB111, Studio K, Filmhuis Den Haag & more"
         />
         <meta property="og:title" content="Film Listings | a-450" />
         <meta
           property="og:description"
-          content="Amsterdam cinema showtimes from LAB111, Studio K, The Movies & more"
+          content="Cinema showtimes for Amsterdam, Haarlem & Den Haag — LAB111, Studio K, Filmhuis Den Haag & more"
         />
         <meta property="og:type" content="website" />
       </Head>
@@ -448,6 +506,25 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
                 Tonight
               </button>
             )}
+            {availableCities.length > 1 && (
+              <CityFilter
+                value={cityFilter}
+                onChange={(city) => {
+                  // Drop any selected cinema outside the new city, so the
+                  // cinema filter never contradicts the city filter.
+                  const kept = city
+                    ? cinemaFilter.filter(
+                        (name) => getCityForCinema(name) === city
+                      )
+                    : cinemaFilter;
+                  setFilters({
+                    city: city ?? undefined,
+                    cinema: kept.length ? kept : undefined,
+                  });
+                }}
+                availableCities={availableCities}
+              />
+            )}
             <CinemaFilter
               selectedCinemas={cinemaFilter}
               onChange={(v) => setFilter('cinema', v)}
@@ -501,6 +578,14 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
               <button className="filter-chip" onClick={() => setDayFilter([])}>
                 {getDayLabel(defaultDay as string)}{' '}
                 <span className="chip-remove">×</span>
+              </button>
+            )}
+            {cityFilter && (
+              <button
+                className="filter-chip"
+                onClick={() => setFilter('city', undefined)}
+              >
+                {cityFilter} <span className="chip-remove">×</span>
               </button>
             )}
             {cinemaFilter.map((cinema) => (
