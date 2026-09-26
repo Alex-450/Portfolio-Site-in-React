@@ -5,6 +5,7 @@ import blogPostArchive from '../blogPostArchive.json';
 // Typing it as FilmsIndex keeps the sitemap checkable without the real file.
 import filmsJson from '../data/films.json';
 import type { FilmsIndex } from '../types';
+import { CATEGORIES } from '../data/blogCategories';
 
 const filmsData = filmsJson as FilmsIndex;
 
@@ -23,6 +24,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     };
   });
 
+  const blogCategoryPages = CATEGORIES.map(({ slug }) => ({
+    url: `${baseUrl}/blog/${slug}`,
+    lastModified: new Date().toISOString(),
+  }));
+
   // dateAdded is optional on FilmDetail, so fall back to now rather than
   // emitting an "Invalid Date" lastModified into the sitemap.
   const filmPages = Object.values(filmsData).map((film) => ({
@@ -37,6 +43,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: baseUrl, lastModified: new Date().toISOString() },
     { url: `${baseUrl}/blog`, lastModified: new Date().toISOString() },
     { url: `${baseUrl}/film-listings`, lastModified: new Date().toISOString() },
+    ...blogCategoryPages,
     ...blogPages,
     ...filmPages,
   ];

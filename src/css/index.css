@@ -263,6 +263,7 @@ button.footer-link {
   color: var(--text-primary);
   padding: 2px 8px;
   white-space: nowrap;
+  text-decoration: none;
 }
 
 .blog-pill:hover {

@@ -1,18 +1,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
-import blogPostArchive from '../blogPostArchive.json';
 import { Container, Col, Row } from 'react-bootstrap';
-import { BlogPost } from '../types';
 import { ArrowRight } from 'lucide-react';
-
-type CategoryFilter = 'film' | 'creative-writing' | 'tech' | 'book';
-
-const CATEGORIES: { key: CategoryFilter; label: string }[] = [
-  { key: 'film', label: 'Film' },
-  { key: 'creative-writing', label: 'Creative Writing' },
-  { key: 'tech', label: 'Tech' },
-  { key: 'book', label: 'Books' },
-];
+import blogPostArchive from '../blogPostArchive.json';
+import { BlogPost } from '../types';
+import { CATEGORIES, CategoryFilter } from '../data/blogCategories';
 
 const getSubtitle = (blog: BlogPost) =>
   blog.type === 'creative-writing' ? blog.location : blog.topic;
@@ -31,8 +23,11 @@ const BlogRow = ({ blog, index }: { blog: BlogPost; index: number }) => (
   </Link>
 );
 
-const Page = () => {
-  const [activeCategory, setActiveCategory] = useState<CategoryFilter>('film');
+interface BlogArchiveProps {
+  activeCategory: CategoryFilter;
+}
+
+const BlogArchive = ({ activeCategory }: BlogArchiveProps) => {
   const [showArchive, setShowArchive] = useState(false);
   const posts: BlogPost[] = blogPostArchive as BlogPost[];
 
@@ -52,14 +47,14 @@ const Page = () => {
       <h1>Blog</h1>
       <div className="blog-pills">
         {CATEGORIES.filter(({ key }) => activeCategories.has(key)).map(
-          ({ key, label }) => (
-            <button
+          ({ key, slug, label }) => (
+            <Link
               key={key}
+              href={`/blog/${slug}`}
               className={`blog-pill ${activeCategory === key ? 'blog-pill-active' : ''}`}
-              onClick={() => setActiveCategory(key)}
             >
               {label}
-            </button>
+            </Link>
           )
         )}
       </div>
@@ -88,4 +83,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default BlogArchive;
