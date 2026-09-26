@@ -1,6 +1,13 @@
 [
   {
     "type": "recipe",
+    "title": "Nicky's sourdough",
+    "link": "/nickys-sourdough",
+    "dateAdded": "26/09/2026",
+    "description": "A sourdough loaf, from refreshing the starter to two ways of baking it"
+  },
+  {
+    "type": "recipe",
     "title": "Leek and sausage risotto",
     "time": "40 mins",
     "link": "/leek-sausage-risotto",

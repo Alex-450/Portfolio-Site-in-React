@@ -1,0 +1,66 @@
+import ArticleLayout from '../Components/ArticleLayout';
+import { findBlogPostByLink } from '../utils/blog';
+
+export const blog = findBlogPostByLink('/nickys-sourdough');
+export const metadata = {
+  ...blog,
+  keywords: 'sourdough recipe starter bread flour dutch oven banneton',
+};
+
+To make a loaf, start by refreshing the starter.
+
+## To refresh the starter
+
+---
+
+Put 100gm of the starter into a bowl and add:
+
+- 100gm white bread flour.
+- 50ml water
+
+1. Mix to a stiff dough.
+2. Put the resulting dough into a clean jar.
+3. Leave the lid off the jar for about a day – until the dough has risen to 2-3
+   times its original size.
+
+This is your refreshed starter. Put on the lid and it will keep in the fridge
+for up to two weeks.
+
+## Sourdough loaf
+
+---
+
+Take c. 150gm of the starter (whatever's left after you've refreshed the
+starter), and add:
+
+- 500gm any bread flour
+- 2 tsp salt
+- 300 – 350ml warm water (the warmth isn't essential but gets the dough rising)
+- squirt of honey (optional)
+
+1. Mix the ingredients to a pliant dough in a mixer/by hand. Don't knead.
+2. Cover for 30 mins.
+3. Fold and stretch the dough, but don't knead. Wet your hands to avoid them
+   sticking to the dough.
+4. Leave to rise in a warm place.
+5. Repeat the fold and stretch and leave to rise a second time.
+6. Repeat the fold and stretch for a third time and shape for baking.
+7. Once the dough has risen for the third time, set the oven at 240-250C and
+   place a tin of hot water at the bottom of the oven.
+8. Bake in a Dutch oven (a large cast iron casserole pot) with the lid on for 20
+   minutes, then remove the lid and bake for a further 25 minutes.
+
+Or (the way I do it):
+
+Do the final rise in a bread proofing basket (banneton) and bake on a baking
+stone for 15 minutes at 240C, and 30 minutes on 200C.
+
+NB If the three lots of rising take too long, and it's getting late, put the
+dough in the fridge and carry the process on in the morning, just give the dough
+time to warm up again first.
+
+---
+
+export default function Layout({ children }) {
+  return <ArticleLayout metadata={metadata}>{children}</ArticleLayout>;
+}
