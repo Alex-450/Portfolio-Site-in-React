@@ -1,5 +1,34 @@
 [
   {
+    "type": "recipe",
+    "title": "Granola",
+    "time": "45 mins",
+    "link": "/granola",
+    "dateAdded": "26/09/2026",
+    "description": "Oats, nuts and seeds baked with cardamom, cinnamon and coconut oil"
+  },
+  {
+    "type": "recipe",
+    "title": "Thai red curry",
+    "link": "/thai-red-curry",
+    "dateAdded": "26/09/2026",
+    "description": "Coconut milk curry with vegetables and chicken or tofu, served with jasmine rice"
+  },
+  {
+    "type": "recipe",
+    "title": "Salmon and avocado rice bowl",
+    "link": "/salmon-avocado-rice-bowl",
+    "dateAdded": "26/09/2026",
+    "description": "Marinated salmon with avocado, cucumber and sriracha mayo over jasmine rice"
+  },
+  {
+    "type": "recipe",
+    "title": "Beef udon stir fry",
+    "link": "/beef-udon-stir-fry",
+    "dateAdded": "26/09/2026",
+    "description": "Marinated beef, bimi broccoli and udon noodles in a sesame soy sauce"
+  },
+  {
     "type": "creative-writing",
     "title": "Nana",
     "location": "Hove",

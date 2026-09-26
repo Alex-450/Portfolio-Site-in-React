@@ -1,0 +1,42 @@
+import ArticleLayout from '../Components/ArticleLayout';
+import { findBlogPostByLink } from '../utils/blog';
+
+export const blog = findBlogPostByLink('/beef-udon-stir-fry');
+export const metadata = {
+  ...blog,
+  keywords: 'beef udon stir fry recipe japanese noodles bimi broccoli',
+};
+
+## Ingredients
+
+- Beef steak
+- Bimi broccoli
+- Udon noodles
+- Garlic
+- Mushrooms (optional)
+- Sesame seeds
+
+### Sauce
+
+- Sesame oil
+- Corn starch
+- Soy sauce
+- Sugar
+- Mirin
+
+## Method
+
+1. Mix all the sauce ingredients together.
+2. Thinly slice the beef and mix with some of the sauce. Leave to marinade.
+3. Fry the beef, then remove from the pan.
+4. In the same pan, fry the garlic, broccoli and mushrooms (if using).
+5. Once the veg is cooked, add the udon noodles and the rest of the sauce.
+6. Add the meat back.
+7. Sprinkle with sesame seeds.
+8. Serve.
+
+---
+
+export default function Layout({ children }) {
+  return <ArticleLayout metadata={metadata}>{children}</ArticleLayout>;
+}

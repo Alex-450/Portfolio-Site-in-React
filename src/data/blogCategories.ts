@@ -17,6 +17,7 @@ export const CATEGORIES: {
   },
   { key: 'tech', slug: 'tech', label: 'Tech' },
   { key: 'book', slug: 'books', label: 'Books' },
+  { key: 'recipe', slug: 'recipes', label: 'Recipes' },
 ];
 
 export const DEFAULT_CATEGORY: CategoryFilter = 'film';

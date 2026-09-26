@@ -1896,3 +1896,51 @@ code {
     height: 12px;
   }
 }
+
+/* Article body headings. Bootstrap's default h2 is responsive and nearly as
+   large as the post title; bring section headings down to the 1.25rem used
+   elsewhere on the site, and give them the underline the cinema sections and
+   blog index already use so they read as section breaks rather than more text. */
+article h2 {
+  font-size: 1.25rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+/* Sub-sections (a recipe's Sauce or Marinade) sit inside a section, so they
+   stay clearly smaller than the heading above them. */
+article h3 {
+  font-size: 1rem;
+  margin-top: 1.75rem;
+  margin-bottom: 0.6rem;
+}
+
+/* The first section heading sits right under the title block, which already
+   has its own bottom margin, so it needs far less room above it. */
+article > h2:first-of-type {
+  margin-top: 1.5rem;
+}
+
+/* Lists here are mostly terse (ingredients, steps), so they read better tight;
+   the gap between items was leaving short entries stranded. */
+article ul,
+article ol {
+  margin-bottom: 0;
+  padding-left: 1.25rem;
+}
+
+article li {
+  margin-bottom: 0.15rem;
+}
+
+article li::marker {
+  color: var(--text-secondary);
+}
+
+/* The subtitle under the title is metadata, not body copy. */
+article > h1 + p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}

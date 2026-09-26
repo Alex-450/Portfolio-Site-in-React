@@ -1,0 +1,41 @@
+import ArticleLayout from '../Components/ArticleLayout';
+import { findBlogPostByLink } from '../utils/blog';
+
+export const blog = findBlogPostByLink('/salmon-avocado-rice-bowl');
+export const metadata = {
+  ...blog,
+  keywords: 'salmon avocado rice bowl recipe sriracha mayo jasmine rice',
+};
+
+## Ingredients
+
+- Salmon fillets
+- Jasmine rice
+- Avocado
+- Cucumber
+- Sriracha sauce
+- Mayonnaise
+
+### Marinade
+
+- Soy sauce
+- Fish sauce
+- Honey
+- Chilli flakes
+
+## Method
+
+1. Mix the marinade ingredients together.
+2. Cover the salmon in the marinade and leave it.
+3. Cook the jasmine rice as per the packet instructions.
+4. Chop the avocado into long slices.
+5. Chop the cucumber into small cubes.
+6. Mix the mayonnaise with the sriracha.
+7. Slowly pan fry the salmon.
+8. Serve.
+
+---
+
+export default function Layout({ children }) {
+  return <ArticleLayout metadata={metadata}>{children}</ArticleLayout>;
+}

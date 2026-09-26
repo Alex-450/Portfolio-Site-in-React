@@ -38,6 +38,10 @@ function renderMetadataSubtitle(meta: ArticleMetadata & { author: string }) {
           {meta.topic} - {meta.bookAuthor}
         </p>
       );
+    case 'recipe': {
+      const details = [meta.serves, meta.time].filter(Boolean);
+      return details.length ? <p>{details.join(' - ')}</p> : null;
+    }
   }
 }
 
@@ -72,7 +76,6 @@ const ArticleLayout = ({ metadata, children }: ArticleLayoutProps) => {
           <article>
             <h1>{meta.title}</h1>
             {renderMetadataSubtitle(meta)}
-            <br />
             {children}
           </article>
         </Col>

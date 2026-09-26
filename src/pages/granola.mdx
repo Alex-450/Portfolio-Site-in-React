@@ -1,0 +1,33 @@
+import ArticleLayout from '../Components/ArticleLayout';
+import { findBlogPostByLink } from '../utils/blog';
+
+export const blog = findBlogPostByLink('/granola');
+export const metadata = {
+  ...blog,
+  keywords: 'granola recipe oats coconut oil cardamom cinnamon honey',
+};
+
+## Ingredients
+
+- Coconut oil
+- Ground cardamom
+- Ground cinnamon
+- Honey or maple syrup
+- Oats
+- Nuts and seeds of your choice
+
+## Method
+
+1. Heat up the coconut oil in a pot.
+2. Turn off the heat once it has liquified.
+3. Add the ground cardamom and cinnamon.
+4. Add the honey or maple syrup.
+5. Add the oats and nuts/seeds of your choice to a bowl.
+6. Pour the coconut oil over the ingredients in the bowl.
+7. Cook for 45 mins at 160°C, stirring every 5-10 mins.
+
+---
+
+export default function Layout({ children }) {
+  return <ArticleLayout metadata={metadata}>{children}</ArticleLayout>;
+}

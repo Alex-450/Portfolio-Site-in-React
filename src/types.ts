@@ -33,8 +33,20 @@ export interface BookBlogPost extends BaseBlogPost {
   author: string;
 }
 
+export interface RecipeBlogPost extends BaseBlogPost {
+  type: 'recipe';
+  // Recipes carry no topic — the title alone names the dish.
+  // Rough active time, e.g. "45 mins" — shown on the post, not the index.
+  time?: string;
+  serves?: string;
+}
+
 export type BlogPost =
-  FilmBlogPost | CreativeWritingBlogPost | TechBlogPost | BookBlogPost;
+  | FilmBlogPost
+  | CreativeWritingBlogPost
+  | TechBlogPost
+  | BookBlogPost
+  | RecipeBlogPost;
 
 // Article metadata types for the layout
 interface BaseMetadata {
@@ -69,8 +81,18 @@ export interface BookMetadata extends BaseMetadata {
   bookAuthor: string;
 }
 
+export interface RecipeMetadata extends BaseMetadata {
+  type: 'recipe';
+  time?: string;
+  serves?: string;
+}
+
 export type ArticleMetadata =
-  FilmMetadata | CreativeWritingMetadata | TechMetadata | BookMetadata;
+  | FilmMetadata
+  | CreativeWritingMetadata
+  | TechMetadata
+  | BookMetadata
+  | RecipeMetadata;
 
 export interface ArticleLayoutProps {
   metadata: ArticleMetadata;

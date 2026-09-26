@@ -6,22 +6,30 @@ import blogPostArchive from '../blogPostArchive.json';
 import { BlogPost } from '../types';
 import { CATEGORIES, CategoryFilter } from '../data/blogCategories';
 
-const getSubtitle = (blog: BlogPost) =>
-  blog.type === 'creative-writing' ? blog.location : blog.topic;
+// Recipes have no subtitle — their title alone names the dish.
+const getSubtitle = (blog: BlogPost) => {
+  if (blog.type === 'recipe') return null;
+  return blog.type === 'creative-writing' ? blog.location : blog.topic;
+};
 
-const BlogRow = ({ blog, index }: { blog: BlogPost; index: number }) => (
-  <Link href={blog.link} className="blog-link" key={blog.link}>
-    <Row
-      className="blog-row slide-in"
-      style={{ animationDelay: `${index / 10 + 0.1}s` }}
-    >
-      <Col md={2}>{blog.dateAdded}</Col>
-      <Col>
-        {getSubtitle(blog)} | {blog.title} <ArrowRight size={16} />
-      </Col>
-    </Row>
-  </Link>
-);
+const BlogRow = ({ blog, index }: { blog: BlogPost; index: number }) => {
+  const subtitle = getSubtitle(blog);
+
+  return (
+    <Link href={blog.link} className="blog-link" key={blog.link}>
+      <Row
+        className="blog-row slide-in"
+        style={{ animationDelay: `${index / 10 + 0.1}s` }}
+      >
+        <Col md={2}>{blog.dateAdded}</Col>
+        <Col>
+          {subtitle && <>{subtitle} | </>}
+          {blog.title} <ArrowRight size={16} />
+        </Col>
+      </Row>
+    </Link>
+  );
+};
 
 interface BlogArchiveProps {
   activeCategory: CategoryFilter;
