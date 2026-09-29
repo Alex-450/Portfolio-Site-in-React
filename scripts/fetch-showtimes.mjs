@@ -13,6 +13,7 @@ import { toDateStamp } from './scrapers/utils.mjs';
 import {
   searchTmdbMovieDetails,
   fetchTmdbMovieDetails,
+  flushWikidata,
 } from './scrapers/tmdb.mjs';
 import {
   cleanTitle,
@@ -262,6 +263,10 @@ async function fetchTmdbForFilms(groupedFilms) {
     }),
   ];
   await mapWithConcurrency(tasks, (task) => task(), 10);
+
+  // Wikidata runs only now that every TMDB lookup is done, so its rate-limited
+  // requests never sit in the critical path of the TMDB fan-out.
+  await flushWikidata();
 
   return (film) =>
     film._tmdbId ? byId.get(film._tmdbId) : byTitle.get(cleanTitle(film.title));

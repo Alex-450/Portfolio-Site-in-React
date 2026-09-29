@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { cleanTitle } from '../../src/utils/filmTitle.mjs';
 import { fetchWithRetry } from './utils.mjs';
-import { fetchWikidataIds } from './wikidata.mjs';
+import { enrichWithWikidata } from './wikidata.mjs';
 
 // Read from the environment (set via .env locally, CI secrets in Actions).
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
@@ -17,8 +17,36 @@ const POSTER_BASE = 'https://image.tmdb.org/t/p/w342';
 let cache = existsSync(CACHE_PATH)
   ? JSON.parse(readFileSync(CACHE_PATH, 'utf-8'))
   : {};
-const saveCache = () =>
+// Cache writes are debounced: saveCache() marks the cache dirty and schedules a
+// single write, so a cold run doesn't rewrite the whole file once per lookup.
+// flushCache() forces the pending write out before the process exits.
+let cacheDirty = false;
+let cacheTimer = null;
+const CACHE_WRITE_DELAY_MS = 2000;
+
+function writeCache() {
+  cacheDirty = false;
   writeFileSync(CACHE_PATH, JSON.stringify(cache, null, 2));
+}
+
+const saveCache = () => {
+  cacheDirty = true;
+  if (cacheTimer) return;
+  cacheTimer = setTimeout(() => {
+    cacheTimer = null;
+    if (cacheDirty) writeCache();
+  }, CACHE_WRITE_DELAY_MS);
+  // Don't let a pending write hold the process open on its own.
+  cacheTimer.unref?.();
+};
+
+export function flushCache() {
+  if (cacheTimer) {
+    clearTimeout(cacheTimer);
+    cacheTimer = null;
+  }
+  if (cacheDirty) writeCache();
+}
 
 const TMDB_BASE = 'https://api.themoviedb.org/3';
 
@@ -104,11 +132,15 @@ function getNlReleaseDate(releaseDates) {
   return date ? date.split('T')[0] : null;
 }
 
+// Results awaiting Wikidata enrichment, filled as buildResult runs and drained
+// by flushWikidata() once every TMDB lookup is done.
+const pendingWikidata = [];
+
 // Shape a cache entry from a search-result `movie` and the `fetched` payload
 // returned by fetchDetails() (details, videos, releaseDates, director, ids...).
 function buildResult(movie, fetched) {
   const { details, videos, releaseDates, director } = fetched;
-  return {
+  const result = {
     tmdbId: movie.id,
     director: director || null,
     overview: details?.overview || null,
@@ -125,7 +157,14 @@ function buildResult(movie, fetched) {
     rtScore: fetched.rtScore || null,
     metacriticScore: fetched.metacriticScore || null,
     letterboxdId: fetched.letterboxdId || null,
+    // Kept on the entry so a run that skipped Wikidata (outage, rate limit)
+    // can retry just that lookup later without refetching TMDB.
+    wikidataId: fetched.wikidataId || null,
   };
+  if (fetched.wikidataId) {
+    pendingWikidata.push({ result, wikidataId: fetched.wikidataId });
+  }
+  return result;
 }
 
 async function fetchDetails(movieId) {
@@ -139,16 +178,31 @@ async function fetchDetails(movieId) {
   const director =
     data.credits?.crew?.find((c) => c.job === 'Director')?.name || null;
   const imdbId = data.imdb_id || data.external_ids?.imdb_id || null;
+  // The Wikidata id is only carried here; the lookup itself runs in a separate
+  // pass (see flushWikidata). Awaiting it inline serialized the whole build,
+  // because Wikidata requests share one rate-limited queue.
   const wikidataId = data.external_ids?.wikidata_id || null;
-  const wikidata = await fetchWikidataIds(wikidataId);
-  return { details: data, videos, releaseDates, director, imdbId, ...wikidata };
+  return { details: data, videos, releaseDates, director, imdbId, wikidataId };
+}
+
+// A cached entry that has a wikidataId but no ids from it was skipped by an
+// earlier run (outage or rate limit). Re-queue it so this run can fill it in;
+// entries that genuinely have no Wikidata data are left alone.
+function queueCachedForWikidata(entry) {
+  if (!entry?.wikidataId) return entry;
+  const hasIds =
+    entry.rtId || entry.metacriticId || entry.letterboxdId || entry.rtScore;
+  if (!hasIds) {
+    pendingWikidata.push({ result: entry, wikidataId: entry.wikidataId });
+  }
+  return entry;
 }
 
 export async function fetchTmdbMovieDetails(tmdbId) {
   if (!TMDB_API_KEY || !tmdbId) return null;
 
   const cacheKey = `id:${tmdbId}`;
-  if (cache[cacheKey]) return cache[cacheKey];
+  if (cache[cacheKey]) return queueCachedForWikidata(cache[cacheKey]);
 
   try {
     const fetched = await fetchDetails(tmdbId);
@@ -283,7 +337,7 @@ async function findByDirectorInResults(movies, targets, limit) {
 async function searchTmdbByTitleYear(title, year) {
   const searchTitle = cleanTitle(title);
   const cacheKey = `${searchTitle}||${year}`; // empty director slot
-  if (cache[cacheKey]) return cache[cacheKey];
+  if (cache[cacheKey]) return queueCachedForWikidata(cache[cacheKey]);
   console.log(`TMDB cache miss (title+year): "${cacheKey}"`);
 
   // Search by title only (no year param) so the ±1 filtering below can see
@@ -337,7 +391,7 @@ export async function searchTmdbMovieDetails(
   }
 
   const cacheKey = `${cleanTitle(title)}|${director?.toLowerCase() || ''}|${year || ''}`;
-  if (cache[cacheKey]) return cache[cacheKey];
+  if (cache[cacheKey]) return queueCachedForWikidata(cache[cacheKey]);
   // Also check without year — result may have been cached before year was known
   const cacheKeyNoYear = `${cleanTitle(title)}|${director?.toLowerCase() || ''}|`;
   if (year && cache[cacheKeyNoYear]) {
@@ -483,5 +537,25 @@ export async function searchTmdbMovieDetails(
       err.message
     );
     return null;
+  }
+}
+
+// Run the deferred Wikidata lookups and persist the enriched cache. Call once,
+// after every TMDB lookup has finished. Wikidata is supplementary, so this
+// never throws: a failure leaves films with their TMDB data and no scores.
+export async function flushWikidata() {
+  try {
+    const enriched = await enrichWithWikidata(pendingWikidata);
+    if (enriched > 0) console.log(`Wikidata: enriched ${enriched} film(s).`);
+  } catch (err) {
+    console.warn(
+      `Wikidata enrichment pass failed — continuing without review scores: ${err.message}`
+    );
+  } finally {
+    pendingWikidata.length = 0;
+    // The enrichment mutates cached result objects in place, which doesn't go
+    // through saveCache() and so never marks the cache dirty. Force the write
+    // unconditionally, or a backfilled id would be lost on exit.
+    writeCache();
   }
 }
