@@ -72,7 +72,7 @@ function filterCinemaShowtimes(
     .filter((cs) => cs.showtimes.length > 0);
 }
 
-function isRecentlyAdded(
+export function isRecentlyAdded(
   dateAdded: string | null | undefined,
   today: string
 ): boolean {
@@ -93,7 +93,7 @@ function isUpcomingRelease(
   return releaseDate > today;
 }
 
-function isRecentlyReleased(
+export function isRecentlyReleased(
   releaseDate: string | null | undefined,
   today: string
 ): boolean {
@@ -107,7 +107,7 @@ function isRecentlyReleased(
   return diffDays <= 90; // Last 3 months
 }
 
-function isReRelease(
+export function isReRelease(
   releaseDate: string | null | undefined,
   today: string
 ): boolean {

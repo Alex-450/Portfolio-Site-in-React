@@ -12,7 +12,7 @@ import ComingSoonBar from './ComingSoonBar';
 import PreviewsBar from './PreviewsBar';
 import FilmBarToggle, { FilmBarTab } from './FilmBarToggle';
 import ViewToggle from './ViewToggle';
-import GenreCarouselRow from './GenreCarouselRow';
+import CarouselRow from './CarouselRow';
 import CinemaFilter from './filters/CinemaFilter';
 import CityFilter from './filters/CityFilter';
 import DayFilter from './filters/DayFilter';
@@ -33,6 +33,7 @@ import {
   sortByNextShowtime,
 } from '../utils/date';
 import { filterFilms, filterFilmsBySearch } from '../utils/filmFilters';
+import { featuredSections } from '../utils/carouselSections';
 import { useWatchlist } from '../hooks/useWatchlist';
 import { useDayFilter, ALL_DAYS } from '../hooks/useDayFilter';
 import {
@@ -364,7 +365,14 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     }
   }, [filmBarTab, hasPreviews, hasComingSoon]);
 
-  // Group films by genre for carousel view
+  // Carousel view: featured rows (Recently Added / New Releases / Re-releases)
+  // sit above the genre rows as shortcuts. A film belongs to at most one
+  // featured row, but still appears under its genre below.
+  const carouselSections = useMemo(
+    () => featuredSections(filteredFilms, today),
+    [filteredFilms, today]
+  );
+
   const filmsByGenre = useMemo(
     () => groupFilmsByGenre(filteredFilms),
     [filteredFilms]
@@ -759,8 +767,11 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
           ))
         ) : (
           <div className="genre-carousel-section">
+            {carouselSections.map(({ label, films }) => (
+              <CarouselRow key={label} label={label} films={films} />
+            ))}
             {[...filmsByGenre.entries()].map(([genre, films]) => (
-              <GenreCarouselRow key={genre} genre={genre} films={films} />
+              <CarouselRow key={genre} label={genre} films={films} />
             ))}
           </div>
         )}
