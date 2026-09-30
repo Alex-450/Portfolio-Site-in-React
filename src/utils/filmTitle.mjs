@@ -36,6 +36,11 @@ export function cleanTitle(title) {
       .normalize('NFD')
       .replace(/\p{Diacritic}/gu, '')
       .replace(/–/, '-')
+      // Normalize "&" to "and" so a source's spelling doesn't decide the match:
+      // TMDB lists "Pride & Prejudice" while cinemas list "Pride and Prejudice"
+      // (and vice versa). Both sides run through cleanTitle, so folding them to
+      // one token makes the comparison symmetric.
+      .replace(/\s*&\s*/g, ' and ')
       .replace(/^(.+?),\s+(the|a|an)\s*$/i, '$2 $1') // "Quiet Girl, The" -> "The Quiet Girl"
       // Strip trailing sentence punctuation so titles that differ only by a final
       // "!" / "?" / "." merge (e.g. "...Don't Die!" and "...Don't Die").

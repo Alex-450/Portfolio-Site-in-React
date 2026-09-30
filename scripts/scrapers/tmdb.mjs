@@ -286,11 +286,16 @@ async function findInFilmography(targets, titles) {
   const wanted = titles.filter(Boolean);
   const people = (await tmdbGet('search/person', { query: targets.names[0] }))
     ?.results;
-  for (const person of (people || []).slice(0, 3)) {
+  // Common names collide: TMDB lists four "Colin Higgins", and the director is
+  // not the most popular of them. Search order is by popularity, not relevance,
+  // so scan a wider slice and keep going past namesakes with no directing
+  // credits rather than giving up on the first name match.
+  for (const person of (people || []).slice(0, 8)) {
     const personName = normalizeName(person.name);
     if (!targets.names.some((n) => sameName(n, personName))) continue;
     const credits = await tmdbGet(`person/${person.id}/movie_credits`);
     const directed = (credits?.crew || []).filter((c) => c.job === 'Director');
+    if (directed.length === 0) continue;
 
     // Exact title match within the confirmed director's filmography.
     const exact = directed.find((c) =>
@@ -334,9 +339,22 @@ async function findByDirectorInResults(movies, targets, limit) {
 // ±1 of the source year — which is safe enough to enrich without risking the wrong
 // film. The ±1 tolerance absorbs the usual skew between a cinema's local release
 // year and TMDB's premiere year. Anything less certain returns null.
+// A four-digit year inside a parenthetical, e.g. "The Trial (1962) (35mm)" or
+// "Flaming Ears (1992, ENG subs)". cleanTitle() strips parentheticals for
+// matching, so without this the year is discarded before it can disambiguate.
+// Bounded to plausible release years so a runtime or ticket price can't pose
+// as one.
+function yearFromTitle(title) {
+  for (const m of title.matchAll(/\((\d{4})[^)]*\)/g)) {
+    const y = parseInt(m[1], 10);
+    if (y >= 1890 && y <= new Date().getFullYear() + 2) return y;
+  }
+  return null;
+}
+
 async function searchTmdbByTitleYear(title, year) {
   const searchTitle = cleanTitle(title);
-  const cacheKey = `${searchTitle}||${year}`; // empty director slot
+  const cacheKey = `${searchTitle}||${year ?? ''}`; // empty director slot
   if (cache[cacheKey]) return queueCachedForWikidata(cache[cacheKey]);
   console.log(`TMDB cache miss (title+year): "${cacheKey}"`);
 
@@ -349,10 +367,12 @@ async function searchTmdbByTitleYear(title, year) {
       cleanTitle(m.original_title || '') === searchTitle
   );
 
-  let exact = titleMatches.find((m) => {
-    const movieYear = parseInt(m.release_date?.slice(0, 4), 10);
-    return Math.abs(movieYear - year) <= 1;
-  });
+  let exact = year
+    ? titleMatches.find((m) => {
+        const movieYear = parseInt(m.release_date?.slice(0, 4), 10);
+        return Math.abs(movieYear - year) <= 1;
+      })
+    : undefined;
 
   // The source year can be unreliable (e.g. Rialto reports the re-release date
   // for repertory titles). If the year match fails but exactly one film carries
@@ -366,7 +386,7 @@ async function searchTmdbByTitleYear(title, year) {
 
   if (!exact) {
     console.warn(
-      `TMDB: no exact title+year match for "${title}" (${year}) — skipping`
+      `TMDB: no exact title+year match for "${title}" (${year ?? 'no year'}) — ${titleMatches.length > 1 ? `${titleMatches.length} films share this title` : 'no title match'} — skipping`
     );
     return null;
   }
@@ -386,8 +406,13 @@ export async function searchTmdbMovieDetails(
   // Without a director we can't validate a match by credits. Fall back to a
   // strict title+year match if we have a year; otherwise skip rather than risk
   // attaching a wrong film on title alone.
+  // Without a director we can't validate by credits, so matching stays strict:
+  // searchTmdbByTitleYear accepts only an exact cleaned-title hit, either
+  // within +/-1 of a known year or — with no year — when exactly one film on
+  // TMDB carries that title. Repertory listings ("Videodrome", "Flaming Ears")
+  // often have no director field at all, and previously returned null unsearched.
   if (!director) {
-    return year ? searchTmdbByTitleYear(title, year) : null;
+    return searchTmdbByTitleYear(title, year ?? yearFromTitle(title));
   }
 
   const cacheKey = `${cleanTitle(title)}|${director?.toLowerCase() || ''}|${year || ''}`;
