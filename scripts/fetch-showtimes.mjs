@@ -280,9 +280,9 @@ function toTmdbData(details) {
   return { id: tmdbId, ...rest };
 }
 
-// A slug unique within `usedSlugs`, appending -1, -2, ... on collision.
-function uniqueSlug(title, usedSlugs) {
-  let slug = generateSlug(title);
+// Reserve `slug` in `usedSlugs`, appending -1, -2, ... if it's taken. `title`
+// is only used to make the collision warning readable.
+function uniqueSlug(slug, title, usedSlugs) {
   if (usedSlugs.has(slug)) {
     let counter = 1;
     while (usedSlugs.has(`${slug}-${counter}`)) counter++;
@@ -296,106 +296,89 @@ function uniqueSlug(title, usedSlugs) {
   return slug;
 }
 
-// Merge film entries that resolved to the same TMDB id. Grouping in
+// Merge films that resolved to the same TMDB id. Grouping in
 // groupFilmsByCinema() keys on the cleaned title, so one film listed under two
 // titles stays split — a Dutch/English pair ("Het Vergeten Eiland" /
 // "The Forgotten Island"), a programme label ("Coward - First Pick"), or a
 // post-screening talk ("De Manager + nagesprek"). Once TMDB has resolved them
 // they're provably the same film, so their showtimes belong on one entry.
 //
+// Runs before slugs are assigned, so a title that gets merged away never
+// reserves a slug (which previously reported a bogus collision for it).
+//
 // Films with no TMDB id are never merged: without an id there's no evidence
 // they're the same film, and titles alone are not enough.
-function dedupeByTmdbId(entries, existingFilms) {
+function dedupeByTmdbId(films, existingFilms) {
   const byId = new Map();
-  const merged = [];
+  const unidentified = [];
 
-  for (const entry of entries) {
-    const id = entry.film.tmdb?.id;
+  for (const film of films) {
+    const id = film.tmdb?.id;
     if (!id) {
-      merged.push(entry);
+      unidentified.push(film);
       continue;
     }
     const seen = byId.get(id);
-    if (!seen) {
-      byId.set(id, entry);
-      merged.push(entry);
-      continue;
+    if (seen) {
+      mergeDuplicate(seen, film, existingFilms);
+    } else {
+      byId.set(id, film);
     }
-    mergeDuplicate(seen, entry, existingFilms);
   }
 
-  return merged;
+  return [...byId.values(), ...unidentified];
 }
 
-// Fold `dup` into `keep`. Showtimes are concatenated. Title and slug are chosen
-// independently: the title is what readers see, so it should always be the
-// cleanest one, while the slug is a URL and should stay stable across builds.
+// Fold `dup` into `keep`, concatenating showtimes. Title and slug are decided
+// separately, because they answer different questions: the title is what
+// readers see, so it should be the plainest of the two — programme labels,
+// "(incl. ...)" notes and talk-back suffixes all make a title longer, so the
+// shorter one wins. The slug is a URL, so an already-published one wins to keep
+// existing links and dateAdded stable; failing that it follows the title.
 function mergeDuplicate(keep, dup, existingFilms) {
-  const dropped = dup.film.title;
-
-  // Title: always the plainest of the two — the one carrying no programme
-  // label, no "incl. ..." and no "+ nagesprek" suffix.
-  const titleWinner = cleanerTitle(keep, dup);
-  // Slug: prefer one already published, so existing links and dateAdded
-  // survive; fall back to the cleaner title's slug for a brand-new film.
-  const slugWinner = knownSlug(keep, dup, existingFilms) ?? titleWinner;
-
-  keep.film.title = titleWinner.film.title;
-  keep.slug = slugWinner.slug;
-  keep.film.slug = slugWinner.slug;
-  keep.film.director ||= dup.film.director;
-  keep.film.runtime ||= dup.film.runtime;
-  keep.film.posterUrl ||= dup.film.posterUrl;
-  keep.film.cinemaShowtimes.push(...dup.film.cinemaShowtimes);
+  const plainest = dup.title.length < keep.title.length ? dup : keep;
+  const published = [keep, dup].filter((f) => existingFilms?.[f.slug]);
+  const slugFrom = published.length === 1 ? published[0] : plainest;
 
   console.log(
-    `Merged duplicate of TMDB ${keep.film.tmdb.id}: ${JSON.stringify(dropped)} -> ${JSON.stringify(keep.film.title)} (${keep.slug})`
+    `Merged duplicate of TMDB ${keep.tmdb.id}: ${JSON.stringify(dup.title)} -> ${JSON.stringify(plainest.title)} (${slugFrom.slug})`
   );
-}
 
-// The entry whose title reads as the bare film name. Programme prefixes,
-// "(incl. ...)" notes and talk-back suffixes all make a title longer, so the
-// shorter title is the cleaner one; ties keep the incumbent.
-function cleanerTitle(a, b) {
-  return b.film.title.length < a.film.title.length ? b : a;
-}
-
-// Whichever entry's slug already exists in the published data, or null when
-// neither does (a new film) or both do (no stability to preserve either way).
-function knownSlug(a, b, existingFilms) {
-  const aKnown = Boolean(existingFilms?.[a.slug]);
-  const bKnown = Boolean(existingFilms?.[b.slug]);
-  if (aKnown === bKnown) return null;
-  return aKnown ? a : b;
+  keep.title = plainest.title;
+  keep.slug = slugFrom.slug;
+  keep.director ||= dup.director;
+  keep.runtime ||= dup.runtime;
+  keep.posterUrl ||= dup.posterUrl;
+  keep.cinemaShowtimes.push(...dup.cinemaShowtimes);
 }
 
 async function generateFilmsJson(cinemas, existingFilms = {}) {
   const groupedFilms = groupFilmsByCinema(cinemas);
   const resolveDetails = await fetchTmdbForFilms(groupedFilms);
 
-  // Build every entry first (slugs included), then merge the ones that share a
-  // TMDB id — de-duping needs the resolved ids, which aren't known until now.
-  const usedSlugs = new Set();
-  const entries = groupedFilms.map((film) => {
+  // Shape each film with its TMDB details, carrying the slug it would prefer so
+  // de-duping can favour one that's already published.
+  const films = groupedFilms.map((film) => {
     const details = resolveDetails(film);
-    const slug = uniqueSlug(film.title, usedSlugs);
     return {
-      slug,
-      film: {
-        slug,
-        title: film.title,
-        director: film.director || details?.director || null,
-        runtime: details?.runtime || film.runtime || null,
-        posterUrl: details?.posterPath || film.posterUrl || '',
-        tmdb: toTmdbData(details),
-        cinemaShowtimes: film.cinemaShowtimes,
-      },
+      slug: generateSlug(film.title),
+      title: film.title,
+      director: film.director || details?.director || null,
+      runtime: details?.runtime || film.runtime || null,
+      posterUrl: details?.posterPath || film.posterUrl || '',
+      tmdb: toTmdbData(details),
+      cinemaShowtimes: film.cinemaShowtimes,
     };
   });
 
+  // De-dupe first, then assign final slugs: only surviving films should reserve
+  // one, so collisions are reported for real clashes rather than merged-away
+  // duplicates.
   const filmsIndex = {};
-  for (const entry of dedupeByTmdbId(entries, existingFilms)) {
-    filmsIndex[entry.slug] = entry.film;
+  const usedSlugs = new Set();
+  for (const film of dedupeByTmdbId(films, existingFilms)) {
+    film.slug = uniqueSlug(film.slug, film.title, usedSlugs);
+    filmsIndex[film.slug] = film;
   }
 
   return filmsIndex;

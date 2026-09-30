@@ -16,59 +16,52 @@ function loadDedupe() {
   }
   // eslint-disable-next-line no-new-func
   return new Function(`${src.slice(start, end)}\nreturn dedupeByTmdbId;`)() as (
-    entries: Entry[],
+    films: Film[],
     existing: Record<string, unknown>
-  ) => Entry[];
+  ) => Film[];
 }
 
-interface Entry {
+interface Film {
   slug: string;
-  film: {
-    slug: string;
-    title: string;
-    tmdb: { id: number } | null;
-    director: string | null;
-    runtime: number | null;
-    posterUrl: string;
-    cinemaShowtimes: {
-      cinema: string;
-      showtimes: { date: string; time: string; ticketUrl: string }[];
-    }[];
-  };
+  title: string;
+  tmdb: { id: number } | null;
+  director: string | null;
+  runtime: number | null;
+  posterUrl: string;
+  cinemaShowtimes: {
+    cinema: string;
+    showtimes: { date: string; time: string; ticketUrl: string }[];
+  }[];
 }
 
-const entry = (
+const film = (
   slug: string,
   title: string,
   id: number | null,
   times: string[],
   cinema = 'Cinema A'
-): Entry => ({
+): Film => ({
   slug,
-  film: {
-    slug,
-    title,
-    tmdb: id ? { id } : null,
-    director: null,
-    runtime: null,
-    posterUrl: '',
-    cinemaShowtimes: [
-      {
-        cinema,
-        showtimes: times.map((time) => ({
-          date: '2026-01-01',
-          time,
-          ticketUrl: `ticket-${time}`,
-        })),
-      },
-    ],
-  },
+  title,
+  tmdb: id ? { id } : null,
+  director: null,
+  runtime: null,
+  posterUrl: '',
+  cinemaShowtimes: [
+    {
+      cinema,
+      showtimes: times.map((time) => ({
+        date: '2026-01-01',
+        time,
+        ticketUrl: `ticket-${time}`,
+      })),
+    },
+  ],
 });
 
-const showtimeCount = (entries: Entry[]) =>
-  entries.reduce(
-    (n, e) =>
-      n + e.film.cinemaShowtimes.reduce((m, c) => m + c.showtimes.length, 0),
+const showtimeCount = (films: Film[]) =>
+  films.reduce(
+    (n, f) => n + f.cinemaShowtimes.reduce((m, c) => m + c.showtimes.length, 0),
     0
   );
 
@@ -84,11 +77,11 @@ describe('dedupeByTmdbId', () => {
   });
   afterEach(() => log.mockRestore());
 
-  it('merges entries sharing a TMDB id and keeps every showtime', () => {
+  it('merges films sharing a TMDB id and keeps every showtime', () => {
     const result = dedupe(
       [
-        entry('coward', 'Coward', 1437981, ['10:00', '12:00']),
-        entry(
+        film('coward', 'Coward', 1437981, ['10:00', '12:00']),
+        film(
           'coward-first-pick',
           'Coward - First Pick',
           1437981,
@@ -102,7 +95,7 @@ describe('dedupeByTmdbId', () => {
     expect(result).toHaveLength(1);
     expect(showtimeCount(result)).toBe(3);
     // Both cinemas survive the merge.
-    expect(result[0].film.cinemaShowtimes.map((c) => c.cinema)).toEqual([
+    expect(result[0].cinemaShowtimes.map((c) => c.cinema)).toEqual([
       'Cinema A',
       'Cinema B',
     ]);
@@ -111,17 +104,17 @@ describe('dedupeByTmdbId', () => {
   it('collapses more than two duplicates of the same film', () => {
     const result = dedupe(
       [
-        entry('a', 'Het Vergeten Eiland (NL)', 1465063, ['1']),
-        entry('b', 'Forgotten Island', 1465063, ['2']),
-        entry('c', 'The Forgotten Island', 1465063, ['3']),
-        entry('d', 'The Forgotten Island x KALBO', 1465063, ['4']),
+        film('a', 'Het Vergeten Eiland (NL)', 1465063, ['1']),
+        film('b', 'Forgotten Island', 1465063, ['2']),
+        film('c', 'The Forgotten Island', 1465063, ['3']),
+        film('d', 'The Forgotten Island x KALBO', 1465063, ['4']),
       ],
       {}
     );
 
     expect(result).toHaveLength(1);
     expect(showtimeCount(result)).toBe(4);
-    expect(result[0].film.title).toBe('Forgotten Island');
+    expect(result[0].title).toBe('Forgotten Island');
   });
 
   it('never merges films without a TMDB id', () => {
@@ -129,8 +122,8 @@ describe('dedupeByTmdbId', () => {
     // id there's no evidence they're the same thing.
     const result = dedupe(
       [
-        entry('workshop-a', 'Workshop Beeldtoveren', null, ['1']),
-        entry('workshop-b', 'Workshop Stop Motion', null, ['2']),
+        film('workshop-a', 'Workshop Beeldtoveren', null, ['1']),
+        film('workshop-b', 'Workshop Stop Motion', null, ['2']),
       ],
       {}
     );
@@ -139,13 +132,13 @@ describe('dedupeByTmdbId', () => {
     expect(showtimeCount(result)).toBe(2);
   });
 
-  it('keeps the cleanest title but an already-published slug', () => {
+  it('keeps the plainest title but an already-published slug', () => {
     // The programme-labelled entry owns the live URL; the plain title is the
     // one readers should see. Title and slug are chosen independently.
     const result = dedupe(
       [
-        entry('tampopo', 'Tampopo', 11830, ['1']),
-        entry(
+        film('tampopo', 'Tampopo', 11830, ['1']),
+        film(
           'film-food-tampopo-incl-ramen',
           'Film & Food: Tampopo (incl. ramen)',
           11830,
@@ -156,17 +149,29 @@ describe('dedupeByTmdbId', () => {
     );
 
     expect(result).toHaveLength(1);
-    expect(result[0].film.title).toBe('Tampopo');
+    expect(result[0].title).toBe('Tampopo');
     expect(result[0].slug).toBe('film-food-tampopo-incl-ramen');
-    expect(result[0].film.slug).toBe('film-food-tampopo-incl-ramen');
+  });
+
+  it('follows the plainest title when neither slug is published', () => {
+    const result = dedupe(
+      [
+        film('a-long-programme-title', 'A Long Programme Title', 7, ['1']),
+        film('short', 'Short', 7, ['2']),
+      ],
+      {}
+    );
+
+    expect(result[0].title).toBe('Short');
+    expect(result[0].slug).toBe('short');
   });
 
   it('leaves distinct films untouched', () => {
     const result = dedupe(
       [
-        entry('a', 'Film A', 1, ['1']),
-        entry('b', 'Film B', 2, ['2']),
-        entry('c', 'Film C', 3, ['3']),
+        film('a', 'Film A', 1, ['1']),
+        film('b', 'Film B', 2, ['2']),
+        film('c', 'Film C', 3, ['3']),
       ],
       {}
     );
