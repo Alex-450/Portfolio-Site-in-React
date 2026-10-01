@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Calendar, ChevronDown } from 'lucide-react';
+import { Calendar, ArrowDown } from 'lucide-react';
 import { CinemaShowtimes } from '../types';
 import { formatDate, getToday, getCurrentTime } from '../utils/date';
 import { generateCalendarUrlFromFilm } from '../utils/calendar';
@@ -189,7 +189,7 @@ function FilmShowtimes({
             className="showtimes-show-more"
             onClick={() => setExpanded(true)}
           >
-            <ChevronDown size={16} aria-hidden="true" />
+            <ArrowDown size={16} aria-hidden="true" />
             {activeShowtimes.length - maxPerDay!} more
           </button>
         )}
