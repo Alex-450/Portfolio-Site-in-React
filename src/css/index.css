@@ -667,6 +667,13 @@ code {
   flex-wrap: wrap;
 }
 
+/* The single control row above the listings: search and Filters side by side.
+   The search input keeps its own max-width, so this only needs to line the two
+   up vertically — on mobile .film-filters stacks them into a column instead. */
+.film-filters-primary {
+  align-items: center;
+}
+
 .filters-toggle {
   display: inline-flex;
   align-items: center;
@@ -1245,7 +1252,8 @@ code {
   text-decoration: none;
 }
 
-/* View Toggle */
+/* Segmented button row — used by the film bar tabs (This Week / Previews /
+   Coming Soon). */
 .view-toggle {
   display: flex;
   gap: 0;
@@ -1277,23 +1285,6 @@ code {
   z-index: 1;
   background-color: var(--hover-bg);
   color: var(--color-white);
-}
-
-/* Genre Carousel View */
-.genre-carousel-section {
-  margin-top: 1rem;
-}
-
-.genre-carousel-row {
-  margin-bottom: 1.5rem;
-}
-
-.genre-carousel-label {
-  font-size: 1.1rem;
-  font-weight: bold;
-  margin-bottom: 0.25rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border-primary);
 }
 
 /* Film Detail Page */
@@ -1801,9 +1792,9 @@ code {
   }
 
   /* One type scale for every control between the film bars and the listings —
-     film bar tabs, cinema pills, List/Grid, search and Filters — so the stack
-     reads as a single group rather than three competing weights. Declared here,
-     ahead of .filter-select-film, so that rule's larger input size wins. */
+     film bar tabs, search and Filters — so the stack reads as a single group
+     rather than competing weights. Declared here, ahead of
+     .filter-select-film, so that rule's larger input size wins. */
   .view-toggle-button,
   .filter-select {
     font-size: 0.8125rem;

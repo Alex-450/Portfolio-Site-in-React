@@ -98,19 +98,6 @@
     background-color: var(--hover-bg);
   }
 
-  /* Film Listings dark mode */
-  .film-listings-footer .cinema-sources {
-    color: var(--dark-text-secondary);
-  }
-
-  .film-listings-footer .cinema-sources a {
-    color: var(--dark-text-secondary);
-  }
-
-  .film-listings-footer .cinema-sources a:hover {
-    color: var(--dark-text-primary);
-  }
-
   .cinema-bar-label {
     color: var(--dark-text-secondary);
   }
@@ -406,9 +393,17 @@
     color: var(--dark-bg-primary);
   }
 
-  /* Genre Carousel dark mode */
-  .genre-carousel-label {
-    border-bottom-color: var(--hover-bg);
+  /* Film Listings dark mode */
+  .film-listings-footer .cinema-sources {
+    color: var(--dark-text-secondary);
+  }
+
+  .film-listings-footer .cinema-sources a {
+    color: var(--dark-text-secondary);
+  }
+
+  .film-listings-footer .cinema-sources a:hover {
+    color: var(--dark-text-primary);
   }
 
   /* Code blocks dark mode */

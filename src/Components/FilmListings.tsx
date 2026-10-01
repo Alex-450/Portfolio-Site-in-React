@@ -12,8 +12,6 @@ import TopFilmsBar from './TopFilmsBar';
 import ComingSoonBar from './ComingSoonBar';
 import PreviewsBar from './PreviewsBar';
 import FilmBarToggle, { FilmBarTab } from './FilmBarToggle';
-import ViewToggle from './ViewToggle';
-import CarouselRow from './CarouselRow';
 import CinemaFilter from './filters/CinemaFilter';
 import CityFilter from './filters/CityFilter';
 import DayFilter from './filters/DayFilter';
@@ -34,7 +32,6 @@ import {
   sortByNextShowtime,
 } from '../utils/date';
 import { filterFilms, filterFilmsBySearch } from '../utils/filmFilters';
-import { featuredSections } from '../utils/carouselSections';
 import { useWatchlist } from '../hooks/useWatchlist';
 import { useDayFilter, ALL_DAYS } from '../hooks/useDayFilter';
 import {
@@ -63,29 +60,6 @@ function getCinemaNames(filmsIndex: FilmsIndexLite): string[] {
 
 const str = (v: unknown) => (typeof v === 'string' ? v : '');
 
-function groupFilmsByGenre(
-  films: FilmWithCinemasLite[]
-): Map<string, FilmWithCinemasLite[]> {
-  const genreMap = new Map<string, FilmWithCinemasLite[]>();
-
-  for (const film of films) {
-    const primaryGenre = film.genres?.[0] || 'Other';
-    if (!genreMap.has(primaryGenre)) {
-      genreMap.set(primaryGenre, []);
-    }
-    genreMap.get(primaryGenre)!.push(film);
-  }
-
-  // Sort by film count descending; "Other" always sorts last as the catch-all.
-  return new Map(
-    [...genreMap.entries()].sort(([genreA, filmsA], [genreB, filmsB]) => {
-      if (genreA === 'Other') return 1;
-      if (genreB === 'Other') return -1;
-      return filmsB.length - filmsA.length;
-    })
-  );
-}
-
 interface FilmListingsProps {
   filmsIndex: FilmsIndexLite;
 }
@@ -112,8 +86,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     null) as City | null;
   const releaseFilter = (str(q.release) || null) as ReleaseFilterValue;
   const timeFilter = str(q.time) || null;
-  const viewMode = (str(q.view) === 'carousel' ? 'carousel' : 'list') as
-    'list' | 'carousel';
   const watchlistFilter = str(q.watchlist) === 'true';
 
   // Local search input state
@@ -251,9 +223,9 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     [allFilms]
   );
 
-  // Shared base: everything filtered/sorted except the free-text film search and watchlist.
-  // The carousel uses this directly (it ignores film search to remain clickable);
-  // the list view applies film search and watchlist on top.
+  // Everything filtered/sorted except the free-text film search and watchlist,
+  // which are applied on top in `filteredFilms` — keeping them separate means
+  // typing in the search box doesn't redo the cinema/day/genre work.
   const baseFilms = useMemo(() => {
     let films = filterFilms(allFilms, {
       cityFilter,
@@ -366,19 +338,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     }
   }, [filmBarTab, hasPreviews, hasComingSoon]);
 
-  // Carousel view: featured rows (Recently Added / New Releases / Re-releases)
-  // sit above the genre rows as shortcuts. A film belongs to at most one
-  // featured row, but still appears under its genre below.
-  const carouselSections = useMemo(
-    () => featuredSections(filteredFilms, today),
-    [filteredFilms, today]
-  );
-
-  const filmsByGenre = useMemo(
-    () => groupFilmsByGenre(filteredFilms),
-    [filteredFilms]
-  );
-
   const isTonightActive =
     selectedDays.length === 1 &&
     selectedDays[0] === 'today' &&
@@ -467,26 +426,17 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
 
         <h2 className="film-listings-section-heading">All Films</h2>
 
-        <div className="film-filters">
-          <ViewToggle
-            view={viewMode}
-            onChange={(v) => setFilter('view', v === 'list' ? undefined : v)}
-          />
-        </div>
-
         <div className="film-filters film-filters-primary">
-          {viewMode === 'list' && (
-            <FilmSearchFilter
-              films={allFilms}
-              searchValue={filmSearch}
-              onSearchChange={setFilmSearch}
-              onSelect={(film) => router.push(`/films/${film.slug}/`)}
-              onClear={() => {
-                setFilmSearch('');
-                setFilter('film', undefined);
-              }}
-            />
-          )}
+          <FilmSearchFilter
+            films={allFilms}
+            searchValue={filmSearch}
+            onSearchChange={setFilmSearch}
+            onSelect={(film) => router.push(`/films/${film.slug}/`)}
+            onClear={() => {
+              setFilmSearch('');
+              setFilter('film', undefined);
+            }}
+          />
           <button
             className={`filter-select filters-toggle${advancedFilterCount > 0 ? ' filter-toggle-active' : ''}`}
             onClick={() => setFiltersOpen((open) => !open)}
@@ -698,10 +648,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
                 router.push(
                   {
                     pathname: router.pathname,
-                    query: {
-                      day: ALL_DAYS,
-                      ...(viewMode === 'carousel' ? { view: 'carousel' } : {}),
-                    },
+                    query: { day: ALL_DAYS },
                   },
                   undefined,
                   { shallow: true }
@@ -760,25 +707,14 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
           </div>
         )}
 
-        {viewMode === 'list' ? (
-          filteredFilms.map((film) => (
-            <FilmCard
-              key={film.title}
-              film={film}
-              dayFilter={dayFilter}
-              today={today}
-            />
-          ))
-        ) : (
-          <div className="genre-carousel-section">
-            {carouselSections.map(({ label, films }) => (
-              <CarouselRow key={label} label={label} films={films} />
-            ))}
-            {[...filmsByGenre.entries()].map(([genre, films]) => (
-              <CarouselRow key={genre} label={genre} films={films} />
-            ))}
-          </div>
-        )}
+        {filteredFilms.map((film) => (
+          <FilmCard
+            key={film.title}
+            film={film}
+            dayFilter={dayFilter}
+            today={today}
+          />
+        ))}
 
         <footer className="film-listings-footer">
           <p className="cinema-sources">
