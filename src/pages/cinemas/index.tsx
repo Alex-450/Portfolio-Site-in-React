@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Container } from 'react-bootstrap';
 import { ArrowUpRight } from 'lucide-react';
 import { cinemas, Cinema } from '../../data/cinemas';
+import Breadcrumbs from '../../Components/Breadcrumbs';
 
 interface CinemaEntry {
   slug: string;
@@ -24,6 +25,13 @@ export default function CinemasIndex({ cinemaList }: Props) {
         />
       </Head>
       <Container className="cinema-index-container">
+        <Breadcrumbs
+          crumbs={[
+            { label: 'a-450', href: '/' },
+            { label: 'Film Listings', href: '/film-listings/' },
+            { label: 'Cinemas' },
+          ]}
+        />
         <h1>Cinemas</h1>
         <div className="cinema-index-grid">
           {cinemaList.map(({ slug, cinema }) => (

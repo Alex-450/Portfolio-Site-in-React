@@ -161,7 +161,9 @@ button.footer-link {
 }
 
 .title-container {
-  margin-top: 15px;
+  /* 20px to match the film/cinema containers, so the breadcrumb trail sits
+     the same distance below the navbar across the site. */
+  margin-top: 20px;
   margin-bottom: 15px;
 }
 
@@ -1918,4 +1920,58 @@ article h3 {
    has its own bottom margin, so it needs far less room above it. */
 article > h2:first-of-type {
   margin-top: 1.5rem;
+}
+
+/* Match the film/cinema detail containers so the breadcrumb trail sits the
+   same distance below the navbar on every page. */
+.article-page-container {
+  padding-top: 20px;
+}
+
+/* Breadcrumbs — upward navigation on pages below the top level */
+.breadcrumbs {
+  margin-bottom: 1.25rem;
+}
+
+.breadcrumbs-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+}
+
+.breadcrumbs-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.breadcrumbs-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 2px 4px;
+  border-radius: 2px;
+}
+
+.breadcrumbs-link:hover {
+  color: var(--text-primary);
+}
+
+.breadcrumbs-current {
+  color: var(--text-primary);
+  padding: 2px 4px;
+  /* Long film titles shouldn't push the trail off a narrow screen. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 60vw;
+}
+
+.breadcrumbs-separator {
+  color: var(--border-secondary);
+  flex-shrink: 0;
 }

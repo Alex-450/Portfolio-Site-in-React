@@ -2,6 +2,8 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { useEffect } from 'react';
 import Head from 'next/head';
 import SpoilerPill from './SpoilerPill';
+import Breadcrumbs from './Breadcrumbs';
+import { CATEGORIES } from '../data/blogCategories';
 import { ArticleLayoutProps, ArticleMetadata } from '../types';
 
 const defaultMetadata = {
@@ -57,8 +59,11 @@ const ArticleLayout = ({ metadata, children }: ArticleLayoutProps) => {
     window.scrollTo(0, 0);
   }, []);
 
+  // meta.type is a BlogPost['type'], so it always resolves to a category.
+  const category = CATEGORIES.find(({ key }) => key === meta.type);
+
   return (
-    <Container className="my-5">
+    <Container className="mb-5 article-page-container">
       <Row className="justify-content-center">
         <Col xs={12} md={10} lg={8}>
           <Head>
@@ -73,6 +78,16 @@ const ArticleLayout = ({ metadata, children }: ArticleLayoutProps) => {
             <meta name="title" content={pageTitle} property="og:title" />
             <meta property="og:type" content="website" />
           </Head>
+          <Breadcrumbs
+            crumbs={[
+              { label: 'a-450', href: '/' },
+              { label: 'Blog', href: '/blog/' },
+              ...(category
+                ? [{ label: category.label, href: `/blog/${category.slug}/` }]
+                : []),
+              { label: meta.title },
+            ]}
+          />
           <article>
             <h1>{meta.title}</h1>
             {renderMetadataSubtitle(meta)}

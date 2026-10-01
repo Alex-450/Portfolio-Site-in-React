@@ -569,4 +569,20 @@
   .showtime-cinema a:hover {
     color: var(--dark-text-primary);
   }
+
+  .breadcrumbs-link {
+    color: var(--dark-text-secondary);
+  }
+
+  .breadcrumbs-link:hover {
+    color: var(--dark-text-primary);
+  }
+
+  .breadcrumbs-current {
+    color: var(--dark-text-primary);
+  }
+
+  .breadcrumbs-separator {
+    color: var(--dark-border);
+  }
 }

@@ -8,6 +8,7 @@ import { FilmDetail, FilmsIndex } from '../../types';
 import YouTubeEmbed from '../../Components/YouTubeEmbed';
 import FilmShowtimes from '../../Components/FilmShowtimes';
 import WatchlistButton from '../../Components/WatchlistButton';
+import Breadcrumbs from '../../Components/Breadcrumbs';
 import { useWatchlist } from '../../hooks/useWatchlist';
 import { formatDate, getToday } from '../../utils/date';
 import { ArrowUpRight } from 'lucide-react';
@@ -67,6 +68,13 @@ export default function FilmDetailPage({ film }: Props) {
         <meta name="twitter:description" content={description} />
       </Head>
       <Container className="film-detail-container">
+        <Breadcrumbs
+          crumbs={[
+            { label: 'a-450', href: '/' },
+            { label: 'Film Listings', href: '/film-listings/' },
+            { label: film.title },
+          ]}
+        />
         {hasTrailer ? (
           <div className="film-hero">
             <YouTubeEmbed videoId={film.tmdb!.youtubeTrailerId!} />

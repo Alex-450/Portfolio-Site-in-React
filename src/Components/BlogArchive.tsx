@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Container, Col, Row } from 'react-bootstrap';
 import { ArrowRight } from 'lucide-react';
+import Breadcrumbs from './Breadcrumbs';
 import blogPostArchive from '../blogPostArchive.json';
 import { BlogPost } from '../types';
 import { CATEGORIES, CategoryFilter } from '../data/blogCategories';
@@ -52,6 +53,9 @@ const BlogArchive = ({ activeCategory }: BlogArchiveProps) => {
 
   return (
     <Container className="title-container flex-grow-1">
+      <Breadcrumbs
+        crumbs={[{ label: 'a-450', href: '/' }, { label: 'Blog' }]}
+      />
       <h1>Blog</h1>
       <div className="blog-pills">
         {CATEGORIES.filter(({ key }) => activeCategories.has(key)).map(

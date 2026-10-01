@@ -5,11 +5,12 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { Container } from 'react-bootstrap';
-import { ArrowLeft, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { FilmsIndex, FilmWithCinemasLite } from '../../types';
 import { cinemas, getCinemaBySlug, Cinema } from '../../data/cinemas';
 import PosterCarousel from '../../Components/PosterCarousel';
 import CinemaShowtimesPage from '../../Components/CinemaShowtimesPage';
+import Breadcrumbs from '../../Components/Breadcrumbs';
 import { formatDate, getToday, getCurrentTime } from '../../utils/date';
 
 interface CinemaPageProps {
@@ -60,6 +61,13 @@ export default function CinemaPage({
         />
       </Head>
       <Container className="cinema-detail-container">
+        <Breadcrumbs
+          crumbs={[
+            { label: 'a-450', href: '/' },
+            { label: 'Film Listings', href: '/film-listings/' },
+            { label: cinema.name },
+          ]}
+        />
         <div className="cinema-detail-header">
           <h1>{cinema.name}</h1>
           <a

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Container } from 'react-bootstrap';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { FilmWithCinemasLite, FilmsIndexLite } from '../types';
+import Breadcrumbs from './Breadcrumbs';
 import FilmCard from './FilmCard';
 import CinemaBar from './CinemaBar';
 import TopFilmsBar from './TopFilmsBar';
@@ -416,6 +417,9 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
         <meta property="og:type" content="website" />
       </Head>
       <Container className="film-listings-container">
+        <Breadcrumbs
+          crumbs={[{ label: 'a-450', href: '/' }, { label: 'Film Listings' }]}
+        />
         <header className="film-listings-header">
           <h1>
             <Link href="/film-listings">Film Listings</Link>
