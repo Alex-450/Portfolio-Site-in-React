@@ -98,10 +98,6 @@ export default function CinemaPage({
             onSelectDay={setSelectedDay}
           />
         </div>
-
-        <Link href="/film-listings/" className="back-link">
-          <ArrowLeft size={16} /> Back to Film Listings
-        </Link>
       </Container>
     </>
   );
