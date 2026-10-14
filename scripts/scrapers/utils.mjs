@@ -1,4 +1,4 @@
-import he from 'he';
+import { decode } from 'he';
 
 // Cloudflare Worker proxy for cinema sources behind bot management. The URL is
 // not committed; provide CF_SCRAPER_URL via the environment (.env locally, a CI
@@ -14,12 +14,12 @@ if (!CF_SCRAPER_URL) {
 export function decodeAndTrim(string) {
   if (string == null || string === '') return '';
   // Coerce to a string: fast-xml-parser parses a purely numeric CDATA value
-  // (e.g. a film titled "1984") as a JS number, and he.decode expects a string.
+  // (e.g. a film titled "1984") as a JS number, and decode from he expects a string.
   let decoded = String(string);
   // Decode repeatedly to handle double-encoded entities (e.g. WordPress feeds
   // that emit "&amp;amp;"), stopping once the string is stable.
   for (let i = 0; i < 3; i++) {
-    const next = he.decode(decoded);
+    const next = decode(decoded);
     if (next === decoded) break;
     decoded = next;
   }
