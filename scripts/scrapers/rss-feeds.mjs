@@ -8,11 +8,10 @@ import {
 } from './utils.mjs';
 
 // `proxyTarget` routes the request through the Cloudflare Worker proxy instead
-// of fetching the feed directly. LAB111 and Studio K sit behind Cloudflare bot
+// of fetching the feed directly. Studio K sits behind Cloudflare bot
 // management, which intermittently returns 415 to GitHub Actions datacenter
 // IPs; egressing from the worker avoids that.
 const FEEDS = [
-  { name: 'LAB111', url: 'https://www.lab111.nl/feed', proxyTarget: 'lab111' },
   {
     name: 'Studio K',
     url: 'https://www.studio-k.nu/feed',
