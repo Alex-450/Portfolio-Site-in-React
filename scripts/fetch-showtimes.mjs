@@ -6,7 +6,6 @@ import { fetchEye } from './scrapers/eye.mjs';
 import { fetchKriterion } from './scrapers/kriterion.mjs';
 import { fetchRialto } from './scrapers/rialto.mjs';
 import { fetchGriffioen } from './scrapers/griffioen.mjs';
-import { fetchCinecenter } from './scrapers/cinecenter.mjs';
 import { fetchFilmhuisDenHaag } from './scrapers/filmhuis-den-haag.mjs';
 import { fetchFlora } from './scrapers/flora.mjs';
 import { toDateStamp } from './scrapers/utils.mjs';
@@ -53,7 +52,6 @@ async function fetchAllCinemas() {
     kriterionResult,
     rialtoResult,
     griffioenResult,
-    cinecenterResult,
     filmhuisDenHaagResult,
     floraResult,
   ] = await Promise.allSettled([
@@ -63,7 +61,6 @@ async function fetchAllCinemas() {
     fetchKriterion(),
     fetchRialto(),
     fetchGriffioen(),
-    fetchCinecenter(),
     fetchFilmhuisDenHaag(),
     fetchFlora(),
   ]);
@@ -86,7 +83,6 @@ async function fetchAllCinemas() {
     { name: 'Eye Filmmuseum', result: eyeResult },
     { name: 'Kriterion', result: kriterionResult },
     { name: 'Rialto VU', result: griffioenResult },
-    { name: 'Cinecenter', result: cinecenterResult },
     { name: 'Filmhuis Den Haag', result: filmhuisDenHaagResult },
     { name: 'Flora Filmtheater', result: floraResult },
   ];
