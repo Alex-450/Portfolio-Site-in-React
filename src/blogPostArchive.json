@@ -1,6 +1,13 @@
 [
   {
     "type": "recipe",
+    "title": "Gochujang Beef",
+    "link": "/gochujang-beef",
+    "dateAdded": "21/10/2026",
+    "description": "Gochujang beef with jasmine rice"
+  },
+  {
+    "type": "recipe",
     "title": "Nicky's sourdough",
     "link": "/nickys-sourdough",
     "dateAdded": "26/09/2026",

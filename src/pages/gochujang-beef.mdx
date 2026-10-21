@@ -1,0 +1,40 @@
+import ArticleLayout from '../Components/ArticleLayout';
+import { findBlogPostByLink } from '../utils/blog';
+
+export const blog = findBlogPostByLink('/gochujang-beef');
+export const metadata = {
+  ...blog,
+  keywords: 'gochujang beef recipe',
+};
+
+## Ingredients
+
+---
+
+- Minced beef
+- Soy sauce
+- Gochujang
+- Red peppers
+- Courgette (optional)
+- Maple syrup (optional)
+- Sesame seeds
+- Jasmine rice
+
+## Method
+
+---
+
+1. Brown the beef in a frying pan
+2. Add red peppers and any other vegetables (e.g. courgette)
+3. Add soy sauce
+4. Add gochujang
+5. Stir and let sauce coat the beef
+6. Add a bit of maple syrup (can also use honey)
+7. Take off the heat, add some sesame seeds
+8. Serve with jasmine rice
+
+---
+
+export default function Layout({ children }) {
+  return <ArticleLayout metadata={metadata}>{children}</ArticleLayout>;
+}
