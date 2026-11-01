@@ -129,7 +129,7 @@ export interface FilmBase {
   cinemaShowtimes: CinemaShowtimes[];
   tmdb: TmdbData | null;
   dateAdded?: string;
-  genres: string[];
+  genres?: string[];
 }
 
 export interface FilmWithCinemas extends FilmBase {

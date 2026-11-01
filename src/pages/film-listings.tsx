@@ -59,6 +59,7 @@ export function getStaticProps() {
           genres: film.tmdb?.genres ?? [],
           cinemaShowtimes,
           dateAdded: film.dateAdded,
+          tmdb: film.tmdb,
           releaseDate:
             film.tmdb?.releaseDateNl ?? film.tmdb?.releaseDate ?? null,
           releaseDateNl: film.tmdb?.releaseDateNl ?? null,
