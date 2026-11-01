@@ -1,16 +1,16 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
-import { FilmWithCinemasLite } from '../types';
+import { FilmWithCinemas } from '../types';
 
 interface FilmBarProps {
   // Optional heading. Omit when an external control (e.g. a tab toggle) labels the bar.
   label?: string;
   explainer: string;
-  films: FilmWithCinemasLite[];
+  films: FilmWithCinemas[];
   // Standout line above the title that differs between bars (e.g. rank or release date).
-  renderBadge?: (film: FilmWithCinemasLite, index: number) => ReactNode;
+  renderBadge?: (film: FilmWithCinemas, index: number) => ReactNode;
   // Extra item appended to the meta row (e.g. showings count).
-  renderMeta?: (film: FilmWithCinemasLite, index: number) => ReactNode;
+  renderMeta?: (film: FilmWithCinemas, index: number) => ReactNode;
   // Shown when there are no films. If omitted, the bar renders nothing when empty.
   emptyMessage?: string;
 }

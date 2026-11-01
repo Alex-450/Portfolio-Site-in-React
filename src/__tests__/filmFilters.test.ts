@@ -1,9 +1,9 @@
 import { filterFilms, filterFilmsBySearch } from '../utils/filmFilters';
-import { FilmWithCinemasLite } from '../types';
+import { FilmWithCinemas } from '../types';
 
 const createFilm = (
-  overrides: Partial<FilmWithCinemasLite> = {}
-): FilmWithCinemasLite => ({
+  overrides: Partial<FilmWithCinemas> = {}
+): FilmWithCinemas => ({
   slug: 'test-film',
   title: 'Test Film',
   genres: ['Drama'],

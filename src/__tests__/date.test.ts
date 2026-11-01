@@ -10,19 +10,19 @@ import {
   sortByNextShowtime,
   defaultListingDate,
 } from '../utils/date';
-import { Showtime, FilmWithCinemasLite } from '../types';
+import { Showtime, FilmWithCinemas } from '../types';
 
 const makeFilm = (
   slug: string,
   dates: string[],
   releaseDate: string | null = null,
   releaseDateNl: string | null = null
-): FilmWithCinemasLite => ({
+): FilmWithCinemas => ({
   slug,
   title: slug,
   director: null,
   runtime: null,
-  posterUrl: '',
+  posterUrl: 'poster.com',
   genres: [],
   releaseDate,
   releaseDateNl,
@@ -37,6 +37,7 @@ const makeFilm = (
       })),
     },
   ],
+  tmdb: null,
 });
 
 describe('filterPastShowtimes', () => {
@@ -102,13 +103,14 @@ describe('hasShowtimeOn', () => {
   });
 
   it('checks across all cinemas', () => {
-    const film: FilmWithCinemasLite = {
+    const film: FilmWithCinemas = {
       slug: 'film',
       title: 'Film',
       director: null,
       runtime: null,
-      posterUrl: '',
+      posterUrl: 'poster.com',
       genres: [],
+      tmdb: null,
       cinemaShowtimes: [
         {
           cinema: 'A',
@@ -378,7 +380,7 @@ describe('sortByNextShowtime', () => {
   const filmAt = (
     title: string,
     slots: [string, string][]
-  ): FilmWithCinemasLite => ({
+  ): FilmWithCinemas => ({
     slug: title.toLowerCase(),
     title,
     director: null,
@@ -387,6 +389,7 @@ describe('sortByNextShowtime', () => {
     genres: [],
     releaseDate: null,
     releaseDateNl: null,
+    tmdb: null,
     cinemaShowtimes: [
       {
         cinema: 'Cinema',
@@ -459,10 +462,7 @@ describe('sortByNextShowtime', () => {
 });
 
 describe('defaultListingDate', () => {
-  const at = (
-    title: string,
-    slots: [string, string][]
-  ): FilmWithCinemasLite => ({
+  const at = (title: string, slots: [string, string][]): FilmWithCinemas => ({
     slug: title,
     title,
     director: null,
@@ -471,6 +471,7 @@ describe('defaultListingDate', () => {
     genres: [],
     releaseDate: null,
     releaseDateNl: null,
+    tmdb: null,
     cinemaShowtimes: [
       {
         cinema: 'Cinema',

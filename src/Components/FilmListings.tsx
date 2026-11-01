@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { Container } from 'react-bootstrap';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { FilmWithCinemasLite, FilmsIndexLite } from '../types';
+import { FilmsIndex, FilmWithCinemas } from '../types';
 import Breadcrumbs from './Breadcrumbs';
 import FilmCard from './FilmCard';
 import CinemaBar from './CinemaBar';
@@ -42,13 +42,13 @@ import {
   CITIES,
 } from '../data/cinemas';
 
-function filmsIndexToList(filmsIndex: FilmsIndexLite): FilmWithCinemasLite[] {
+function filmsIndexToList(filmsIndex: FilmsIndex): FilmWithCinemas[] {
   return Object.values(filmsIndex).sort((a, b) =>
     a.title.localeCompare(b.title)
   );
 }
 
-function getCinemaNames(filmsIndex: FilmsIndexLite): string[] {
+function getCinemaNames(filmsIndex: FilmsIndex): string[] {
   const cinemas = new Set<string>();
   for (const film of Object.values(filmsIndex)) {
     for (const cs of film.cinemaShowtimes) {
@@ -61,7 +61,7 @@ function getCinemaNames(filmsIndex: FilmsIndexLite): string[] {
 const str = (v: unknown) => (typeof v === 'string' ? v : '');
 
 interface FilmListingsProps {
-  filmsIndex: FilmsIndexLite;
+  filmsIndex: FilmsIndex;
 }
 
 const FilmListings = ({ filmsIndex }: FilmListingsProps) => {

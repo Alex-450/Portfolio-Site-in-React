@@ -1,10 +1,10 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import FilmListings from '../Components/FilmListings';
-import { FilmsIndex, FilmsIndexLite } from '../types';
+import { FilmsIndex } from '../types';
 
 interface Props {
-  filmsIndex: FilmsIndexLite;
+  filmsIndex: FilmsIndex;
 }
 
 export default function Page({ filmsIndex }: Props) {
@@ -22,7 +22,7 @@ export function getStaticProps() {
   const today = amsterdamTime.toISOString().split('T')[0];
   const currentTime = amsterdamTime.toTimeString().slice(0, 5);
 
-  let filmsIndex: FilmsIndexLite = {};
+  let filmsIndex: FilmsIndex = {};
   try {
     const filmsData = readFileSync(filmsPath, 'utf-8');
     const fullIndex: FilmsIndex = JSON.parse(filmsData);

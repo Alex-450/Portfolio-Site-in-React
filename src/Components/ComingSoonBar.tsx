@@ -1,9 +1,9 @@
-import { FilmWithCinemasLite } from '../types';
+import { FilmWithCinemas } from '../types';
 import { comingSoonFilms, firstShowtimeDate, formatDate } from '../utils/date';
 import FilmBar from './FilmBar';
 
 interface ComingSoonBarProps {
-  films: FilmWithCinemasLite[];
+  films: FilmWithCinemas[];
   today: string;
   showLabel?: boolean;
   emptyMessage?: string;

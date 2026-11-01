@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { FilmWithCinemasLite } from '../../types';
+import { FilmWithCinemas } from '../../types';
 import { filterFilmsBySearch } from '../../utils/filmFilters';
 
 interface FilmSearchFilterProps {
-  films: FilmWithCinemasLite[];
+  films: FilmWithCinemas[];
   searchValue: string;
   onSearchChange: (value: string) => void;
-  onSelect: (film: FilmWithCinemasLite) => void;
+  onSelect: (film: FilmWithCinemas) => void;
   onClear: () => void;
 }
 

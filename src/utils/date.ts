@@ -1,4 +1,4 @@
-import { Showtime, FilmWithCinemasLite } from '../types';
+import { Showtime, FilmWithCinemas } from '../types';
 
 // Date `days` days after `from` (YYYY-MM-DD), as YYYY-MM-DD.
 export function addDays(from: string, days: number): string {
@@ -8,7 +8,7 @@ export function addDays(from: string, days: number): string {
 }
 
 // Earliest showtime date for a film (YYYY-MM-DD), or null if it has none.
-export function firstShowtimeDate(film: FilmWithCinemasLite): string | null {
+export function firstShowtimeDate(film: FilmWithCinemas): string | null {
   let earliest: string | null = null;
   for (const cs of film.cinemaShowtimes) {
     for (const s of cs.showtimes) {
@@ -21,7 +21,7 @@ export function firstShowtimeDate(film: FilmWithCinemasLite): string | null {
 // Earliest showtime of a film as a sortable "YYYY-MM-DD HH:MM" key, or null if
 // it has none. Showtimes are already filtered to upcoming ones by the time they
 // reach here, so the earliest remaining showtime is the next one to start.
-export function nextShowtimeKey(film: FilmWithCinemasLite): string | null {
+export function nextShowtimeKey(film: FilmWithCinemas): string | null {
   let earliest: string | null = null;
   for (const cs of film.cinemaShowtimes) {
     for (const s of cs.showtimes) {
@@ -35,8 +35,8 @@ export function nextShowtimeKey(film: FilmWithCinemasLite): string | null {
 // Order films by whatever starts soonest, ties broken by title. Films with no
 // remaining showtimes sort last (they're normally filtered out before this).
 export function sortByNextShowtime(
-  films: FilmWithCinemasLite[]
-): FilmWithCinemasLite[] {
+  films: FilmWithCinemas[]
+): FilmWithCinemas[] {
   return [...films].sort((a, b) => {
     const keyA = nextShowtimeKey(a);
     const keyB = nextShowtimeKey(b);
@@ -54,7 +54,7 @@ export function sortByNextShowtime(
 // film has an upcoming showtime at all. Keeps the initial view scoped to a
 // single day rather than dumping every future date on the user.
 export function defaultListingDate(
-  films: FilmWithCinemasLite[],
+  films: FilmWithCinemas[],
   today: string,
   currentTime: string
 ): string | null {
@@ -73,10 +73,7 @@ export function defaultListingDate(
 }
 
 // Whether a film has at least one showtime on the given date (YYYY-MM-DD).
-export function hasShowtimeOn(
-  film: FilmWithCinemasLite,
-  date: string
-): boolean {
+export function hasShowtimeOn(film: FilmWithCinemas, date: string): boolean {
   return film.cinemaShowtimes.some((cs) =>
     cs.showtimes.some((s) => s.date === date)
   );
@@ -84,7 +81,7 @@ export function hasShowtimeOn(
 
 // Number of a film's showtimes falling within [start, end] inclusive.
 export function countShowtimesInRange(
-  film: FilmWithCinemasLite,
+  film: FilmWithCinemas,
   start: string,
   end: string
 ): number {
@@ -100,7 +97,7 @@ export function countShowtimesInRange(
 // least one upcoming showtime that falls before releaseDateNl, and that release
 // is still in the future. Such films belong in the Previews bar (and, if they
 // also screen today, in This Week — see topFilmsThisWeek).
-export function isPreview(film: FilmWithCinemasLite, today: string): boolean {
+export function isPreview(film: FilmWithCinemas, today: string): boolean {
   const nlRelease = film.releaseDateNl;
   if (!nlRelease || nlRelease <= today) return false;
   return film.cinemaShowtimes.some((cs) =>
@@ -112,9 +109,9 @@ export function isPreview(film: FilmWithCinemasLite, today: string): boolean {
 // their earliest showtime. Shared by PreviewsBar (to render) and ComingSoonBar
 // (to exclude) so a film never sits in both Previews and Coming Soon.
 export function previewFilms(
-  films: FilmWithCinemasLite[],
+  films: FilmWithCinemas[],
   today: string
-): FilmWithCinemasLite[] {
+): FilmWithCinemas[] {
   return films
     .filter((film) => isPreview(film, today))
     .sort((a, b) =>
@@ -129,16 +126,17 @@ export function previewFilms(
 // to Previews/Coming Soon instead — UNLESS it screens today (e.g. a preview
 // run that has started), in which case it belongs in This Week too.
 export function topFilmsThisWeek(
-  films: FilmWithCinemasLite[],
+  films: FilmWithCinemas[],
   today: string,
   limit = 10
-): { film: FilmWithCinemasLite; count: number }[] {
+): { film: FilmWithCinemas; count: number }[] {
   const weekEnd = addDays(today, 7);
   return films
     .filter(
       (film) =>
-        !(film.releaseDate && film.releaseDate > today) ||
-        hasShowtimeOn(film, today)
+        (!(film.releaseDate && film.releaseDate > today) ||
+          hasShowtimeOn(film, today)) &&
+        film.posterUrl != ''
     )
     .map((film) => ({
       film,
@@ -155,9 +153,9 @@ export function topFilmsThisWeek(
 // Shared by ComingSoonBar (to render) and FilmListings (to decide whether to
 // show the Coming Soon tab at all).
 export function comingSoonFilms(
-  films: FilmWithCinemasLite[],
+  films: FilmWithCinemas[],
   today: string
-): FilmWithCinemasLite[] {
+): FilmWithCinemas[] {
   const thisWeekSlugs = new Set(
     topFilmsThisWeek(films, today).map(({ film }) => film.slug)
   );

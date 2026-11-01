@@ -4,7 +4,7 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { Container } from 'react-bootstrap';
-import { FilmDetail, FilmsIndex } from '../../types';
+import { FilmBase, FilmsIndex } from '../../types';
 import YouTubeEmbed from '../../Components/YouTubeEmbed';
 import FilmShowtimes from '../../Components/FilmShowtimes';
 import WatchlistButton from '../../Components/WatchlistButton';
@@ -14,7 +14,7 @@ import { formatDate, getToday } from '../../utils/date';
 import { ArrowUpRight } from 'lucide-react';
 
 interface Props {
-  film: FilmDetail;
+  film: FilmBase;
 }
 
 function getLanguageName(code: string): string {

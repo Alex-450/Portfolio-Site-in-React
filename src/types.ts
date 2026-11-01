@@ -120,18 +120,25 @@ export interface CinemaShowtimes {
 }
 
 // Fields common to all film representations
-interface FilmBase {
+export interface FilmBase {
   slug: string;
   title: string;
   director: string | null;
   runtime: number | null;
   posterUrl: string;
   cinemaShowtimes: CinemaShowtimes[];
+  tmdb: TmdbData | null;
+  dateAdded?: string;
+  genres: string[];
 }
 
 export interface FilmWithCinemas extends FilmBase {
-  genres?: string[];
-  dateAdded?: string;
+  releaseDate?: string | null;
+  // Dutch cinema release date, used to detect preview screenings (showtimes
+  // that fall before a film's local release).
+  releaseDateNl?: string | null;
+  releaseYear?: string | null;
+  overview?: string | null;
 }
 
 // TMDB data for film detail pages
@@ -152,29 +159,6 @@ export interface TmdbData {
   letterboxdId: string | null;
 }
 
-// Full film data for detail pages
-export interface FilmDetail extends FilmBase {
-  tmdb: TmdbData | null;
-  dateAdded?: string;
-}
-
-// Films index (slug -> FilmDetail)
 export interface FilmsIndex {
-  [slug: string]: FilmDetail;
-}
-
-// Slimmed-down type for listings page (excludes tmdb field not needed for cards)
-export interface FilmWithCinemasLite extends FilmBase {
-  genres: string[];
-  dateAdded?: string | null;
-  releaseDate?: string | null;
-  // Dutch cinema release date, used to detect preview screenings (showtimes
-  // that fall before a film's local release).
-  releaseDateNl?: string | null;
-  releaseYear?: string | null;
-  overview?: string | null;
-}
-
-export interface FilmsIndexLite {
-  [slug: string]: FilmWithCinemasLite;
+  [slug: string]: FilmWithCinemas;
 }

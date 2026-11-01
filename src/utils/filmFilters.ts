@@ -1,4 +1,4 @@
-import { FilmWithCinemasLite, CinemaShowtimes, Showtime } from '../types';
+import { FilmWithCinemas, CinemaShowtimes, Showtime } from '../types';
 import { City, getCinemaNamesInCity } from '../data/cinemas';
 import { filterPastShowtimes } from './date';
 
@@ -119,9 +119,9 @@ export function isReRelease(
 }
 
 export function filterFilms(
-  films: FilmWithCinemasLite[],
+  films: FilmWithCinemas[],
   options: FilterOptions
-): FilmWithCinemasLite[] {
+): FilmWithCinemas[] {
   const {
     cityFilter = null,
     cinemaFilter,
@@ -174,8 +174,8 @@ export function filterFilms(
 }
 
 export function filterFilmsBySearch(
-  films: FilmWithCinemasLite[],
+  films: FilmWithCinemas[],
   search: string
-): FilmWithCinemasLite[] {
+): FilmWithCinemas[] {
   return films.filter((film) => matchesSearch(film.title, search));
 }

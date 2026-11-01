@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { Calendar } from 'lucide-react';
-import { FilmWithCinemasLite } from '../types';
+import { FilmWithCinemas } from '../types';
 import { formatDate, getToday, getCurrentTime } from '../utils/date';
 import { generateCalendarUrlFromFilm } from '../utils/calendar';
 
@@ -17,7 +17,7 @@ interface ShowtimeWithFilm {
 }
 
 interface CinemaShowtimesPageProps {
-  films: FilmWithCinemasLite[];
+  films: FilmWithCinemas[];
   cinemaKey: string;
   selectedDay: string | null;
   onSelectDay: (date: string) => void;

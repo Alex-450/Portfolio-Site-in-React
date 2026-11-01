@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import { FilmWithCinemasLite } from '../types';
+import { FilmWithCinemas } from '../types';
 import FilmShowtimes from './FilmShowtimes';
 
 interface FilmCardProps {
-  film: FilmWithCinemasLite;
+  film: FilmWithCinemas;
   dayFilter: string[];
   today: string;
   isInWatchlist?: boolean;

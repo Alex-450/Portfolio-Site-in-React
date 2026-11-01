@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
-import { FilmWithCinemasLite } from '../types';
+import { FilmWithCinemas } from '../types';
 import { defaultListingDate, formatDate } from '../utils/date';
 
 // URL sentinel for "user explicitly cleared the day filter".
@@ -14,7 +14,7 @@ export interface DayOption {
 interface UseDayFilterArgs {
   // Films matching every filter except day/time. Day options are derived from
   // this so the dropdown never offers a day the other filters can't satisfy.
-  filmsIgnoringDay: FilmWithCinemasLite[];
+  filmsIgnoringDay: FilmWithCinemas[];
   today: string;
   currentTime: string;
 }

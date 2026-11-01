@@ -1,9 +1,9 @@
-import { FilmWithCinemasLite } from '../types';
+import { FilmWithCinemas } from '../types';
 import { firstShowtimeDate, formatDate, previewFilms } from '../utils/date';
 import FilmBar from './FilmBar';
 
 interface PreviewsBarProps {
-  films: FilmWithCinemasLite[];
+  films: FilmWithCinemas[];
   today: string;
   showLabel?: boolean;
   emptyMessage?: string;
