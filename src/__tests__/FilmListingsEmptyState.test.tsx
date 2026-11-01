@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import FilmListings from '../Components/FilmListings';
-import { FilmsIndexLite } from '../types';
+import { FilmsIndex } from '../types';
 
 const mockPush = jest.fn();
 let mockQuery: Record<string, string> = {};
@@ -47,7 +47,7 @@ const filmsIndex = {
       },
     ],
   },
-} as unknown as FilmsIndexLite;
+} as unknown as FilmsIndex;
 
 describe('FilmListings empty state', () => {
   beforeEach(() => {
