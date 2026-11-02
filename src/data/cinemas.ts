@@ -23,7 +23,7 @@ export const cinemas: Record<string, Cinema> = {
     adsMinutes: 20,
   },
   Eye: {
-    name: 'Eye Filmmuseum',
+    name: 'Eye',
     slug: 'eye',
     city: 'Amsterdam',
     address: 'IJpromenade 1, 1031 KT Amsterdam',

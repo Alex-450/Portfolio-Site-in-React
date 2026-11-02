@@ -80,7 +80,7 @@ async function fetchAllCinemas() {
 
   const namedResults = [
     { name: 'FC Hyena', result: fcHyenaResult },
-    { name: 'Eye Filmmuseum', result: eyeResult },
+    { name: 'Eye', result: eyeResult },
     { name: 'Kriterion', result: kriterionResult },
     { name: 'Rialto VU', result: griffioenResult },
     { name: 'Filmhuis Den Haag', result: filmhuisDenHaagResult },
