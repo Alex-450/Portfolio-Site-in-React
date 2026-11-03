@@ -6,17 +6,9 @@ interface FilmCardProps {
   film: FilmWithCinemas;
   dayFilter: string[];
   today: string;
-  isInWatchlist?: boolean;
-  onToggleWatchlist?: () => void;
 }
 
-function FilmCard({
-  film,
-  dayFilter,
-  today,
-  isInWatchlist,
-  onToggleWatchlist,
-}: FilmCardProps) {
+function FilmCard({ film, dayFilter, today }: FilmCardProps) {
   const isNew = film.dateAdded
     ? Math.floor(
         (new Date(today).getTime() - new Date(film.dateAdded).getTime()) /
@@ -40,17 +32,6 @@ function FilmCard({
             <Link href={`/films/${film.slug}/`}>{film.title}</Link>
             {isNew && <span className="film-new-tag">New</span>}
           </div>
-          {onToggleWatchlist && (
-            <button
-              className={`watchlist-icon${isInWatchlist ? ' watchlist-icon-active' : ''}`}
-              onClick={onToggleWatchlist}
-              aria-label={
-                isInWatchlist ? 'Remove from watchlist' : 'Add to watchlist'
-              }
-            >
-              {isInWatchlist ? '−' : '+'}
-            </button>
-          )}
         </div>
         {film.director && (
           <div className="film-director">

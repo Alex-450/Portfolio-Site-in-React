@@ -21,7 +21,6 @@ import ReleaseFilter, {
   RELEASE_OPTIONS,
 } from './filters/ReleaseFilter';
 import TimeFilter from './filters/TimeFilter';
-import WatchlistFilter from './filters/WatchlistFilter';
 import {
   getToday,
   getCurrentTime,
@@ -30,7 +29,6 @@ import {
   sortByNextShowtime,
 } from '../utils/date';
 import { filterFilms, filterFilmsBySearch } from '../utils/filmFilters';
-import { useWatchlist } from '../hooks/useWatchlist';
 import { useDayFilter, ALL_DAYS } from '../hooks/useDayFilter';
 import {
   cinemas,
@@ -65,7 +63,6 @@ interface FilmListingsProps {
 const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
   const router = useRouter();
   const q = router.query;
-  const { watchlist, removeFromWatchlist, clearWatchlist } = useWatchlist();
 
   // URL-synced filters — memoized to keep stable references for useMemo deps
   const cinemaRaw = str(q.cinema);
@@ -79,7 +76,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     null) as City | null;
   const releaseFilter = (str(q.release) || null) as ReleaseFilterValue;
   const timeFilter = str(q.time) || null;
-  const watchlistFilter = str(q.watchlist) === 'true';
 
   // Local search input state
   const [filmSearch, setFilmSearch] = useState(filmFilter);
@@ -210,7 +206,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     [allFilms]
   );
 
-  // Everything filtered/sorted except the free-text film search and watchlist,
+  // Everything filtered/sorted except the free-text film search,
   // which are applied on top in `filteredFilms` — keeping them separate means
   // typing in the search box doesn't redo the cinema/day work.
   const baseFilms = useMemo(() => {
@@ -262,11 +258,8 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     let films = filmSearch
       ? filterFilmsBySearch(baseFilms, filmSearch)
       : baseFilms;
-    if (watchlistFilter) {
-      films = films.filter((film) => watchlist.includes(film.slug));
-    }
     return films;
-  }, [baseFilms, filmSearch, watchlistFilter, watchlist]);
+  }, [baseFilms, filmSearch]);
 
   // The default day doesn't count as a *user-chosen* filter, so it alone
   // doesn't replace the film bars with a filtered view. It is still surfaced
@@ -280,8 +273,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     !!timeFilter ||
     !!filmFilter ||
     !!directorFilter ||
-    !!releaseFilter ||
-    watchlistFilter;
+    !!releaseFilter;
 
   // Count of filters tucked behind the collapsible "Filters" panel.
   // Film search stays at the top level, so it's excluded here. Tonight is
@@ -295,8 +287,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     selectedDays.length +
     (timeFilter ? 1 : 0) +
     (directorFilter ? 1 : 0) +
-    (releaseFilter ? 1 : 0) +
-    (watchlistFilter ? 1 : 0);
+    (releaseFilter ? 1 : 0);
 
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [filmBarTab, setFilmBarTab] = useState<FilmBarTab>('this-week');
@@ -500,13 +491,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
               value={releaseFilter}
               onChange={(value) => setFilter('release', value ?? undefined)}
             />
-            <WatchlistFilter
-              enabled={watchlistFilter}
-              onChange={(enabled) =>
-                setFilter('watchlist', enabled ? 'true' : undefined)
-              }
-              watchlistCount={watchlist.length}
-            />
           </div>
         )}
 
@@ -591,14 +575,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
                 <span className="chip-remove">×</span>
               </button>
             )}
-            {watchlistFilter && (
-              <button
-                className="filter-chip"
-                onClick={() => setFilter('watchlist', undefined)}
-              >
-                Watchlist <span className="chip-remove">×</span>
-              </button>
-            )}
             <button
               className="filter-chip clear-all"
               onClick={() => {
@@ -618,26 +594,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
               }}
             >
               Clear all
-            </button>
-          </div>
-        )}
-
-        {watchlistFilter && watchlist.length > 0 && (
-          <div className="watchlist-management">
-            <span className="watchlist-management-label">Manage watchlist</span>
-            {watchlist.map((slug) => (
-              <button
-                key={slug}
-                className="filter-chip"
-                onClick={() => removeFromWatchlist(slug)}
-                aria-label={`Remove ${filmsIndex[slug]?.title ?? slug} from watchlist`}
-              >
-                {filmsIndex[slug]?.title ?? slug.replace(/-/g, ' ')}{' '}
-                <span className="chip-remove">×</span>
-              </button>
-            ))}
-            <button className="filter-chip clear-all" onClick={clearWatchlist}>
-              Clear watchlist
             </button>
           </div>
         )}

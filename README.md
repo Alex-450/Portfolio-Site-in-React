@@ -7,7 +7,6 @@ Personal portfolio site with a blog and film listings for Amsterdam, Haarlem and
 - Personal blog with MDX support
 - Film listings aggregated from local cinemas
 - Film filtering by cinema, director, day, and release year
-- Watchlist functionality (stored in local storage)
 - Dark mode support
 - RSS feed and sitemap generation
 

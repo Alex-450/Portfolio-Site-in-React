@@ -7,9 +7,7 @@ import { Container } from 'react-bootstrap';
 import { FilmBase, FilmsIndex } from '../../types';
 import YouTubeEmbed from '../../Components/YouTubeEmbed';
 import FilmShowtimes from '../../Components/FilmShowtimes';
-import WatchlistButton from '../../Components/WatchlistButton';
 import Breadcrumbs from '../../Components/Breadcrumbs';
-import { useWatchlist } from '../../hooks/useWatchlist';
 import { formatDate, getToday } from '../../utils/date';
 import { ArrowUpRight } from 'lucide-react';
 
@@ -35,7 +33,6 @@ export default function FilmDetailPage({ film }: Props) {
   const nlRelease = film.tmdb?.releaseDateNl;
   const nlReleaseLabel =
     nlRelease && nlRelease > getToday() ? formatDate(nlRelease) : null;
-  const { isInWatchlist, toggleWatchlist } = useWatchlist();
 
   const hasTrailer = !!film.tmdb?.youtubeTrailerId;
 
@@ -81,10 +78,6 @@ export default function FilmDetailPage({ film }: Props) {
             <div className="film-hero-overlay">
               <div className="film-title-row">
                 <h1 className="film-hero-title">{film.title}</h1>
-                <WatchlistButton
-                  isInWatchlist={isInWatchlist(film.slug)}
-                  onToggle={() => toggleWatchlist(film.slug)}
-                />
               </div>
               {film.director && (
                 <p className="film-hero-director">
@@ -188,10 +181,6 @@ export default function FilmDetailPage({ film }: Props) {
             <div className="film-detail-info">
               <div className="film-title-row">
                 <h1>{film.title}</h1>
-                <WatchlistButton
-                  isInWatchlist={isInWatchlist(film.slug)}
-                  onToggle={() => toggleWatchlist(film.slug)}
-                />
               </div>
               {film.director && (
                 <p className="film-detail-director">
