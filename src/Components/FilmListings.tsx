@@ -7,7 +7,6 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import { FilmsIndex, FilmWithCinemas } from '../types';
 import Breadcrumbs from './Breadcrumbs';
 import FilmCard from './FilmCard';
-import CinemaBar from './CinemaBar';
 import TopFilmsBar from './TopFilmsBar';
 import ComingSoonBar from './ComingSoonBar';
 import PreviewsBar from './PreviewsBar';
@@ -405,8 +404,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
             )}
           </div>
         )}
-
-        <CinemaBar />
 
         <h2 className="film-listings-section-heading">All Films</h2>
 
