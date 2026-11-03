@@ -474,19 +474,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
               value={timeFilter}
               onChange={(value) => setFilter('time', value ?? undefined)}
             />
-            <DirectorFilter
-              directors={allDirectors}
-              searchValue={directorSearch}
-              onSearchChange={setDirectorSearch}
-              onSelect={(d) => {
-                setDirectorSearch(d);
-                setFilter('director', d);
-              }}
-              onClear={() => {
-                setDirectorSearch('');
-                setFilter('director', undefined);
-              }}
-            />
             <ReleaseFilter
               value={releaseFilter}
               onChange={(value) => setFilter('release', value ?? undefined)}
