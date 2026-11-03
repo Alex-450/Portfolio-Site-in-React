@@ -823,6 +823,61 @@ code {
   color: var(--color-white);
 }
 
+/* Genre Filter */
+.genre-filter {
+  position: relative;
+}
+
+.genre-filter-button {
+  text-align: left;
+  min-width: 120px;
+}
+
+.genre-filter-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 180px;
+  max-height: 300px;
+  overflow-y: auto;
+  background-color: var(--bg-primary);
+  border: 2px solid var(--border-primary);
+  z-index: 10;
+}
+
+.genre-filter-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.genre-filter-option:hover {
+  background-color: var(--hover-bg);
+  color: var(--color-white);
+}
+
+.genre-filter-option input {
+  cursor: pointer;
+  accent-color: var(--color-black);
+}
+
+.genre-filter-clear {
+  width: 100%;
+  padding: 6px 10px;
+  border: none;
+  border-top: 1px solid var(--border-primary);
+  background: var(--bg-placeholder);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.genre-filter-clear:hover {
+  background-color: var(--hover-bg);
+  color: var(--color-white);
+}
+
 .loading-text,
 .error-text,
 .no-results {
@@ -1755,6 +1810,18 @@ code {
 
   .film-search-container:focus-within {
     z-index: 20;
+  }
+
+  .genre-filter {
+    width: 100%;
+  }
+
+  .genre-filter-button {
+    width: 100%;
+  }
+
+  .genre-filter-dropdown {
+    right: 0;
   }
 
   /* Text inputs stay at 16px: iOS Safari zooms the viewport on focus for
