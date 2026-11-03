@@ -25,7 +25,6 @@ const filmsIndex = {
     slug: 'today-film',
     title: 'Today Film',
     director: 'Another Director',
-    genres: ['Comedy'],
     releaseDate: '2026-01-01',
     cinemaShowtimes: [
       {
@@ -38,7 +37,6 @@ const filmsIndex = {
     slug: 'later-film',
     title: 'Later Film',
     director: 'Some Director',
-    genres: ['Drama'],
     releaseDate: '2026-01-01',
     cinemaShowtimes: [
       {
@@ -62,7 +60,7 @@ describe('FilmListings empty state', () => {
 
   it('names the active day and offers to clear it when nothing matches', () => {
     // The only showtime is on a later date, so the default day empties the list.
-    mockQuery = { genres: 'Drama', day: 'today' };
+    mockQuery = { day: 'today', director: 'invalid director' };
     render(<FilmListings filmsIndex={filmsIndex} />);
 
     expect(screen.getByText(/No showtimes found/)).toHaveTextContent(/ on /);
@@ -70,14 +68,14 @@ describe('FilmListings empty state', () => {
   });
 
   it('clearing the day from the empty state widens to all days', () => {
-    mockQuery = { genres: 'Drama', day: 'today' };
+    mockQuery = { director: 'unknown', day: 'today' };
     render(<FilmListings filmsIndex={filmsIndex} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Show all days' }));
 
     expect(mockPush).toHaveBeenCalledWith(
       expect.objectContaining({
-        query: expect.objectContaining({ day: 'all', genres: 'Drama' }),
+        query: expect.objectContaining({ day: 'all' }),
       }),
       undefined,
       { shallow: true }
@@ -85,7 +83,7 @@ describe('FilmListings empty state', () => {
   });
 
   it('offers no day action when the day filter is already cleared', () => {
-    mockQuery = { genres: 'Horror', day: 'all' };
+    mockQuery = { director: 'no director', day: 'all' };
     render(<FilmListings filmsIndex={filmsIndex} />);
 
     expect(screen.getByText(/No showtimes found/)).not.toHaveTextContent(

@@ -16,7 +16,6 @@ import CinemaFilter from './filters/CinemaFilter';
 import CityFilter from './filters/CityFilter';
 import DayFilter from './filters/DayFilter';
 import DirectorFilter from './filters/DirectorFilter';
-import GenreFilter from './filters/GenreFilter';
 import FilmSearchFilter from './filters/FilmSearchFilter';
 import ReleaseFilter, {
   ReleaseFilterValue,
@@ -71,14 +70,9 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
 
   // URL-synced filters — memoized to keep stable references for useMemo deps
   const cinemaRaw = str(q.cinema);
-  const genresRaw = str(q.genres);
   const cinemaFilter = useMemo(
     () => cinemaRaw.split(',').filter(Boolean),
     [cinemaRaw]
-  );
-  const genreFilter = useMemo(
-    () => genresRaw.split(',').filter(Boolean),
-    [genresRaw]
   );
   const filmFilter = str(q.film);
   const directorFilter = str(q.director);
@@ -144,7 +138,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
         dayFilter: [],
         timeFilter: null,
         filmFilter,
-        genreFilter,
         directorFilter,
         today,
         currentTime,
@@ -158,7 +151,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
       cityFilter,
       cinemaFilter,
       filmFilter,
-      genreFilter,
       directorFilter,
       today,
       currentTime,
@@ -206,10 +198,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
         : allCinemaNames,
     [allCinemaNames, cityFilter]
   );
-  const allGenres = useMemo(
-    () => [...new Set(allFilms.flatMap((f) => f.genres || []))].sort(),
-    [allFilms]
-  );
   const allDirectors = useMemo(
     () =>
       [
@@ -225,7 +213,7 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
 
   // Everything filtered/sorted except the free-text film search and watchlist,
   // which are applied on top in `filteredFilms` — keeping them separate means
-  // typing in the search box doesn't redo the cinema/day/genre work.
+  // typing in the search box doesn't redo the cinema/day work.
   const baseFilms = useMemo(() => {
     let films = filterFilms(allFilms, {
       cityFilter,
@@ -233,7 +221,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
       dayFilter,
       timeFilter,
       filmFilter: '',
-      genreFilter,
       directorFilter,
       today,
       currentTime,
@@ -266,7 +253,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     cinemaFilter,
     dayFilter,
     timeFilter,
-    genreFilter,
     directorFilter,
     today,
     currentTime,
@@ -293,7 +279,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     cinemaFilter.length > 0 ||
     selectedDays.length > 0 ||
     !!timeFilter ||
-    genreFilter.length > 0 ||
     !!filmFilter ||
     !!directorFilter ||
     !!releaseFilter ||
@@ -310,7 +295,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
     (isDefaultDay ? 1 : 0) +
     selectedDays.length +
     (timeFilter ? 1 : 0) +
-    genreFilter.length +
     (directorFilter ? 1 : 0) +
     (releaseFilter ? 1 : 0) +
     (watchlistFilter ? 1 : 0);
@@ -502,11 +486,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
               value={timeFilter}
               onChange={(value) => setFilter('time', value ?? undefined)}
             />
-            <GenreFilter
-              genres={allGenres}
-              selectedGenres={genreFilter}
-              onChange={(v) => setFilter('genres', v)}
-            />
             <DirectorFilter
               directors={allDirectors}
               searchValue={directorSearch}
@@ -583,20 +562,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
                 From {timeFilter} <span className="chip-remove">×</span>
               </button>
             )}
-            {genreFilter.map((genre) => (
-              <button
-                key={genre}
-                className="filter-chip"
-                onClick={() =>
-                  setFilter(
-                    'genres',
-                    genreFilter.filter((g) => g !== genre)
-                  )
-                }
-              >
-                {genre} <span className="chip-remove">×</span>
-              </button>
-            ))}
             {filmFilter && (
               <button
                 className="filter-chip"

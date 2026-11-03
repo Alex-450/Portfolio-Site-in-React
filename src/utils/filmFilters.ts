@@ -8,7 +8,6 @@ interface FilterOptions {
   dayFilter: string[];
   timeFilter: string | null;
   filmFilter: string;
-  genreFilter: string[];
   directorFilter: string;
   today: string;
   currentTime: string;
@@ -128,7 +127,6 @@ export function filterFilms(
     dayFilter,
     timeFilter,
     filmFilter,
-    genreFilter,
     directorFilter,
     today,
     currentTime,
@@ -148,11 +146,6 @@ export function filterFilms(
     )
     .filter((film) => !reRelease || isReRelease(film.releaseDate, today))
     .filter((film) => matchesSearch(film.title, filmFilter))
-    .filter(
-      (film) =>
-        genreFilter.length === 0 ||
-        film.genres?.some((g) => genreFilter.includes(g))
-    )
     .filter(
       (film) =>
         !directorFilter ||

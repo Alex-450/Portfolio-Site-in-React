@@ -50,7 +50,7 @@ export interface UseDayFilterResult {
  * would immediately come back, and the filter could never be removed.
  *
  * The default survives the user adding other filters: it's shown as a removable
- * chip, so narrowing by genre or cinema on top of it is a deliberate stack, not
+ * chip, so narrowing by cinema on top of it is a deliberate stack, not
  * a reason to silently widen back to every day. Entry points that mean "start
  * fresh" (a director link) clear it by passing the sentinel themselves.
  */

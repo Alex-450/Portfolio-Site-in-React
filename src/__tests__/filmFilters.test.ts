@@ -63,7 +63,6 @@ describe('filterFilms', () => {
     dayFilter: [],
     timeFilter: null,
     filmFilter: '',
-    genreFilter: [],
     directorFilter: '',
     today: '2024-03-14',
     currentTime: '10:00',
@@ -101,18 +100,6 @@ describe('filterFilms', () => {
     const result = filterFilms(films, {
       ...baseOptions,
       cinemaFilter: ['Cinema A'],
-    });
-    expect(result).toHaveLength(1);
-  });
-
-  it('filters by genre', () => {
-    const films = [
-      createFilm({ genres: ['Drama', 'Action'] }),
-      createFilm({ slug: 'film-2', genres: ['Comedy'] }),
-    ];
-    const result = filterFilms(films, {
-      ...baseOptions,
-      genreFilter: ['Action'],
     });
     expect(result).toHaveLength(1);
   });
@@ -242,7 +229,6 @@ describe('filterFilms — city filter', () => {
     dayFilter: [],
     timeFilter: null,
     filmFilter: '',
-    genreFilter: [],
     directorFilter: '',
     today: '2024-03-14',
     currentTime: '10:00',
