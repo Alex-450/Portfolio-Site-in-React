@@ -452,13 +452,6 @@ code {
   border-color: var(--hover-bg);
 }
 
-.film-listings-section-heading {
-  font-size: 1rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  margin-top: 0.5rem;
-}
-
 /* Top Films Bar */
 .film-bar-section {
   margin-bottom: 1.5rem;

@@ -14,7 +14,6 @@ import FilmBarToggle, { FilmBarTab } from './FilmBarToggle';
 import CinemaFilter from './filters/CinemaFilter';
 import CityFilter from './filters/CityFilter';
 import DayFilter from './filters/DayFilter';
-import DirectorFilter from './filters/DirectorFilter';
 import FilmSearchFilter from './filters/FilmSearchFilter';
 import ReleaseFilter, {
   ReleaseFilterValue,
@@ -395,8 +394,6 @@ const FilmListings = ({ filmsIndex }: FilmListingsProps) => {
             )}
           </div>
         )}
-
-        <h2 className="film-listings-section-heading">All Films</h2>
 
         <div className="film-filters film-filters-primary">
           <FilmSearchFilter
