@@ -1,5 +1,14 @@
 [
   {
+    "type": "creative-writing",
+    "title": "Tetep Tentrem",
+    "location": "Lombok",
+    "year": "2026",
+    "link": "/tetep-tentrem",
+    "dateAdded": "28/11/2026",
+    "description": "Sunrise hike"
+  },
+  {
     "type": "recipe",
     "title": "Gochujang Beef",
     "link": "/gochujang-beef",

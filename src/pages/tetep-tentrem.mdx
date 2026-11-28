@@ -1,0 +1,27 @@
+import ArticleLayout from '../Components/ArticleLayout';
+import { findBlogPostByLink } from '../utils/blog';
+
+export const blog = findBlogPostByLink('/tetep-tentrem');
+export const metadata = {
+  ...blog,
+  keywords: 'Tetep Tentrem Pergasingan Lombok Hiking',
+};
+
+My head torch has gone out. Probably the first time I've actually used it and of course
+I had forgotten to charge it. The guide kindly lends me his and continues his way up the
+sheer rocky path, lighting his way with his phone. The mountains around us are dark silhouettes against
+the sky, with little groups of lights from other hiking groups adorning the ridges. The valley below
+continues to twinkle and the call to prayer has started. Every few minutes another tone joins the building cacophony of
+voices, each one different, a crescendo building below us like a hive of bees.
+
+The sun has started to make its presence known. I can see a line of pink across the ridges ahead of us and two
+impossibly bright stars sit between our destination and the next ridge. As we reach the summit the valley below us starts
+to come into focus and the lights that have been crawling up the hills around us in all directions slowly flicker out.
+
+The sun is finally visible over the edge of a far off peak on another island, behind us the green
+bulk of the volcano has finally come fully into view.
+Coffee is brewing and the birds in the nearby woods start to wake up.
+
+export default function Layout({ children }) {
+  return <ArticleLayout metadata={metadata}>{children}</ArticleLayout>;
+}
